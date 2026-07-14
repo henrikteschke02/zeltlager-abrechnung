@@ -25,9 +25,13 @@ export default async function DashboardPage() {
 
   const { data: news } = await supabase
     .from('news')
-    .select('id, title, content, created_at, profiles(full_name)')
+    .select('id, title, content, created_at, author_id, profiles(full_name)')
     .order('created_at', { ascending: false })
     .limit(5)
+
+  const { data: requests } = await supabase
+    .from('news_delete_requests')
+    .select('id, news_id, requester_id, profiles(full_name)')
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out">
@@ -95,6 +99,7 @@ export default async function DashboardPage() {
         <div className="space-y-6">
           <NewsBoard 
             initialNews={news || []} 
+            initialRequests={requests || []}
             isAdmin={profile.role === 'admin'} 
             userId={user.id} 
           />
