@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Tent, Menu, LogOut, Beer, Drumstick, Croissant } from "lucide-react"
+import { Tent, Menu, LogOut, Beer, Drumstick, Croissant, Settings } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
 
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -21,6 +21,18 @@ export function Navigation() {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const [isAdmin, setIsAdmin] = React.useState(false)
+
+  React.useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+        if (data?.role === 'admin') setIsAdmin(true)
+      }
+    }
+    checkAdmin()
+  }, [supabase])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -52,6 +64,19 @@ export function Navigation() {
                 {item.name}
               </Link>
             ))}
+            {isAdmin && (
+              <Link
+                href="/dashboard/admin"
+                className={`flex items-center space-x-1 transition-colors hover:text-foreground/80 ${
+                  pathname?.startsWith('/dashboard/admin')
+                    ? "text-primary font-bold"
+                    : "text-foreground/60"
+                }`}
+              >
+                <Settings className="h-4 w-4" />
+                <span>Admin</span>
+              </Link>
+            )}
           </nav>
         </div>
         <Sheet>
@@ -87,6 +112,19 @@ export function Navigation() {
                     <span>{item.name}</span>
                   </Link>
                 ))}
+                {isAdmin && (
+                  <Link
+                    href="/dashboard/admin"
+                    className={`flex items-center space-x-2 py-2 transition-colors hover:text-foreground/80 ${
+                      pathname?.startsWith('/dashboard/admin')
+                        ? "text-primary font-bold"
+                        : "text-foreground/60"
+                    }`}
+                  >
+                    <Settings className="h-5 w-5" />
+                    <span>Admin-Bereich</span>
+                  </Link>
+                )}
               </div>
             </div>
           </SheetContent>

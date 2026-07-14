@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
+import Link from "next/link"
 import { createClient } from "@/utils/supabase/client"
-import { Plus, Beer, Trophy, Loader2, Undo2 } from "lucide-react"
+import { Plus, Beer, Trophy, Loader2, Undo2, BarChart3, Medal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -64,6 +65,21 @@ export function CamperBeverageDashboard({
   // Max Pegel (für die Progress Bar, z.B. 15 Getränke als voller Balken)
   const maxPegel = 15
   const pegelPercentage = Math.min((todaysDrinksCount / maxPegel) * 100, 100)
+
+  // Meine persönlichen Statistiken (aggregiert)
+  const personalStats = useMemo(() => {
+    const stats: Record<string, { count: number; totalCost: number; name: string }> = {}
+    consumptions.forEach(c => {
+      const bev = beverages.find(b => b.id === c.beverage_id)
+      if (!bev) return
+      if (!stats[bev.id]) {
+        stats[bev.id] = { count: 0, totalCost: 0, name: bev.name }
+      }
+      stats[bev.id].count += c.quantity
+      stats[bev.id].totalCost += c.quantity * Number(bev.price)
+    })
+    return Object.values(stats).sort((a, b) => b.count - a.count)
+  }, [consumptions, beverages])
 
   const handleDrink = async (beverage: Beverage) => {
     if (loadingId) return
@@ -177,6 +193,58 @@ export function CamperBeverageDashboard({
             </div>
           )}
         </div>
+      </div>
+
+      {/* Navigation zu Leaderboard & Statistik */}
+      <div className="grid grid-cols-2 gap-4 mt-8">
+        <Link href="/dashboard/leaderboard" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+          <Card className="bg-gradient-to-br from-amber-500 to-orange-600 text-white border-none hover:opacity-90 transition-opacity">
+            <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full space-y-2">
+              <Medal className="w-8 h-8" />
+              <div className="font-bold">Leaderboard</div>
+              <div className="text-xs opacity-90">Wer ist der Bierkönig?</div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/leaderboard?tab=stats" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+          <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white border-none hover:opacity-90 transition-opacity">
+            <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full space-y-2">
+              <BarChart3 className="w-8 h-8" />
+              <div className="font-bold">Lager-Statistik</div>
+              <div className="text-xs opacity-90">Gesamt-Konsum</div>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
+
+      {/* Meine Statistiken (Persönliche Übersicht) */}
+      <div className="mt-8">
+        <h2 className="text-lg font-bold tracking-tight mb-4 px-1">Meine Statistiken</h2>
+        <Card>
+          <CardContent className="p-0">
+            {personalStats.length === 0 ? (
+              <div className="p-6 text-center text-muted-foreground text-sm">
+                Noch keine Getränke gebucht.
+              </div>
+            ) : (
+              <div className="divide-y">
+                {personalStats.map((stat, i) => (
+                  <div key={i} className="flex justify-between items-center p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-primary/10 text-primary font-bold w-8 h-8 rounded-full flex items-center justify-center">
+                        {stat.count}x
+                      </div>
+                      <span className="font-medium">{stat.name}</span>
+                    </div>
+                    <span className="font-semibold text-muted-foreground">
+                      {stat.totalCost.toFixed(2)} €
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       {/* Storno Bereich */}
