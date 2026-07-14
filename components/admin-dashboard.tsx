@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Trash2, Edit2, Plus, Loader2 } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -126,8 +126,8 @@ export function AdminDashboard({
               <CardDescription>Aktuelles Angebot an Getränken</CardDescription>
             </div>
             <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-              <DialogTrigger asChild>
-                <Button size="sm"><Plus className="mr-2 h-4 w-4" /> Neues Getränk</Button>
+              <DialogTrigger className={buttonVariants({ size: "sm" })}>
+                <Plus className="mr-2 h-4 w-4" /> Neues Getränk
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
