@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { createClient } from "@/utils/supabase/client"
-import { Plus, Beer, Trophy, Loader2 } from "lucide-react"
+import { Plus, Beer, Trophy, Loader2, Undo2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -33,16 +33,23 @@ export function CamperBeverageDashboard({
 }) {
   const [consumptions, setConsumptions] = useState<Consumption[]>(initialConsumptions)
   const [loadingId, setLoadingId] = useState<string | null>(null)
+  const [now, setNow] = useState(new Date())
   const supabase = createClient()
 
   // Zeltlager-Tag Berechnung (Reset um 6:00 Uhr morgens)
   const startOfCampDay = useMemo(() => {
-    const now = new Date()
-    if (now.getHours() < 6) {
-      now.setDate(now.getDate() - 1)
+    const d = new Date()
+    if (d.getHours() < 6) {
+      d.setDate(d.getDate() - 1)
     }
-    now.setHours(6, 0, 0, 0)
-    return now
+    d.setHours(6, 0, 0, 0)
+    return d
+  }, [])
+
+  // Timer für Storno-Buttons (Aktualisiert die Zeit jede Sekunde)
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(interval)
   }, [])
 
   // Berechnungen
@@ -90,6 +97,25 @@ export function CamperBeverageDashboard({
     
     setLoadingId(null)
   }
+
+  const handleStorno = async (id: string) => {
+    // Optimistic Delete
+    const original = consumptions.find(c => c.id === id)
+    if (!original) return
+    
+    setConsumptions(consumptions.filter(c => c.id !== id))
+
+    const { error } = await supabase.from('consumptions').delete().eq('id', id)
+    
+    if (error) {
+      alert("Fehler beim Stornieren: " + error.message)
+      // Rollback
+      setConsumptions(prev => [original, ...prev].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()))
+    }
+  }
+
+  // Ermittle stornierbare Einträge (< 3 Minuten alt)
+  const stornoEintraege = consumptions.filter(c => now.getTime() - new Date(c.created_at).getTime() <= 3 * 60 * 1000)
 
   return (
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -152,6 +178,34 @@ export function CamperBeverageDashboard({
           )}
         </div>
       </div>
+
+      {/* Storno Bereich */}
+      {stornoEintraege.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-lg font-bold tracking-tight mb-4 px-1 text-muted-foreground">Kürzliche Buchungen (Storno)</h2>
+          <div className="space-y-2">
+            {stornoEintraege.map(c => {
+              const bev = beverages.find(b => b.id === c.beverage_id)
+              const timeLeft = Math.max(0, Math.floor((3 * 60 * 1000 - (now.getTime() - new Date(c.created_at).getTime())) / 1000))
+              const mins = Math.floor(timeLeft / 60)
+              const secs = timeLeft % 60
+              return (
+                <Card key={c.id} className="bg-destructive/10 border-none">
+                  <CardContent className="p-3 flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">{bev?.name || "Unbekannt"} gebucht</p>
+                      <p className="text-xs text-muted-foreground">Noch {mins}:{secs.toString().padStart(2, '0')} min stornierbar</p>
+                    </div>
+                    <Button variant="destructive" size="sm" onClick={() => handleStorno(c.id)}>
+                      <Undo2 className="h-4 w-4 mr-2" /> Storno
+                    </Button>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

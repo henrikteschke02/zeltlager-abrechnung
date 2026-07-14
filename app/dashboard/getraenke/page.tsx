@@ -10,6 +10,17 @@ export default async function GetraenkePage() {
     return redirect("/login")
   }
 
+  // Profil check
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile?.full_name) {
+    return redirect("/dashboard/profile")
+  }
+
   // Lade alle verfügbaren Getränke
   const { data: beverages } = await supabase
     .from('beverages')

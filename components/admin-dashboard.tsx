@@ -94,13 +94,13 @@ export function AdminDashboard({
 
     const { error } = await supabase
       .from('beverages')
-      .update({ price: priceNum })
+      .update({ name: editingBeverage.name, price: priceNum })
       .eq('id', editingBeverage.id)
 
     if (error) {
       alert("Fehler beim Aktualisieren: " + error.message)
     } else {
-      setBeverages(beverages.map(b => b.id === editingBeverage.id ? { ...b, price: priceNum } : b))
+      setBeverages(beverages.map(b => b.id === editingBeverage.id ? { ...b, name: editingBeverage.name, price: priceNum } : b))
       setIsEditModalOpen(false)
       setEditingBeverage(null)
       router.refresh()
@@ -215,6 +215,16 @@ export function AdminDashboard({
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleEditBeverage} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-name">Neuer Name</Label>
+                  <Input 
+                    id="edit-name" 
+                    required 
+                    value={editingBeverage?.name || ""}
+                    onChange={(e) => setEditingBeverage(editingBeverage ? {...editingBeverage, name: e.target.value} : null)}
+                    placeholder="z.B. Cola" 
+                  />
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="edit-price">Neuer Preis (€)</Label>
                   <Input 

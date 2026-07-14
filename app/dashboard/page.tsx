@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server"
+import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Beer, Drumstick, Croissant } from "lucide-react"
@@ -6,6 +7,20 @@ import { Beer, Drumstick, Croissant } from "lucide-react"
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return redirect("/login")
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile?.full_name) {
+    return redirect("/dashboard/profile")
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out">
