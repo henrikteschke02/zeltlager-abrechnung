@@ -2,6 +2,7 @@
 
 -- 1. News-Tabelle so anpassen, dass alle Camper News erstellen dürfen
 DROP POLICY IF EXISTS "Nur Admins können News erstellen" ON public.news;
+DROP POLICY IF EXISTS "Jeder eingeloggte Nutzer kann News erstellen" ON public.news;
 
 CREATE POLICY "Jeder eingeloggte Nutzer kann News erstellen" 
 ON public.news 
@@ -14,6 +15,7 @@ WITH CHECK (
 
 -- 2. Lösch-Policy der News-Tabelle aktualisieren: Ersteller ODER Admin
 DROP POLICY IF EXISTS "Nur Admins können News löschen" ON public.news;
+DROP POLICY IF EXISTS "Ersteller und Admins können News löschen" ON public.news;
 
 CREATE POLICY "Ersteller und Admins können News löschen" 
 ON public.news 
@@ -41,6 +43,8 @@ ALTER TABLE public.news_delete_requests ENABLE ROW LEVEL SECURITY;
 
 -- Lesen: Wer darf eine Anfrage sehen?
 -- Der Requester selbst, der Ersteller der News, oder ein Admin.
+DROP POLICY IF EXISTS "Löschanfragen lesen" ON public.news_delete_requests;
+
 CREATE POLICY "Löschanfragen lesen" 
 ON public.news_delete_requests
 FOR SELECT
@@ -52,6 +56,8 @@ USING (
 );
 
 -- Erstellen: Jeder User darf eine Anfrage für eine fremde News stellen
+DROP POLICY IF EXISTS "Löschanfragen erstellen" ON public.news_delete_requests;
+
 CREATE POLICY "Löschanfragen erstellen" 
 ON public.news_delete_requests
 FOR INSERT
@@ -62,6 +68,8 @@ WITH CHECK (
 
 -- Löschen (Ablehnen/Abbrechen):
 -- Der Requester (um die Anfrage zurückzuziehen), der Ersteller (um sie abzulehnen), oder Admin
+DROP POLICY IF EXISTS "Löschanfragen löschen" ON public.news_delete_requests;
+
 CREATE POLICY "Löschanfragen löschen" 
 ON public.news_delete_requests
 FOR DELETE
