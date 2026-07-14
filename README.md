@@ -105,9 +105,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   - Persönliche Übersicht auf dem Deckel ("Meine Statistiken").
 - **Echtzeit-Updates (Supabase Realtime):**
   - Das Leaderboard, der persönliche Deckel (inkl. Tages-Pegel) sowie das Schwarze Brett aktualisieren sich live und synchron auf allen Geräten, ohne die Seite neu laden zu müssen.
-- **Quality-of-Life UI & Icons:**
-  - Kompaktes, *sticky* Deckel-Design.
-  - Moderne, minimalistische Vektor-Icons (Lucide) anstelle statischer Emojis, die sich dynamisch anhand des Getränkenamens anpassen.
+- **Quality-of-Life UI & Ergonomie:**
+  - Kompaktes, *sticky* Deckel-Design mit direkt darunter platzierter, kompakter Storno-Historie.
+  - Sicheres Buchen: Klick auf ein Getränk öffnet ein Mengen-Auswahl-Popup statt direkt zu buchen (verhindert Fehlklicks).
+  - Kisten-Schnellbuchung: Admins können "Bundle-Größen" (z.B. 24) hinterlegen, woraufhin ein Schnell-Button im Popup erscheint.
+  - Liebevoll kuratierte, farbige Emojis (wie 🍊🍺, 🧊🍺) als Icons für einen modernen, touch-freundlichen Look.
 - **Kassenwart CSV-Export:**
   - Admins können die Endabrechnung (Gesamtkosten und Menge pro Camper) als Excel-kompatible `.csv`-Datei exportieren.
 - **Schwarzes Brett (News) & Löschanfragen:**
