@@ -9,11 +9,9 @@ Problem
 
 Klassische Zettel-Abrechnung bei Zeltlagern führt zu:
 
-
-Fehlerquoten durch aufgeweichte Papierlisten am Kühlwagen
-fehlender Übersicht ("was hab ich schon getrunken?")
-stundenlanger manueller Endabrechnung am letzten Tag
-
+- Fehlerquoten durch aufgeweichte Papierlisten am Kühlwagen
+- fehlender Übersicht ("was hab ich schon getrunken?")
+- stundenlanger manueller Endabrechnung am letzten Tag
 
 Lösung
 
@@ -25,32 +23,40 @@ Module
 
 Getränke-Deckel
 
-
-Mobile-First, große Touch-Ziele für Bedienung am Kühlwagen
-Animierter "Pegel-Elch" als Tagesanzeige (Reset 6:00 Uhr)
-"Hydration Hero" – Auszeichnung für meisten Wasserkonsum
-
+- Mobile-First, große Touch-Ziele für Bedienung am Kühlwagen
+- Animierter "Pegel-Elch" als Tagesanzeige (Reset 6:00 Uhr)
+- "Hydration Hero" – Auszeichnung für meisten Wasserkonsum
 
 Grillfleisch-Umlage
 
-
-Erfassung pro Tag/Person, faire Kostenteilung
-
+- Erfassung pro Tag/Person, faire Kostenteilung
 
 Brötchen-Bestellsystem
 
-
-Digitale Vorbestellung, automatische Kontobelastung
-
+- Digitale Vorbestellung, automatische Kontobelastung
 
 Tech-Stack
 
-
-Frontend: Next.js (App Router), React, Tailwind CSS, shadcn/ui
-Backend/Auth: Supabase (PostgreSQL, Row Level Security)
-Animation: Framer Motion
-
+- Frontend: Next.js (App Router), React, Tailwind CSS, shadcn/ui
+- Backend/Auth: Supabase (PostgreSQL, Row Level Security)
+- Animation: Framer Motion
 
 Status
 
 In aktiver Entwicklung.
+
+---
+
+## Next.js Setup
+
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+### Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
