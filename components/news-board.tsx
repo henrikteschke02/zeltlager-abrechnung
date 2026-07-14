@@ -210,7 +210,8 @@ export function NewsBoard({ initialNews, initialRequests, isAdmin, userId }: New
                 </div>
               </div>
             )
-          })}
+          })
+        )}
         </div>
       </CardContent>
     </Card>
