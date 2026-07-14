@@ -104,11 +104,21 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   - Globale Lager-Statistik (Wie viel wurde im gesamten Lager von welchem Getränk konsumiert?).
   - Persönliche Übersicht auf dem Deckel ("Meine Statistiken").
 - **Echtzeit-Updates (Supabase Realtime):**
-  - Das Leaderboard aktualisiert sich live bei jeder Buchung am Kühlwagen (ohne Reload der Seite).
-- **Quality-of-Life UI & Emojis:**
+  - Das Leaderboard, der persönliche Deckel (inkl. Tages-Pegel) sowie das Schwarze Brett aktualisieren sich live und synchron auf allen Geräten, ohne die Seite neu laden zu müssen.
+- **Quality-of-Life UI & Icons:**
   - Kompaktes, *sticky* Deckel-Design.
-  - Große Touch-freundliche Emojis für jedes Getränk (z. B. 🍺, 🥤, 💧).
+  - Moderne, minimalistische Vektor-Icons (Lucide) anstelle statischer Emojis, die sich dynamisch anhand des Getränkenamens anpassen.
 - **Kassenwart CSV-Export:**
   - Admins können die Endabrechnung (Gesamtkosten und Menge pro Camper) als Excel-kompatible `.csv`-Datei exportieren.
-- **Schwarzes Brett (News):**
-  - Admins können auf dem Haupt-Dashboard Durchsagen in Echtzeit veröffentlichen.
+- **Schwarzes Brett (News) & Löschanfragen:**
+  - Alle angemeldeten Camper können auf dem Haupt-Dashboard Durchsagen in Echtzeit veröffentlichen.
+  - Ersteller und Admins können Posts direkt löschen.
+  - Fremde Nutzer können eine Löschfreigabe anfragen. Der Ersteller sieht dann ein Genehmigungs-Panel, über das er die Anfrage erlauben oder ablehnen kann.
+
+### Nächste Schritte (Noch fehlend)
+- **Modul: Grillfleisch-Umlage (`/dashboard/grillfleisch`):**
+  - Erfassung des täglichen Fleischbedarfs pro Camper.
+  - Berechnung der fairen Kostenteilung (Umlage am Ende des Lagers).
+- **Modul: Brötchen-Bestellsystem (`/dashboard/broetchen`):**
+  - Digitale Vorbestellung für den nächsten Morgen.
+  - Automatische Belastung des Camper-Deckels basierend auf den Bäckerei-Preisen.
