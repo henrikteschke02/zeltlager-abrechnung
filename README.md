@@ -60,3 +60,25 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+---
+
+## Aktueller Entwicklungsstand (Changelog)
+
+### Phase 1: Foundation & Auth
+- **Setup:** Next.js 15+ (App Router), Tailwind CSS, shadcn/ui.
+- **Theming:** Darkmode Support (`next-themes`, `lucide-react`).
+- **Supabase Auth:** E-Mail/Passwort Authentifizierung mit serverseitigen Sessions.
+- **Pages:** `/login`, `/register`, sowie ein durch Middleware geschütztes `/dashboard`.
+
+### Phase 2: Getränkeabrechnung - Rollen & Admin-Panel
+- **Datenbank & Rollen-System:** 
+  - `profiles` Tabelle referenziert `auth.users`.
+  - Postgres Trigger legt bei Registrierung automatisch ein Profil mit der Rolle `camper` an.
+- **Sicherheits-Fix (RLS):**
+  - Um einen _infinite recursion error_ bei den Row Level Security Policies zu vermeiden, wird die Admin-Überprüfung über eine dedizierte Helper-Funktion (`is_admin()` mit `SECURITY DEFINER`) durchgeführt.
+- **Admin-Dashboard (`/dashboard/admin`):**
+  - Serverseitig geschützt (Zugriff nur mit `role = 'admin'`).
+  - Verwalten von Getränken (Tabelle `beverages`) inkl. Hinzufügen, Löschen und Preisänderung über shadcn/ui Dialoge.
+  - Read-Only Übersicht aller registrierten Profile (`profiles`).
+- **Konsum-Tracking:** Die Tabelle `consumptions` steht bereit und sichert via RLS, dass Camper nur ihre eigenen Einträge lesen und schreiben können, während Admins alles einsehen dürfen.
