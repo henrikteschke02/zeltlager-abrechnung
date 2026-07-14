@@ -80,5 +80,20 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - **Admin-Dashboard (`/dashboard/admin`):**
   - Serverseitig geschützt (Zugriff nur mit `role = 'admin'`).
   - Verwalten von Getränken (Tabelle `beverages`) inkl. Hinzufügen, Löschen und Preisänderung über shadcn/ui Dialoge.
+  - Umbenennen von Getränken nachträglich möglich.
   - Read-Only Übersicht aller registrierten Profile (`profiles`).
 - **Konsum-Tracking:** Die Tabelle `consumptions` steht bereit und sichert via RLS, dass Camper nur ihre eigenen Einträge lesen und schreiben können, während Admins alles einsehen dürfen.
+
+### Phase 3 & 4: Camper-Frontend, Stornos & Profil-Vollständigkeit
+- **Mobile-First Camper Dashboard (`/dashboard/getraenke`):**
+  - Riesige Buttons für schnelle Buchungen am Kühlwagen (Optimistic UI Updates).
+  - Anzeige des aktuellen Deckels (Gesamtschulden) und des Tagespegels.
+  - Reset des Tagespegels automatisch um exakt 06:00 Uhr morgens (Zeltlager-Takt).
+- **3-Minuten-Storno:**
+  - Neue UI-Sektion für kürzliche Buchungen mit Live-Countdown.
+  - Camper können Fehlklicks innerhalb von 3 Minuten rückgängig machen.
+  - RLS-Absicherung in Supabase erlaubt serverseitig keine `DELETE`s nach Ablauf dieser 3 Minuten.
+- **Profil-Pflicht & Avatar-Upload:**
+  - Zwingende Profil-Vervollständigung (Name) beim ersten Login.
+  - Optional können Camper eine Telefonnummer angeben.
+  - Profilbilder können hochgeladen werden und werden sicher im Supabase Storage Bucket (`avatars`) gespeichert.
