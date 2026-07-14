@@ -119,6 +119,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   - Ersteller und Admins können Posts direkt löschen.
   - Fremde Nutzer können eine Löschfreigabe anfragen. Der Ersteller sieht dann ein Genehmigungs-Panel, über das er die Anfrage erlauben oder ablehnen kann.
 
+### Phase 7: Live-Deployment & Hosting
+
+* **Cloud-Hosting (Vercel):**
+  * Die App ist erfolgreich auf Vercel deployed und rund um die Uhr für alle Camper erreichbar.
+  * Automatische CI/CD-Pipeline: Jeder Push in den `main`-Branch auf GitHub (z.B. neue Features oder Bugfixes) löst automatisch einen neuen Build bei Vercel aus.
+* **Datenbank-Anbindung (Supabase):**
+  * Die Next.js App kommuniziert nahtlos mit der Supabase-Datenbank in der Cloud.
+  * Sichere Integration der Datenbank-Schlüssel über Vercel Environment Variables (`NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
+
 ### Nächste Schritte (Noch fehlend)
 - **Modul: Grillfleisch-Umlage (`/dashboard/grillfleisch`):**
   - Erfassung des täglichen Fleischbedarfs pro Camper.
