@@ -97,3 +97,18 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   - Zwingende Profil-Vervollständigung (Name) beim ersten Login.
   - Optional können Camper eine Telefonnummer angeben.
   - Profilbilder können hochgeladen werden und werden sicher im Supabase Storage Bucket (`avatars`) gespeichert.
+
+### Phase 5 & 6: Gamification, Realtime & Admin-Features
+- **Leaderboard & Statistiken (`/dashboard/leaderboard`):**
+  - Live-Rangliste (Wer hat wie viel getrunken?) inkl. exklusivem **Bierkönig 👑**-Badge.
+  - Globale Lager-Statistik (Wie viel wurde im gesamten Lager von welchem Getränk konsumiert?).
+  - Persönliche Übersicht auf dem Deckel ("Meine Statistiken").
+- **Echtzeit-Updates (Supabase Realtime):**
+  - Das Leaderboard aktualisiert sich live bei jeder Buchung am Kühlwagen (ohne Reload der Seite).
+- **Quality-of-Life UI & Emojis:**
+  - Kompaktes, *sticky* Deckel-Design.
+  - Große Touch-freundliche Emojis für jedes Getränk (z. B. 🍺, 🥤, 💧).
+- **Kassenwart CSV-Export:**
+  - Admins können die Endabrechnung (Gesamtkosten und Menge pro Camper) als Excel-kompatible `.csv`-Datei exportieren.
+- **Schwarzes Brett (News):**
+  - Admins können auf dem Haupt-Dashboard Durchsagen in Echtzeit veröffentlichen.
