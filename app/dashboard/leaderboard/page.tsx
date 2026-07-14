@@ -25,7 +25,7 @@ export default async function LeaderboardPage(props: { searchParams: Promise<{ t
   // Lade alle benötigten Daten für die Aggregation
   const { data: profiles } = await supabase.from('profiles').select('id, full_name, avatar_url')
   const { data: beverages } = await supabase.from('beverages').select('*')
-  const { data: consumptions } = await supabase.from('consumptions').select('user_id, beverage_id, quantity')
+  const { data: consumptions } = await supabase.from('consumptions').select('id, user_id, beverage_id, quantity')
 
   return (
     <div className="max-w-xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">

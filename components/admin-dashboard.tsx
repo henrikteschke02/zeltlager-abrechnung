@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Trash2, Edit2, Plus, Loader2 } from "lucide-react"
+import { Trash2, Edit2, Plus, Loader2, Download } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
 
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -16,6 +16,7 @@ type Beverage = {
   id: string
   name: string
   price: number
+  emoji: string | null
   created_at: string
 }
 
@@ -23,6 +24,7 @@ type Profile = {
   id: string
   role: string
   email: string
+  full_name: string | null
 }
 
 export function AdminDashboard({
@@ -36,8 +38,9 @@ export function AdminDashboard({
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [newBeverage, setNewBeverage] = useState({ name: "", price: "" })
-  const [editingBeverage, setEditingBeverage] = useState<{ id: string, name: string, price: string } | null>(null)
+  const [isExporting, setIsExporting] = useState(false)
+  const [newBeverage, setNewBeverage] = useState({ name: "", price: "", emoji: "🥤" })
+  const [editingBeverage, setEditingBeverage] = useState<{ id: string, name: string, price: string, emoji: string } | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -54,7 +57,7 @@ export function AdminDashboard({
 
     const { data, error } = await supabase
       .from('beverages')
-      .insert([{ name: newBeverage.name, price: priceNum }])
+      .insert([{ name: newBeverage.name, price: priceNum, emoji: newBeverage.emoji }])
       .select()
 
     if (error) {
@@ -62,7 +65,7 @@ export function AdminDashboard({
     } else if (data) {
       setBeverages([...beverages, data[0] as Beverage])
       setIsAddModalOpen(false)
-      setNewBeverage({ name: "", price: "" })
+      setNewBeverage({ name: "", price: "", emoji: "🥤" })
       router.refresh()
     }
     setLoading(false)
@@ -94,18 +97,61 @@ export function AdminDashboard({
 
     const { error } = await supabase
       .from('beverages')
-      .update({ name: editingBeverage.name, price: priceNum })
+      .update({ name: editingBeverage.name, price: priceNum, emoji: editingBeverage.emoji })
       .eq('id', editingBeverage.id)
 
     if (error) {
       alert("Fehler beim Aktualisieren: " + error.message)
     } else {
-      setBeverages(beverages.map(b => b.id === editingBeverage.id ? { ...b, name: editingBeverage.name, price: priceNum } : b))
+      setBeverages(beverages.map(b => b.id === editingBeverage.id ? { ...b, name: editingBeverage.name, price: priceNum, emoji: editingBeverage.emoji } : b))
       setIsEditModalOpen(false)
       setEditingBeverage(null)
       router.refresh()
     }
     setLoading(false)
+  }
+
+  const handleExportCsv = async () => {
+    setIsExporting(true)
+    const { data: consumptions, error } = await supabase.from('consumptions').select('user_id, beverage_id, quantity')
+    if (error) {
+      alert("Fehler beim Laden der Daten: " + error.message)
+      setIsExporting(false)
+      return
+    }
+
+    const rows = [["Name", "Email", "Gesamtkosten", "Getränke (Anzahl)"]]
+    
+    initialProfiles.forEach(profile => {
+      const userConsumptions = consumptions.filter(c => c.user_id === profile.id)
+      let totalCost = 0
+      let totalDrinks = 0
+      userConsumptions.forEach(c => {
+        const bev = beverages.find(b => b.id === c.beverage_id)
+        if (bev) {
+          totalCost += Number(bev.price) * c.quantity
+          totalDrinks += c.quantity
+        }
+      })
+      if (totalDrinks > 0) {
+        rows.push([
+          profile.full_name || "Unbekannt",
+          profile.email,
+          totalCost.toFixed(2).replace('.', ','),
+          totalDrinks.toString()
+        ])
+      }
+    })
+
+    const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(";")).join("\n")
+    const encodedUri = encodeURI(csvContent)
+    const link = document.createElement("a")
+    link.setAttribute("href", encodedUri)
+    link.setAttribute("download", `zeltlager_abrechnung_${new Date().toISOString().split('T')[0]}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    setIsExporting(false)
   }
 
   return (
@@ -148,6 +194,15 @@ export function AdminDashboard({
                     />
                   </div>
                   <div className="space-y-2">
+                    <Label htmlFor="emoji">Emoji/Icon</Label>
+                    <Input 
+                      id="emoji" 
+                      value={newBeverage.emoji}
+                      onChange={(e) => setNewBeverage({...newBeverage, emoji: e.target.value})}
+                      placeholder="🥤" 
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="price">Preis (€)</Label>
                     <Input 
                       id="price" 
@@ -171,6 +226,7 @@ export function AdminDashboard({
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>Icon</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Preis</TableHead>
                     <TableHead className="text-right">Aktionen</TableHead>
@@ -186,11 +242,12 @@ export function AdminDashboard({
                   ) : (
                     beverages.map((bev) => (
                       <TableRow key={bev.id}>
+                        <TableCell className="text-2xl">{bev.emoji || '🥤'}</TableCell>
                         <TableCell className="font-medium">{bev.name}</TableCell>
                         <TableCell>{Number(bev.price).toFixed(2)} €</TableCell>
                         <TableCell className="text-right space-x-2">
                           <Button variant="ghost" size="icon" onClick={() => {
-                            setEditingBeverage({ id: bev.id, name: bev.name, price: bev.price.toString() })
+                            setEditingBeverage({ id: bev.id, name: bev.name, price: bev.price.toString(), emoji: bev.emoji || '' })
                             setIsEditModalOpen(true)
                           }}>
                             <Edit2 className="h-4 w-4 text-muted-foreground" />
@@ -226,6 +283,15 @@ export function AdminDashboard({
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="edit-emoji">Neues Emoji/Icon</Label>
+                  <Input 
+                    id="edit-emoji" 
+                    value={editingBeverage?.emoji || ""}
+                    onChange={(e) => setEditingBeverage(editingBeverage ? {...editingBeverage, emoji: e.target.value} : null)}
+                    placeholder="🥤" 
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="edit-price">Neuer Preis (€)</Label>
                   <Input 
                     id="edit-price" 
@@ -247,15 +313,22 @@ export function AdminDashboard({
 
         {/* User Karte */}
         <Card>
-          <CardHeader>
-            <CardTitle>Camper (Profile)</CardTitle>
-            <CardDescription>Liste aller registrierten Nutzer</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Camper (Profile)</CardTitle>
+              <CardDescription>Liste aller registrierten Nutzer</CardDescription>
+            </div>
+            <Button size="sm" variant="outline" onClick={handleExportCsv} disabled={isExporting}>
+              {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+              CSV Export
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Rolle</TableHead>
                   </TableRow>
@@ -270,7 +343,8 @@ export function AdminDashboard({
                   ) : (
                     initialProfiles.map((user) => (
                       <TableRow key={user.id}>
-                        <TableCell className="font-medium">{user.email}</TableCell>
+                        <TableCell className="font-medium">{user.full_name || "-"}</TableCell>
+                        <TableCell>{user.email}</TableCell>
                         <TableCell>
                           <span className={`px-2 py-1 rounded-full text-xs font-semibold ${user.role === 'admin' ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
                             {user.role}

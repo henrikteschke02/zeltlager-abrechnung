@@ -13,6 +13,7 @@ type Beverage = {
   id: string
   name: string
   price: number
+  emoji: string | null
 }
 
 type Consumption = {
@@ -136,36 +137,54 @@ export function CamperBeverageDashboard({
   return (
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
-      {/* Header / Stats Card */}
-      <Card className="bg-primary text-primary-foreground shadow-lg overflow-hidden relative border-none">
-        <div className="absolute top-0 right-0 p-4 opacity-10">
-          <Beer className="w-32 h-32" />
-        </div>
-        <CardHeader className="relative z-10 pb-2">
-          <CardTitle className="text-sm font-medium opacity-90 uppercase tracking-wider">Mein Deckel</CardTitle>
-          <div className="text-5xl font-black tracking-tighter">
-            {totalDebt.toFixed(2)} €
+      {/* Sticky Header / Stats Card */}
+      <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm py-2 -mx-4 px-4 shadow-sm mb-4">
+        <Card className="bg-primary text-primary-foreground shadow-md overflow-hidden relative border-none">
+          <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+            <Beer className="w-24 h-24" />
           </div>
-        </CardHeader>
-        <CardContent className="relative z-10 space-y-4">
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm font-medium">
-              <span className="flex items-center gap-2">
-                <Trophy className="w-4 h-4" /> Tages-Pegel
-              </span>
-              <span>{todaysDrinksCount} Getränke</span>
+          <CardHeader className="relative z-10 pb-2">
+            <div className="flex justify-between items-end">
+              <div>
+                <CardTitle className="text-xs font-medium opacity-90 uppercase tracking-wider">Mein Deckel</CardTitle>
+                <div className="text-4xl font-black tracking-tighter leading-none mt-1">
+                  {totalDebt.toFixed(2)} €
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs font-medium opacity-90 uppercase tracking-wider">Tages-Pegel</div>
+                <div className="text-2xl font-black">{todaysDrinksCount}</div>
+              </div>
             </div>
-            <Progress value={pegelPercentage} className="h-3 bg-primary-foreground/20 [&>div]:bg-primary-foreground" />
-            <p className="text-xs opacity-75">
-              {todaysDrinksCount === 0 
-                ? "Der Elch ist noch durstig!" 
-                : todaysDrinksCount >= 10 
-                  ? "Hydration Hero! 🏆" 
-                  : "Der Pegel-Elch füllt sich..."}
+          </CardHeader>
+          <CardContent className="relative z-10 pb-4 pt-0">
+            <Progress value={pegelPercentage} className="h-2 bg-primary-foreground/20 [&>div]:bg-primary-foreground mb-1" />
+            <p className="text-[10px] opacity-75">
+              {todaysDrinksCount === 0 ? "Der Elch ist noch durstig!" : todaysDrinksCount >= 10 ? "Hydration Hero! 🏆" : "Der Pegel-Elch füllt sich..."}
             </p>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Navigation zu Leaderboard & Statistik */}
+      <div className="grid grid-cols-2 gap-4">
+        <Link href="/dashboard/leaderboard" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+          <Card className="bg-gradient-to-br from-amber-500 to-orange-600 text-white border-none hover:opacity-90 transition-opacity">
+            <CardContent className="p-3 flex items-center justify-center gap-3">
+              <Medal className="w-6 h-6 flex-shrink-0" />
+              <div className="text-sm font-bold leading-tight">Leaderboard</div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/leaderboard?tab=stats" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+          <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white border-none hover:opacity-90 transition-opacity">
+            <CardContent className="p-3 flex items-center justify-center gap-3">
+              <BarChart3 className="w-6 h-6 flex-shrink-0" />
+              <div className="text-sm font-bold leading-tight">Statistik</div>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
 
       {/* Beverage Grid */}
       <div>
@@ -181,7 +200,7 @@ export function CamperBeverageDashboard({
               {loadingId === bev.id ? (
                 <Loader2 className="w-12 h-12 mb-3 text-primary animate-spin" />
               ) : (
-                <Plus className="w-12 h-12 mb-3 text-muted-foreground group-hover:text-primary transition-colors" />
+                <div className="text-4xl mb-3 drop-shadow-sm group-hover:scale-110 transition-transform">{bev.emoji || '🥤'}</div>
               )}
               <h3 className="font-bold text-lg leading-none mb-1">{bev.name}</h3>
               <p className="text-sm font-semibold text-primary">{Number(bev.price).toFixed(2)} €</p>
@@ -193,28 +212,6 @@ export function CamperBeverageDashboard({
             </div>
           )}
         </div>
-      </div>
-
-      {/* Navigation zu Leaderboard & Statistik */}
-      <div className="grid grid-cols-2 gap-4 mt-8">
-        <Link href="/dashboard/leaderboard" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
-          <Card className="bg-gradient-to-br from-amber-500 to-orange-600 text-white border-none hover:opacity-90 transition-opacity">
-            <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full space-y-2">
-              <Medal className="w-8 h-8" />
-              <div className="font-bold">Leaderboard</div>
-              <div className="text-xs opacity-90">Wer ist der Bierkönig?</div>
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/dashboard/leaderboard?tab=stats" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
-          <Card className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white border-none hover:opacity-90 transition-opacity">
-            <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full space-y-2">
-              <BarChart3 className="w-8 h-8" />
-              <div className="font-bold">Lager-Statistik</div>
-              <div className="text-xs opacity-90">Gesamt-Konsum</div>
-            </CardContent>
-          </Card>
-        </Link>
       </div>
 
       {/* Meine Statistiken (Persönliche Übersicht) */}

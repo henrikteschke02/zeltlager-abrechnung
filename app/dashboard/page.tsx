@@ -1,8 +1,8 @@
-import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Beer, Drumstick, Croissant } from "lucide-react"
+import { NewsBoard } from "@/components/news-board"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -14,7 +14,7 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name')
+    .select('full_name, role')
     .eq('id', user.id)
     .single()
 
@@ -22,17 +22,24 @@ export default async function DashboardPage() {
     return redirect("/dashboard/profile")
   }
 
+  const { data: news } = await supabase
+    .from('news')
+    .select('id, title, content, created_at, profiles(full_name)')
+    .order('created_at', { ascending: false })
+    .limit(5)
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Hallo, {profile.full_name?.split(' ')[0] || 'Camper'}! ⛺</h1>
         <p className="text-muted-foreground mt-2">
-          Willkommen zurück, {user?.email}! Hier ist deine aktuelle Übersicht.
+          Willkommen im Zeltlager. Was möchtest du tun?
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Link href="/dashboard/getraenke" className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-6">
+          <Link href="/dashboard/getraenke" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
           <Card className="border-primary/10 hover:border-primary/30 transition-colors h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -82,6 +89,15 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
+        </div>
+
+        <div className="space-y-6">
+          <NewsBoard 
+            initialNews={news || []} 
+            isAdmin={profile.role === 'admin'} 
+            userId={user.id} 
+          />
+        </div>
       </div>
     </div>
   )

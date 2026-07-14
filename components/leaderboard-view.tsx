@@ -1,14 +1,15 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { Trophy, Crown, BarChart3, Medal } from "lucide-react"
+import { createClient } from "@/utils/supabase/client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 type Profile = { id: string; full_name: string; avatar_url: string | null }
 type Beverage = { id: string; name: string; price: number }
-type Consumption = { user_id: string; beverage_id: string; quantity: number }
+type Consumption = { id: string; user_id: string; beverage_id: string; quantity: number }
 
 type LeaderboardViewProps = {
   profiles: Profile[]
@@ -17,8 +18,26 @@ type LeaderboardViewProps = {
   initialTab: string
 }
 
-export function LeaderboardView({ profiles, beverages, consumptions, initialTab }: LeaderboardViewProps) {
-  
+export function LeaderboardView({ profiles, beverages, consumptions: initialConsumptions, initialTab }: LeaderboardViewProps) {
+  const [consumptions, setConsumptions] = useState<Consumption[]>(initialConsumptions)
+  const supabase = createClient()
+
+  // Echtzeit-Updates abonnieren
+  useEffect(() => {
+    const channel = supabase.channel('realtime_consumptions')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'consumptions' }, (payload) => {
+        setConsumptions(prev => [...prev, payload.new as Consumption])
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'consumptions' }, (payload) => {
+        setConsumptions(prev => prev.filter(c => c.id !== payload.old.id))
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [supabase])
+
   // 1. Leaderboard Aggregation
   const leaderboardStats = useMemo(() => {
     const bierBeverage = beverages.find(b => b.name.toLowerCase().includes('bier'))
