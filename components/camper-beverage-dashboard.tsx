@@ -38,14 +38,23 @@ export function CamperBeverageDashboard({
   const getBeverageIcon = (name: string) => {
     const n = name.toLowerCase()
     
-    // Bier
-    if (n.includes("bier") || n.includes("pils") || n.includes("weizen") || n.includes("radler") || n.includes("export") || n.includes("helles")) return "🍺"
+    // Spezielle Biere & Mixgetränke
+    if (n.includes("schöfferhofer") || n.includes("grapefruit")) return "🍊🍺"
+    if ((n.includes("radler") || n.includes("alster")) && (n.includes("0,0") || n.includes("alkoholfrei"))) return "🍋🧊🍺"
+    if (n.includes("radler") || n.includes("alster") || n.includes("naturradler")) return "🍋🍺"
+    if ((n.includes("bier") || n.includes("pils") || n.includes("bitburger") || n.includes("weizen")) && (n.includes("0,0") || n.includes("alkoholfrei"))) return "🧊🍺" // Alkoholfrei
+    
+    // Klassisches Bier
+    if (n.includes("bier") || n.includes("pils") || n.includes("weizen") || n.includes("export") || n.includes("helles") || n.includes("bitburger") || n.includes("veltins")) return "🍺"
     
     // Wasser
     if (n.includes("wasser") || n.includes("water") || n.includes("sprudel")) return "💧"
     
-    // Softdrinks
-    if (n.includes("cola") || n.includes("fanta") || n.includes("sprite") || n.includes("spezi") || n.includes("limo") || n.includes("mate")) return "🥤"
+    // Spezielle Softdrinks
+    if (n.includes("fanta")) return "🍊🥤"
+    if (n.includes("sprite") || n.includes("7up")) return "🍋🥤"
+    if (n.includes("cola") || n.includes("spezi") || n.includes("mezzo")) return "🥤"
+    if (n.includes("mate")) return "🧉"
     
     // Kaffee
     if (n.includes("kaffee") || n.includes("coffee") || n.includes("espresso") || n.includes("cappuccino")) return "☕"
