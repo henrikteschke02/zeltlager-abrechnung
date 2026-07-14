@@ -98,8 +98,8 @@ export default async function DashboardPage() {
 
         <div className="space-y-6">
           <NewsBoard 
-            initialNews={news || []} 
-            initialRequests={requests || []}
+            initialNews={(news as any) || []} 
+            initialRequests={(requests as any) || []}
             isAdmin={profile.role === 'admin'} 
             userId={user.id} 
           />
