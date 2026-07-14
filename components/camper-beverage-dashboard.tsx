@@ -40,7 +40,7 @@ export function CamperBeverageDashboard({
     
     // Spezielle Biere & Mixgetränke
     if (n.includes("schöfferhofer") || n.includes("grapefruit")) return "🍊🍺"
-    if ((n.includes("radler") || n.includes("alster")) && (n.includes("0,0") || n.includes("alkoholfrei"))) return "🍋🧊🍺"
+    if ((n.includes("radler") || n.includes("alster")) && (n.includes("0,0") || n.includes("alkoholfrei"))) return "🍋🧊"
     if (n.includes("radler") || n.includes("alster") || n.includes("naturradler")) return "🍋🍺"
     if ((n.includes("bier") || n.includes("pils") || n.includes("bitburger") || n.includes("weizen")) && (n.includes("0,0") || n.includes("alkoholfrei"))) return "🧊🍺" // Alkoholfrei
     
