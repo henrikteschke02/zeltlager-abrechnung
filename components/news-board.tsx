@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { createClient } from "@/utils/supabase/client"
 import { Megaphone, Trash2, Send, Loader2, UserMinus, Check, X } from "lucide-react"
 
@@ -43,6 +43,44 @@ export function NewsBoard({ initialNews, initialRequests, isAdmin, userId }: New
   const [content, setContent] = useState("")
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
+
+  // Echtzeit-Updates für News und Löschanfragen abonnieren
+  useEffect(() => {
+    const channel = supabase.channel('realtime_news_board')
+      // --- NEWS ---
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'news' }, async (payload) => {
+        // Da im Realtime-Payload die Relation (profiles) fehlt, laden wir den kompletten Datensatz nach
+        const { data } = await supabase.from('news').select('id, title, content, created_at, author_id, profiles(full_name)').eq('id', payload.new.id).single()
+        if (data) {
+          setNews(prev => {
+            if (prev.some(n => n.id === data.id)) return prev // Duplikate durch Optimistic Update vermeiden
+            return [data as unknown as NewsItem, ...prev].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          })
+        }
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'news' }, (payload) => {
+        setNews(prev => prev.filter(n => n.id !== payload.old.id))
+        setRequests(prev => prev.filter(r => r.news_id !== payload.old.id))
+      })
+      // --- NEWS DELETE REQUESTS ---
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'news_delete_requests' }, async (payload) => {
+        const { data } = await supabase.from('news_delete_requests').select('id, news_id, requester_id, profiles(full_name)').eq('id', payload.new.id).single()
+        if (data) {
+          setRequests(prev => {
+            if (prev.some(r => r.id === data.id)) return prev
+            return [...prev, data as unknown as DeleteRequest]
+          })
+        }
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'news_delete_requests' }, (payload) => {
+        setRequests(prev => prev.filter(r => r.id !== payload.old.id))
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [supabase])
 
   const handlePost = async (e: React.FormEvent) => {
     e.preventDefault()

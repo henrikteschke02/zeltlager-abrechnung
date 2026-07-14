@@ -54,6 +54,36 @@ export function CamperBeverageDashboard({
     return () => clearInterval(interval)
   }, [])
 
+  // Echtzeit-Updates für eigene Konsumeinträge abonnieren
+  useEffect(() => {
+    const channel = supabase.channel('realtime_dashboard_consumptions')
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'consumptions',
+        filter: `user_id=eq.${userId}` 
+      }, (payload) => {
+        setConsumptions(prev => {
+          // Vermeide Duplikate, falls Optimistic Update schon drin ist
+          if (prev.some(c => c.id === payload.new.id)) return prev
+          return [payload.new as Consumption, ...prev].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        })
+      })
+      .on('postgres_changes', { 
+        event: 'DELETE', 
+        schema: 'public', 
+        table: 'consumptions' 
+      }, (payload) => {
+        // Bei DELETE haben wir in payload.old nur die id
+        setConsumptions(prev => prev.filter(c => c.id !== payload.old.id))
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [supabase, userId])
+
   // Berechnungen
   const todaysConsumptions = consumptions.filter(c => new Date(c.created_at) >= startOfCampDay)
   const todaysDrinksCount = todaysConsumptions.reduce((sum, c) => sum + c.quantity, 0)
