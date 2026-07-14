@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import { createClient } from "@/utils/supabase/client"
-import { Plus, Beer, Trophy, Loader2, Undo2, BarChart3, Medal } from "lucide-react"
+import { Plus, Beer, Trophy, Loader2, Undo2, BarChart3, Medal, Coffee, CupSoda, GlassWater, Wine, Milk, Martini, Citrus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -33,6 +33,20 @@ export function CamperBeverageDashboard({
   beverages: Beverage[]
   initialConsumptions: Consumption[]
 }) {
+  const getBeverageIcon = (name: string) => {
+    const n = name.toLowerCase()
+    if (n.includes("bier") || n.includes("pils") || n.includes("weizen") || n.includes("radler") || n.includes("export") || n.includes("helles")) return <Beer className="w-10 h-10 stroke-[1.5]" />
+    if (n.includes("wasser") || n.includes("water") || n.includes("sprudel")) return <GlassWater className="w-10 h-10 stroke-[1.5]" />
+    if (n.includes("cola") || n.includes("fanta") || n.includes("sprite") || n.includes("spezi") || n.includes("limo") || n.includes("mate")) return <CupSoda className="w-10 h-10 stroke-[1.5]" />
+    if (n.includes("kaffee") || n.includes("coffee") || n.includes("espresso") || n.includes("cappuccino")) return <Coffee className="w-10 h-10 stroke-[1.5]" />
+    if (n.includes("wein") || n.includes("wine") || n.includes("sekt") || n.includes("schorle")) return <Wine className="w-10 h-10 stroke-[1.5]" />
+    if (n.includes("saft") || n.includes("apfel") || n.includes("orange")) return <Citrus className="w-10 h-10 stroke-[1.5]" />
+    if (n.includes("milch") || n.includes("kakao")) return <Milk className="w-10 h-10 stroke-[1.5]" />
+    if (n.includes("cocktail") || n.includes("gin") || n.includes("vodka") || n.includes("mische")) return <Martini className="w-10 h-10 stroke-[1.5]" />
+    
+    return <CupSoda className="w-10 h-10 stroke-[1.5]" />
+  }
+
   const [consumptions, setConsumptions] = useState<Consumption[]>(initialConsumptions)
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [now, setNow] = useState(new Date())
@@ -230,7 +244,9 @@ export function CamperBeverageDashboard({
               {loadingId === bev.id ? (
                 <Loader2 className="w-12 h-12 mb-3 text-primary animate-spin" />
               ) : (
-                <div className="text-4xl mb-3 drop-shadow-sm group-hover:scale-110 transition-transform">{bev.emoji || '🥤'}</div>
+              <div className="text-primary mb-3 drop-shadow-sm group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300">
+                {getBeverageIcon(bev.name)}
+              </div>
               )}
               <h3 className="font-bold text-lg leading-none mb-1">{bev.name}</h3>
               <p className="text-sm font-semibold text-primary">{Number(bev.price).toFixed(2)} €</p>
