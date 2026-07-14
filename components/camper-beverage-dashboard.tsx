@@ -8,12 +8,14 @@ import { Plus, Beer, Trophy, Loader2, Undo2, BarChart3, Medal, Coffee, CupSoda, 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 type Beverage = {
   id: string
   name: string
   price: number
   emoji: string | null
+  bundle_size: number | null
 }
 
 type Consumption = {
@@ -50,6 +52,11 @@ export function CamperBeverageDashboard({
   const [consumptions, setConsumptions] = useState<Consumption[]>(initialConsumptions)
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [now, setNow] = useState(new Date())
+  
+  // Booking Modal State
+  const [selectedBev, setSelectedBev] = useState<Beverage | null>(null)
+  const [selectedQuantity, setSelectedQuantity] = useState(1)
+  
   const supabase = createClient()
 
   // Zeltlager-Tag Berechnung (Reset um 6:00 Uhr morgens)
@@ -126,16 +133,22 @@ export function CamperBeverageDashboard({
     return Object.values(stats).sort((a, b) => b.count - a.count)
   }, [consumptions, beverages])
 
-  const handleDrink = async (beverage: Beverage) => {
+  const handleOpenModal = (bev: Beverage) => {
+    setSelectedBev(bev)
+    setSelectedQuantity(1)
+  }
+
+  const executeBooking = async (beverage: Beverage, qty: number) => {
     if (loadingId) return
     setLoadingId(beverage.id)
+    setSelectedBev(null) // Close modal immediately
 
     // Optimistic UI Update (temporäre ID für sofortiges Feedback)
     const tempConsumption: Consumption = {
       id: crypto.randomUUID(),
       user_id: userId,
       beverage_id: beverage.id,
-      quantity: 1,
+      quantity: qty,
       created_at: new Date().toISOString()
     }
     
@@ -143,7 +156,7 @@ export function CamperBeverageDashboard({
 
     const { data, error } = await supabase
       .from('consumptions')
-      .insert([{ user_id: userId, beverage_id: beverage.id, quantity: 1 }])
+      .insert([{ user_id: userId, beverage_id: beverage.id, quantity: qty }])
       .select()
       .single()
 
@@ -210,6 +223,38 @@ export function CamperBeverageDashboard({
         </Card>
       </div>
 
+      {/* Storno Bereich direkt unter dem Deckel */}
+      {stornoEintraege.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-sm font-bold tracking-tight mb-2 px-1 text-muted-foreground flex items-center">
+            <Undo2 className="w-4 h-4 mr-2" /> Kürzliche Buchungen (Storno)
+          </h2>
+          <div className="flex gap-2 overflow-x-auto pb-2 snap-x">
+            {stornoEintraege.map(c => {
+              const bev = beverages.find(b => b.id === c.beverage_id)
+              const timeLeft = Math.max(0, Math.floor((3 * 60 * 1000 - (now.getTime() - new Date(c.created_at).getTime())) / 1000))
+              const mins = Math.floor(timeLeft / 60)
+              const secs = timeLeft % 60
+              return (
+                <Card key={c.id} className="bg-destructive/10 border-destructive/20 shadow-sm flex-shrink-0 w-[240px] snap-start">
+                  <CardContent className="p-3">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="min-w-0 pr-2">
+                        <p className="font-bold text-sm truncate">{c.quantity}x {bev?.name || "Unbekannt"}</p>
+                        <p className="text-xs text-muted-foreground font-medium">{mins}:{secs.toString().padStart(2, '0')} min stornierbar</p>
+                      </div>
+                    </div>
+                    <Button variant="destructive" size="sm" className="w-full h-7 text-xs" onClick={() => handleStorno(c.id)}>
+                      Rückgängig
+                    </Button>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Navigation zu Leaderboard & Statistik */}
       <div className="grid grid-cols-2 gap-4">
         <Link href="/dashboard/leaderboard" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
@@ -237,7 +282,7 @@ export function CamperBeverageDashboard({
           {beverages.map(bev => (
             <button
               key={bev.id}
-              onClick={() => handleDrink(bev)}
+              onClick={() => handleOpenModal(bev)}
               disabled={loadingId === bev.id}
               className="relative overflow-hidden group flex flex-col items-center justify-center p-6 text-center bg-card text-card-foreground rounded-2xl border-2 border-border shadow-sm hover:border-primary/50 hover:bg-accent hover:text-accent-foreground active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring select-none"
             >
@@ -290,33 +335,75 @@ export function CamperBeverageDashboard({
         </Card>
       </div>
 
-      {/* Storno Bereich */}
-      {stornoEintraege.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-lg font-bold tracking-tight mb-4 px-1 text-muted-foreground">Kürzliche Buchungen (Storno)</h2>
-          <div className="space-y-2">
-            {stornoEintraege.map(c => {
-              const bev = beverages.find(b => b.id === c.beverage_id)
-              const timeLeft = Math.max(0, Math.floor((3 * 60 * 1000 - (now.getTime() - new Date(c.created_at).getTime())) / 1000))
-              const mins = Math.floor(timeLeft / 60)
-              const secs = timeLeft % 60
-              return (
-                <Card key={c.id} className="bg-destructive/10 border-none">
-                  <CardContent className="p-3 flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">{bev?.name || "Unbekannt"} gebucht</p>
-                      <p className="text-xs text-muted-foreground">Noch {mins}:{secs.toString().padStart(2, '0')} min stornierbar</p>
-                    </div>
-                    <Button variant="destructive" size="sm" onClick={() => handleStorno(c.id)}>
-                      <Undo2 className="h-4 w-4 mr-2" /> Storno
-                    </Button>
-                  </CardContent>
-                </Card>
-              )
-            })}
+      {/* Booking Modal */}
+      <Dialog open={!!selectedBev} onOpenChange={(open) => !open && setSelectedBev(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-2xl">
+              {selectedBev && getBeverageIcon(selectedBev.name)}
+              {selectedBev?.name} buchen
+            </DialogTitle>
+            <DialogDescription>
+              Wähle die gewünschte Menge für deine Buchung.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-6 space-y-6">
+            <div className="flex items-center justify-center gap-6">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-14 w-14 rounded-full border-2"
+                onClick={() => setSelectedQuantity(Math.max(1, selectedQuantity - 1))}
+                disabled={selectedQuantity <= 1}
+              >
+                <span className="text-3xl font-light">-</span>
+              </Button>
+              
+              <div className="w-20 text-center">
+                <span className="text-5xl font-black">{selectedQuantity}</span>
+              </div>
+              
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-14 w-14 rounded-full border-2"
+                onClick={() => setSelectedQuantity(selectedQuantity + 1)}
+              >
+                <Plus className="h-8 w-8" />
+              </Button>
+            </div>
+            
+            <div className="text-center font-bold text-xl text-primary">
+              Gesamt: {(selectedQuantity * Number(selectedBev?.price || 0)).toFixed(2)} €
+            </div>
+
+            {selectedBev?.bundle_size && (
+              <div className="pt-4 border-t border-border">
+                <Button 
+                  variant="secondary" 
+                  className="w-full h-14 text-lg border-2 border-primary/20 hover:border-primary/50"
+                  onClick={() => selectedBev && executeBooking(selectedBev, selectedBev.bundle_size!)}
+                >
+                  🍺 Ganze Kiste ({selectedBev.bundle_size}x) buchen
+                </Button>
+              </div>
+            )}
           </div>
-        </div>
-      )}
+          
+          <DialogFooter className="flex-col sm:flex-col gap-2">
+            <Button 
+              className="w-full h-14 text-lg font-bold" 
+              onClick={() => selectedBev && executeBooking(selectedBev, selectedQuantity)}
+            >
+              Kostenpflichtig buchen
+            </Button>
+            <Button variant="ghost" className="w-full" onClick={() => setSelectedBev(null)}>
+              Abbrechen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
