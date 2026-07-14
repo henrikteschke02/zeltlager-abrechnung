@@ -16,7 +16,6 @@ type Beverage = {
   id: string
   name: string
   price: number
-  emoji: string | null
   bundle_size: number | null
   created_at: string
 }
@@ -40,8 +39,8 @@ export function AdminDashboard({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
-  const [newBeverage, setNewBeverage] = useState({ name: "", price: "", emoji: "🥤", bundle_size: "" })
-  const [editingBeverage, setEditingBeverage] = useState<{ id: string, name: string, price: string, emoji: string, bundle_size: string } | null>(null)
+  const [newBeverage, setNewBeverage] = useState({ name: "", price: "", bundle_size: "" })
+  const [editingBeverage, setEditingBeverage] = useState<{ id: string, name: string, price: string, bundle_size: string } | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -60,7 +59,7 @@ export function AdminDashboard({
 
     const { data, error } = await supabase
       .from('beverages')
-      .insert([{ name: newBeverage.name, price: priceNum, emoji: newBeverage.emoji, bundle_size: bundleNum }])
+      .insert([{ name: newBeverage.name, price: priceNum, bundle_size: bundleNum }])
       .select()
 
     if (error) {
@@ -68,7 +67,7 @@ export function AdminDashboard({
     } else if (data) {
       setBeverages([...beverages, data[0] as Beverage])
       setIsAddModalOpen(false)
-      setNewBeverage({ name: "", price: "", emoji: "🥤", bundle_size: "" })
+      setNewBeverage({ name: "", price: "", bundle_size: "" })
       router.refresh()
     }
     setLoading(false)
@@ -102,13 +101,13 @@ export function AdminDashboard({
 
     const { error } = await supabase
       .from('beverages')
-      .update({ name: editingBeverage.name, price: priceNum, emoji: editingBeverage.emoji, bundle_size: bundleNum })
+      .update({ name: editingBeverage.name, price: priceNum, bundle_size: bundleNum })
       .eq('id', editingBeverage.id)
 
     if (error) {
       alert("Fehler beim Aktualisieren: " + error.message)
     } else {
-      setBeverages(beverages.map(b => b.id === editingBeverage.id ? { ...b, name: editingBeverage.name, price: priceNum, emoji: editingBeverage.emoji, bundle_size: bundleNum } : b))
+      setBeverages(beverages.map(b => b.id === editingBeverage.id ? { ...b, name: editingBeverage.name, price: priceNum, bundle_size: bundleNum } : b))
       setIsEditModalOpen(false)
       setEditingBeverage(null)
       router.refresh()
@@ -199,15 +198,6 @@ export function AdminDashboard({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="emoji">Emoji/Icon</Label>
-                    <Input 
-                      id="emoji" 
-                      value={newBeverage.emoji}
-                      onChange={(e) => setNewBeverage({...newBeverage, emoji: e.target.value})}
-                      placeholder="🥤" 
-                    />
-                  </div>
-                  <div className="space-y-2">
                     <Label htmlFor="price">Preis (€)</Label>
                     <Input 
                       id="price" 
@@ -241,7 +231,6 @@ export function AdminDashboard({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Icon</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Preis</TableHead>
                     <TableHead>Kiste</TableHead>
@@ -258,13 +247,12 @@ export function AdminDashboard({
                   ) : (
                     beverages.map((bev) => (
                       <TableRow key={bev.id}>
-                        <TableCell className="text-2xl">{bev.emoji || '🥤'}</TableCell>
                         <TableCell className="font-medium">{bev.name}</TableCell>
                         <TableCell>{Number(bev.price).toFixed(2)} €</TableCell>
                         <TableCell className="text-muted-foreground text-sm">{bev.bundle_size ? `${bev.bundle_size}er Kiste` : '-'}</TableCell>
                         <TableCell className="text-right space-x-2">
                           <Button variant="ghost" size="icon" onClick={() => {
-                            setEditingBeverage({ id: bev.id, name: bev.name, price: bev.price.toString(), emoji: bev.emoji || '', bundle_size: bev.bundle_size?.toString() || '' })
+                            setEditingBeverage({ id: bev.id, name: bev.name, price: bev.price.toString(), bundle_size: bev.bundle_size?.toString() || '' })
                             setIsEditModalOpen(true)
                           }}>
                             <Edit2 className="h-4 w-4 text-muted-foreground" />
@@ -297,15 +285,6 @@ export function AdminDashboard({
                     value={editingBeverage?.name || ""}
                     onChange={(e) => setEditingBeverage(editingBeverage ? {...editingBeverage, name: e.target.value} : null)}
                     placeholder="z.B. Cola" 
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-emoji">Neues Emoji/Icon</Label>
-                  <Input 
-                    id="edit-emoji" 
-                    value={editingBeverage?.emoji || ""}
-                    onChange={(e) => setEditingBeverage(editingBeverage ? {...editingBeverage, emoji: e.target.value} : null)}
-                    placeholder="🥤" 
                   />
                 </div>
                 <div className="space-y-2">
