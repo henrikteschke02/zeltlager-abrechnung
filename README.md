@@ -128,6 +128,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   * Die Next.js App kommuniziert nahtlos mit der Supabase-Datenbank in der Cloud.
   * Sichere Integration der Datenbank-Schlüssel über Vercel Environment Variables (`NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
 
+### Phase 8: Sicherheit & Admin-Freigabesystem (Approval Workflow)
+
+* **Warteraum & Freigaben:**
+  * Neue Nutzer können sich registrieren, müssen jedoch ihr Profil (Name, Handynummer) ausfüllen.
+  * Anschließend landen sie im "Warteraum" und können das Dashboard noch nicht sehen oder nutzen.
+* **Admin-Kontrolle:**
+  * Admins sehen im Admin-Dashboard eine Liste der offenen Freigaben (inklusive Name, Email und Telefonnummer).
+  * Admins können Nutzer per Klick auf "Annehmen" freischalten oder mit "Ablehnen" das Profil löschen.
+* **RESTRICTIVE Row Level Security:**
+  * Auf Datenbankebene sind alle Lese- und Schreibzugriffe auf Konsum-Einträge, News etc. strikt blockiert, solange das eigene Profil nicht explizit auf `is_approved = true` gesetzt wurde.
+
 ### Nächste Schritte (Noch fehlend)
 - **Modul: Grillfleisch-Umlage (`/dashboard/grillfleisch`):**
   - Erfassung des täglichen Fleischbedarfs pro Camper.

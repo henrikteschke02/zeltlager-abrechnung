@@ -15,12 +15,17 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, role')
+    .select('full_name, role, is_approved')
     .eq('id', user.id)
     .single()
 
   if (!profile?.full_name) {
     return redirect("/dashboard/profile")
+  }
+
+  if (profile?.role !== 'admin' && profile?.is_approved === false) {
+    const { Warteraum } = await import("@/components/warteraum")
+    return <Warteraum />
   }
 
   const { data: news } = await supabase

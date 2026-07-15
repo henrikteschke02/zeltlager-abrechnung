@@ -14,12 +14,17 @@ export default async function LeaderboardPage(props: { searchParams: Promise<{ t
   // Profil check (Pflicht)
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name')
+    .select('full_name, role, is_approved')
     .eq('id', user.id)
     .single()
 
   if (!profile?.full_name) {
     return redirect("/dashboard/profile")
+  }
+
+  if (profile?.role !== 'admin' && profile?.is_approved === false) {
+    const { Warteraum } = await import("@/components/warteraum")
+    return <Warteraum />
   }
 
   // Lade alle benötigten Daten für die Aggregation

@@ -25,6 +25,8 @@ type Profile = {
   role: string
   email: string
   full_name: string | null
+  phone?: string | null
+  is_approved?: boolean
 }
 
 export function AdminDashboard({
@@ -35,6 +37,7 @@ export function AdminDashboard({
   initialProfiles: Profile[]
 }) {
   const [beverages, setBeverages] = useState<Beverage[]>(initialBeverages)
+  const [profiles, setProfiles] = useState<Profile[]>(initialProfiles)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -115,6 +118,27 @@ export function AdminDashboard({
     setLoading(false)
   }
 
+  const handleApprove = async (id: string) => {
+    const { error } = await supabase.from('profiles').update({ is_approved: true }).eq('id', id)
+    if (error) {
+      alert("Fehler beim Freischalten: " + error.message)
+    } else {
+      setProfiles(profiles.map(p => p.id === id ? { ...p, is_approved: true } : p))
+      router.refresh()
+    }
+  }
+
+  const handleReject = async (id: string) => {
+    if (!confirm("Profil wirklich ablehnen und löschen?")) return
+    const { error } = await supabase.from('profiles').delete().eq('id', id)
+    if (error) {
+      alert("Fehler beim Löschen: " + error.message)
+    } else {
+      setProfiles(profiles.filter(p => p.id !== id))
+      router.refresh()
+    }
+  }
+
   const handleExportCsv = async () => {
     setIsExporting(true)
     const { data: consumptions, error } = await supabase.from('consumptions').select('user_id, beverage_id, quantity')
@@ -126,7 +150,8 @@ export function AdminDashboard({
 
     const rows = [["Name", "Email", "Gesamtkosten", "Getränke (Anzahl)"]]
     
-    initialProfiles.forEach(profile => {
+    const approvedProfiles = profiles.filter(p => p.is_approved !== false)
+    approvedProfiles.forEach(profile => {
       const userConsumptions = consumptions.filter(c => c.user_id === profile.id)
       let totalCost = 0
       let totalDrinks = 0
@@ -166,6 +191,46 @@ export function AdminDashboard({
           Verwalte Getränke und sehe alle registrierten Camper.
         </p>
       </div>
+
+      {profiles.filter(p => p.is_approved === false && p.role !== 'admin').length > 0 && (
+        <Card className="border-destructive/50 bg-destructive/5">
+          <CardHeader>
+            <CardTitle className="text-destructive">Offene Freigaben</CardTitle>
+            <CardDescription>Diese Nutzer warten im Warteraum auf deine Bestätigung.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border bg-background overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Telefon</TableHead>
+                    <TableHead className="text-right">Aktion</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {profiles.filter(p => p.is_approved === false && p.role !== 'admin').map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell className="font-medium">{user.full_name || "Nicht angegeben"}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.phone || "-"}</TableCell>
+                      <TableCell className="text-right space-x-2">
+                        <Button size="sm" onClick={() => handleApprove(user.id)} className="bg-green-600 hover:bg-green-700">
+                          Annehmen
+                        </Button>
+                        <Button size="sm" variant="destructive" onClick={() => handleReject(user.id)}>
+                          Ablehnen
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Getränke Karte */}
@@ -336,21 +401,29 @@ export function AdminDashboard({
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead>Rolle</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {initialProfiles.length === 0 ? (
+                  {profiles.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={2} className="text-center text-muted-foreground py-4">
                         Keine User gefunden.
                       </TableCell>
                     </TableRow>
                   ) : (
-                    initialProfiles.map((user) => (
+                    profiles.map((user) => (
                       <TableRow key={user.id}>
                         <TableCell className="font-medium">{user.full_name || "-"}</TableCell>
                         <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          {user.is_approved ? (
+                            <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400 px-2 py-1 rounded-full font-medium">Freigeschaltet</span>
+                          ) : (
+                            <span className="text-xs text-orange-600 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400 px-2 py-1 rounded-full font-medium">Wartet</span>
+                          )}
+                        </TableCell>
                         <TableCell>
                           <span className={`px-2 py-1 rounded-full text-xs font-semibold ${user.role === 'admin' ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
                             {user.role}
