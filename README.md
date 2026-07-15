@@ -124,6 +124,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 * **Cloud-Hosting (Vercel):**
   * Die App ist erfolgreich auf Vercel deployed und rund um die Uhr für alle Camper erreichbar.
   * Automatische CI/CD-Pipeline: Jeder Push in den `main`-Branch auf GitHub (z.B. neue Features oder Bugfixes) löst automatisch einen neuen Build bei Vercel aus.
+  * **Build-Striktheit & Git-Tracking:** Vercel erzwingt strikte TypeScript/ESLint-Regeln und baut nur Dateien, die explizit in Git getrackt werden (Vorsicht bei neu erstellten Dateien und `git commit -a`!).
 * **Datenbank-Anbindung (Supabase):**
   * Die Next.js App kommuniziert nahtlos mit der Supabase-Datenbank in der Cloud.
   * Sichere Integration der Datenbank-Schlüssel über Vercel Environment Variables (`NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
