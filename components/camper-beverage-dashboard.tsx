@@ -49,15 +49,18 @@ export function CamperBeverageDashboard({
   const [selectedBev, setSelectedBev] = useState<Beverage | null>(null)
   const [selectedQuantity, setSelectedQuantity] = useState(1)
   
+  // Toggle State für Deckel (Gesamt vs Tagesdeckel)
+  const [showDaily, setShowDaily] = useState(false)
+  
   const supabase = createClient()
 
-  // Zeltlager-Tag Berechnung (Reset um 6:00 Uhr morgens)
+  // Zeltlager-Tag Berechnung (Reset um 7:00 Uhr morgens)
   const startOfCampDay = useMemo(() => {
     const d = new Date()
-    if (d.getHours() < 6) {
+    if (d.getHours() < 7) {
       d.setDate(d.getDate() - 1)
     }
-    d.setHours(6, 0, 0, 0)
+    d.setHours(7, 0, 0, 0)
     return d
   }, [])
 
@@ -101,14 +104,60 @@ export function CamperBeverageDashboard({
   const todaysConsumptions = consumptions.filter(c => new Date(c.created_at) >= startOfCampDay)
   const todaysDrinksCount = todaysConsumptions.reduce((sum, c) => sum + c.quantity, 0)
   
+  const todaysDebt = todaysConsumptions.reduce((total, c) => {
+    const bev = beverages.find(b => b.id === c.beverage_id)
+    return total + (bev ? Number(bev.price) * c.quantity : 0)
+  }, 0)
+  
   const totalDebt = consumptions.reduce((total, c) => {
     const bev = beverages.find(b => b.id === c.beverage_id)
     return total + (bev ? Number(bev.price) * c.quantity : 0)
   }, 0)
 
-  // Max Pegel (für die Progress Bar, z.B. 15 Getränke als voller Balken)
-  const maxPegel = 15
-  const pegelPercentage = Math.min((todaysDrinksCount / maxPegel) * 100, 100)
+  // Elch Gamification Logik
+  const getPointsForBeverage = (name: string) => {
+    const n = name.toLowerCase()
+    if (n.includes("alkoholfrei") || n.includes("0,0") || n.includes("wasser") || n.includes("cola") || n.includes("fanta") || n.includes("sprite") || n.includes("brause") || n.includes("saft")) return -1.0
+    if (n.includes("radler") || n.includes("alster") || n.includes("schöfferhofer")) return 0.5
+    if (n.includes("schnaps") || n.includes("shot") || n.includes("vodka") || n.includes("gin") || n.includes("cocktail")) return 2.0
+    return 1.0 // Normales Bier
+  }
+
+  const elchScore = useMemo(() => {
+    const score = todaysConsumptions.reduce((sum, c) => {
+      const bev = beverages.find(b => b.id === c.beverage_id)
+      return sum + (bev ? getPointsForBeverage(bev.name) * c.quantity : 0)
+    }, 0)
+    return Math.max(0, score) // Elch-Level fällt nicht unter 0
+  }, [todaysConsumptions, beverages])
+
+  const promille = (elchScore * 0.15).toFixed(2)
+
+  const elchLevels = [
+    { min: 0, emoji: "🦌", text: "Nüchterner Elch" },
+    { min: 1, emoji: "🙂", text: "Entspannter Elch" },
+    { min: 2, emoji: "😌", text: "Lockerer Elch" },
+    { min: 3, emoji: "😉", text: "Beschwipster Elch" },
+    { min: 4, emoji: "😋", text: "Angedudelter Elch" },
+    { min: 5, emoji: "🤪", text: "Spaß-Elch" },
+    { min: 6, emoji: "😜", text: "Alberner Elch" },
+    { min: 7, emoji: "🥳", text: "Party-Elch" },
+    { min: 8, emoji: "🥴", text: "Schwankender Elch" },
+    { min: 9, emoji: "🤠", text: "Wilder Elch" },
+    { min: 10, emoji: "🍻", text: "Geselliger Elch" },
+    { min: 11, emoji: "🎶", text: "Singender Elch" },
+    { min: 12, emoji: "🕺", text: "Tanz-Elch" },
+    { min: 13, emoji: "🔥", text: "Röhrender Elch" },
+    { min: 14, emoji: "🚀", text: "Abgehobener Elch" },
+    { min: 15, emoji: "😵‍💫", text: "Verirrter Elch" },
+    { min: 16, emoji: "🤤", text: "Lallender Elch" },
+    { min: 17, emoji: "🫠", text: "Geschmolzener Elch" },
+    { min: 18, emoji: "🛌", text: "Müder Elch" },
+    { min: 19, emoji: "💤", text: "Schlafender Elch" },
+    { min: 20, emoji: "☠️", text: "Legenden-Elch" },
+  ]
+  const currentElchLevel = [...elchLevels].reverse().find(l => elchScore >= l.min) || elchLevels[0]
+
 
   // Meine persönlichen Statistiken (aggregiert)
   const personalStats = useMemo(() => {
@@ -188,29 +237,52 @@ export function CamperBeverageDashboard({
       
       {/* Sticky Header / Stats Card */}
       <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm py-2 -mx-4 px-4 shadow-sm mb-4">
-        <Card className="bg-primary text-primary-foreground shadow-md overflow-hidden relative border-none">
+        <Card 
+          className="bg-primary text-primary-foreground shadow-md overflow-hidden relative border-none cursor-pointer group select-none transition-all active:scale-[0.98]"
+          onClick={() => setShowDaily(!showDaily)}
+        >
           <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
             <Beer className="w-24 h-24" />
           </div>
           <CardHeader className="relative z-10 pb-2">
             <div className="flex justify-between items-end">
               <div>
-                <CardTitle className="text-xs font-medium opacity-90 uppercase tracking-wider">Mein Deckel</CardTitle>
-                <div className="text-4xl font-black tracking-tighter leading-none mt-1">
-                  {totalDebt.toFixed(2)} €
+                <CardTitle className="text-xs font-medium opacity-90 uppercase tracking-wider flex items-center gap-1">
+                  {showDaily ? "Tagesdeckel (Heute)" : "Gesamtdeckel"}
+                  <ChevronDown className={`w-3 h-3 transition-transform ${showDaily ? "rotate-180" : ""}`} />
+                </CardTitle>
+                <div className="text-4xl font-black tracking-tighter leading-none mt-1 animate-in fade-in slide-in-from-bottom-1 duration-300" key={showDaily ? "daily" : "total"}>
+                  {showDaily ? todaysDebt.toFixed(2) : totalDebt.toFixed(2)} €
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-xs font-medium opacity-90 uppercase tracking-wider">Tages-Pegel</div>
-                <div className="text-2xl font-black">{todaysDrinksCount}</div>
+                <div className="text-xs font-medium opacity-90 uppercase tracking-wider">
+                  {showDaily ? "Tages-Menge" : "Gesamt-Menge"}
+                </div>
+                <div className="text-2xl font-black animate-in fade-in slide-in-from-bottom-1 duration-300" key={showDaily ? "dailyC" : "totalC"}>
+                  {showDaily ? todaysDrinksCount : consumptions.reduce((sum, c) => sum + c.quantity, 0)}
+                </div>
               </div>
             </div>
           </CardHeader>
           <CardContent className="relative z-10 pb-4 pt-0">
-            <Progress value={pegelPercentage} className="h-2 bg-primary-foreground/20 [&>div]:bg-primary-foreground mb-1" />
-            <p className="text-[10px] opacity-75">
-              {todaysDrinksCount === 0 ? "Der Elch ist noch durstig!" : todaysDrinksCount >= 10 ? "Hydration Hero! 🏆" : "Der Pegel-Elch füllt sich..."}
-            </p>
+            <div className="flex items-center justify-between bg-primary-foreground/10 rounded-lg p-2 mt-2 border border-primary-foreground/5 shadow-inner">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl filter drop-shadow-sm transition-transform group-hover:scale-110 duration-300">
+                  {currentElchLevel.emoji}
+                </span>
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold leading-tight">{currentElchLevel.text}</span>
+                  <span className="text-[10px] opacity-75 leading-tight">Level {elchScore.toFixed(1)}</span>
+                </div>
+              </div>
+              <div className="text-right bg-primary-foreground/10 px-2 py-1 rounded-md">
+                <div className="text-[9px] uppercase tracking-widest opacity-90 font-bold mb-[-2px]">Pegel</div>
+                <div className="text-lg font-black text-white drop-shadow-md tracking-tight">
+                  {promille}‰
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
