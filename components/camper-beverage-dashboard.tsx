@@ -340,7 +340,7 @@ export function CamperBeverageDashboard({
               key={bev.id}
               onClick={() => handleOpenModal(bev)}
               disabled={loadingId === bev.id}
-              className="relative overflow-hidden group flex flex-col items-center justify-center p-6 text-center bg-card text-card-foreground rounded-2xl border-2 border-border shadow-sm hover:border-primary/50 hover:bg-accent hover:text-accent-foreground active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring select-none"
+              className="relative overflow-hidden group flex flex-col items-center justify-center p-6 text-center bg-card text-card-foreground rounded-2xl border-2 border-border shadow-sm hover:border-primary/50 hover:bg-accent hover:text-accent-foreground transition-all duration-200 hover:scale-105 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-ring select-none"
             >
               {loadingId === bev.id ? (
                 <Loader2 className="w-12 h-12 mb-3 text-primary animate-spin" />
@@ -367,8 +367,10 @@ export function CamperBeverageDashboard({
         <Card>
           <CardContent className="p-0">
             {personalStats.length === 0 ? (
-              <div className="p-6 text-center text-muted-foreground text-sm">
-                Noch keine Getränke gebucht.
+              <div className="p-8 flex flex-col items-center justify-center text-center text-muted-foreground animate-in fade-in duration-500">
+                <Beer className="w-12 h-12 mb-3 opacity-50" />
+                <p className="font-semibold text-foreground/80 mb-1">Noch sieht es hier leer aus!</p>
+                <p className="text-sm">Schnapp dir dein erstes Getränk.</p>
               </div>
             ) : (
               <div className="divide-y">

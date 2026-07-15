@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from "react"
 import { Crown, BarChart3, Medal } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
+import Image from "next/image"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -119,7 +120,7 @@ export function LeaderboardView({ profiles, beverages, consumptions: initialCons
                   
                   <div className="relative">
                     {user.avatar_url ? (
-                      <img src={user.avatar_url} alt="Avatar" className="w-12 h-12 rounded-full object-cover" />
+                      <Image src={user.avatar_url} alt="Avatar" width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center font-bold text-lg text-muted-foreground">
                         {user.full_name.charAt(0).toUpperCase()}
