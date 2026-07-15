@@ -166,7 +166,7 @@ export function NewsBoard({ initialNews, initialRequests, isAdmin, userId }: New
               return (
                 <div key={req.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-background p-3 rounded-lg border text-sm gap-2">
                   <div>
-                    <span className="font-semibold">{req.profiles.full_name}</span> möchte deinen Post "{newsItem?.title}" löschen.
+                    <span className="font-semibold">{req.profiles.full_name}</span> möchte deinen Post &quot;{newsItem?.title}&quot; löschen.
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" variant="default" className="bg-green-600 hover:bg-green-700" onClick={() => handleApproveRequest(req.news_id)}>

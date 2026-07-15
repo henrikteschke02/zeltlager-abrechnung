@@ -103,7 +103,9 @@ export default async function DashboardPage() {
 
         <div className="space-y-6">
           <NewsBoard 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             initialNews={(news as any) || []} 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             initialRequests={(requests as any) || []}
             isAdmin={profile.role === 'admin'} 
             userId={user.id} 

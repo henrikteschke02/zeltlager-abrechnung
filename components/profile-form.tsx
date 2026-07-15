@@ -46,6 +46,7 @@ export function ProfileForm({ userId, initialProfile }: ProfileFormProps) {
 
       const { data } = supabase.storage.from('avatars').getPublicUrl(filePath)
       setAvatarUrl(data.publicUrl)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       alert("Fehler beim Upload: " + error.message)
     } finally {
