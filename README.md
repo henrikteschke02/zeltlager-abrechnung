@@ -144,6 +144,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### Phase 9: Security Audit & Secrets Management
 - **Audit bestanden:** Die Codebase wurde auf Hardcoded Secrets (z.B. `SUPABASE_SERVICE_ROLE_KEY`, DB-Strings, JWTs) sowie auf `.env` Leaks in der Git-Historie geprüft. Alle Verbindungen laufen sicher über `NEXT_PUBLIC` Environment Variables.
 
+### Phase 10: Editorial Design Overhaul & UX-Upgrades
+- **Neues Design-System ("High-End Editorial"):**
+  - Kompletter Farb-Wechsel: Dunkles Olivgrün (`#4c503d`) als edler Hintergrund, sanftes Beige (`#E5E4DE`) für schwebende Inhaltskarten (`rounded-3xl`, `shadow-2xl`) und starkes Neon-Limettengrün (`#D9FF3D`) als Akzentfarbe für Buttons und Hover-Ringe.
+  - Mix aus eleganten **Serif**-Schriften (Playfair Display) für Logos & wichtige Kennzahlen (z.B. den Deckelpreis) und cleanen **Sans-Serif**-Schriften (Manrope) für den Rest.
+  - Uppercase-Strukturierung: Subtile Label (z.B. Tabellenköpfe) als Großbuchstaben mit weitem Laufabstand (`tracking-widest`).
+- **Framework & Tooling Upgrades:**
+  - Initialisierung von **shadcn/ui** für konsistente Basis-Komponenten und **Anime.js** für künftige komplexe Animationen.
+  - Globale Toasts mit `sonner` in der `layout.tsx` integriert.
+  - Verbesserte Next.js App-Struktur mit globalen Error-Boundaries (`error.tsx`) und Ladezuständen (`loading.tsx`).
+- **Custom Liquid Loader:**
+  - Standard-Skeleton-Loader wurde durch eine edle, freischwebende SVG-Animation ("Liquid Loader" von Uiverse) samt `LOADING` Schriftzug ausgetauscht.
+- **Optimierte Auth-UI:**
+  - Registrierungsseite überarbeitet (Hinweis auf Spam-Ordner bei Bestätigungs-Emails).
+  - Zuverlässiger Production-Redirect (`emailRedirectTo`) für Supabase Email-Links in `auth/callback`.
+- **UI-Cleanup auf dem Dashboard:**
+  - Die numerische "Zeltlager-Promille"-Zahl wurde visuell vom Deckel entfernt, aber die interne Elch-Logik mit Punkten läuft im Hintergrund für das Gamification-System weiter.
+
 ### Nächste Schritte (Noch fehlend)
 - **Modul: Grillfleisch-Umlage (`/dashboard/grillfleisch`):**
   - Erfassung des täglichen Fleischbedarfs pro Camper.
