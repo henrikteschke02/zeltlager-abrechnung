@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState, useEffect } from "react"
-import { Trophy, Crown, BarChart3, Medal } from "lucide-react"
+import { Crown, BarChart3, Medal } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

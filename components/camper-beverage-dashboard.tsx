@@ -3,10 +3,10 @@
 import { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import { createClient } from "@/utils/supabase/client"
-import { Plus, Beer, Trophy, Loader2, Undo2, BarChart3, Medal } from "lucide-react"
+import { Info, Plus, Minus, Check, ChevronDown, Beer, Loader2, Undo2, BarChart3, Medal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
