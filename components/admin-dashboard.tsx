@@ -119,9 +119,9 @@ export function AdminDashboard({
   }
 
   const handleApprove = async (id: string) => {
-    const { error } = await supabase.from('profiles').update({ is_approved: true }).eq('id', id)
-    if (error) {
-      alert("Fehler beim Freischalten: " + error.message)
+    const { data, error } = await supabase.from('profiles').update({ is_approved: true }).eq('id', id).select()
+    if (error || !data || data.length === 0) {
+      alert("Fehler beim Freischalten (fehlende Berechtigung?): " + (error?.message || "Keine Änderungen vorgenommen."))
     } else {
       setProfiles(profiles.map(p => p.id === id ? { ...p, is_approved: true } : p))
       router.refresh()
@@ -130,9 +130,9 @@ export function AdminDashboard({
 
   const handleReject = async (id: string) => {
     if (!confirm("Profil wirklich ablehnen und löschen?")) return
-    const { error } = await supabase.from('profiles').delete().eq('id', id)
-    if (error) {
-      alert("Fehler beim Löschen: " + error.message)
+    const { data, error } = await supabase.from('profiles').delete().eq('id', id).select()
+    if (error || !data || data.length === 0) {
+      alert("Fehler beim Löschen (fehlende Berechtigung?): " + (error?.message || "Keine Änderungen vorgenommen."))
     } else {
       setProfiles(profiles.filter(p => p.id !== id))
       router.refresh()
