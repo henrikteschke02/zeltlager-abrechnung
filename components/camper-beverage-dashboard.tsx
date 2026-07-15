@@ -131,8 +131,6 @@ export function CamperBeverageDashboard({
     return Math.max(0, score) // Elch-Level fällt nicht unter 0
   }, [todaysConsumptions, beverages])
 
-  const promille = (elchScore * 0.15).toFixed(2)
-
   const elchLevels = [
     { min: 0, emoji: "🦌", text: "Nüchterner Elch" },
     { min: 1, emoji: "🙂", text: "Entspannter Elch" },
@@ -274,12 +272,6 @@ export function CamperBeverageDashboard({
                 <div className="flex flex-col">
                   <span className="text-xs font-bold leading-tight">{currentElchLevel.text}</span>
                   <span className="text-[10px] opacity-75 leading-tight">Level {elchScore.toFixed(1)}</span>
-                </div>
-              </div>
-              <div className="text-right bg-primary-foreground/10 px-2 py-1 rounded-md">
-                <div className="text-[9px] uppercase tracking-widest opacity-90 font-bold mb-[-2px]">Pegel</div>
-                <div className="text-lg font-black text-white drop-shadow-md tracking-tight">
-                  {promille}‰
                 </div>
               </div>
             </div>
