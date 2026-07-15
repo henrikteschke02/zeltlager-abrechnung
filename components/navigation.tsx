@@ -41,24 +41,25 @@ export function Navigation() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center px-4 md:px-8">
         <div className="mr-4 hidden md:flex">
-          <Link href="/dashboard" className="mr-6 flex items-center space-x-2">
-            <Tent className="h-6 w-6" />
-            <span className="hidden font-bold sm:inline-block">
+          <Link href="/dashboard" className="mr-8 flex items-center space-x-2">
+            <Tent className="h-5 w-5 text-primary" />
+            {/* Serif-Schrift NUR für das Logo */}
+            <span className="hidden font-serif font-bold text-lg tracking-tight sm:inline-block">
               Zeltlager Manager
             </span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
+          <nav className="flex items-center space-x-6">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`transition-colors hover:text-foreground/80 ${
+                className={`text-xs font-sans font-semibold uppercase tracking-widest transition-colors hover:text-foreground ${
                   pathname?.startsWith(item.href)
                     ? "text-foreground"
-                    : "text-foreground/60"
+                    : "text-foreground/50"
                 }`}
               >
                 {item.name}
@@ -67,13 +68,13 @@ export function Navigation() {
             {isAdmin && (
               <Link
                 href="/dashboard/admin"
-                className={`flex items-center space-x-1 transition-colors hover:text-foreground/80 ${
+                className={`flex items-center space-x-1 text-xs font-sans font-semibold uppercase tracking-widest transition-colors hover:text-foreground ${
                   pathname?.startsWith('/dashboard/admin')
                     ? "text-primary font-bold"
-                    : "text-foreground/60"
+                    : "text-foreground/50"
                 }`}
               >
-                <Settings className="h-4 w-4" />
+                <Settings className="h-3.5 w-3.5" />
                 <span>Admin</span>
               </Link>
             )}
@@ -92,9 +93,9 @@ export function Navigation() {
           <SheetContent side="left" className="pr-0">
             <SheetHeader>
               <SheetTitle className="text-left flex items-center space-x-2">
-                <Tent className="h-6 w-6" />
-                <span>Zeltlager Manager</span>
-              </SheetTitle>
+              <Tent className="h-5 w-5 text-primary" />
+              <span className="font-serif font-bold">Zeltlager Manager</span>
+            </SheetTitle>
             </SheetHeader>
             <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
               <div className="flex flex-col space-y-3">
@@ -102,26 +103,26 @@ export function Navigation() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center space-x-2 py-2 transition-colors hover:text-foreground/80 ${
+                    className={`flex items-center space-x-2 py-2 text-xs uppercase tracking-widest font-semibold transition-colors hover:text-foreground ${
                       pathname?.startsWith(item.href)
-                        ? "text-foreground font-bold"
-                        : "text-foreground/60"
+                        ? "text-foreground"
+                        : "text-foreground/50"
                     }`}
                   >
-                    <item.icon className="h-5 w-5" />
+                    <item.icon className="h-4 w-4" />
                     <span>{item.name}</span>
                   </Link>
                 ))}
                 {isAdmin && (
                   <Link
                     href="/dashboard/admin"
-                    className={`flex items-center space-x-2 py-2 transition-colors hover:text-foreground/80 ${
+                    className={`flex items-center space-x-2 py-2 text-xs uppercase tracking-widest font-semibold transition-colors hover:text-foreground ${
                       pathname?.startsWith('/dashboard/admin')
-                        ? "text-primary font-bold"
-                        : "text-foreground/60"
+                        ? "text-primary"
+                        : "text-foreground/50"
                     }`}
                   >
-                    <Settings className="h-5 w-5" />
+                    <Settings className="h-4 w-4" />
                     <span>Admin-Bereich</span>
                   </Link>
                 )}

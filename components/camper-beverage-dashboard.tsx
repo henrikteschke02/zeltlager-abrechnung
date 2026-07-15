@@ -233,10 +233,10 @@ export function CamperBeverageDashboard({
   return (
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
-      {/* Sticky Header / Stats Card – Punkt 4: shadow-2xl für Tiefe */}
+      {/* Sticky Header / Mein Deckel – Beige Karte mit olivem Text, rounded-3xl, Serif Preis */}
       <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm py-2 -mx-4 px-4 mb-4">
         <Card 
-          className="bg-primary text-primary-foreground shadow-2xl shadow-black/50 overflow-hidden relative border-none cursor-pointer group select-none transition-all active:scale-[0.98]"
+          className="bg-card text-card-foreground shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
           onClick={() => setShowDaily(!showDaily)}
         >
           <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
@@ -245,33 +245,34 @@ export function CamperBeverageDashboard({
           <CardHeader className="relative z-10 pb-2">
             <div className="flex justify-between items-end">
               <div>
-                <CardTitle className="text-xs font-sans font-medium opacity-90 uppercase tracking-wider flex items-center gap-1">
-                  {showDaily ? "Tagesdeckel (Heute)" : "Gesamtdeckel"}
+                <CardTitle className="text-[10px] font-sans font-semibold uppercase tracking-widest opacity-60 flex items-center gap-1">
+                  {showDaily ? "Tagesdeckel" : "Gesamtdeckel"}
                   <ChevronDown className={`w-3 h-3 transition-transform ${showDaily ? "rotate-180" : ""}`} />
                 </CardTitle>
-                <div className="text-4xl font-sans font-black tracking-tighter leading-none mt-1 animate-in fade-in slide-in-from-bottom-1 duration-300" key={showDaily ? "daily" : "total"}>
+                {/* Serif-Schrift NUR für die große Preiszahl */}
+                <div className="text-4xl font-serif font-bold tracking-tight leading-none mt-1 animate-in fade-in slide-in-from-bottom-1 duration-300" key={showDaily ? "daily" : "total"}>
                   {showDaily ? todaysDebt.toFixed(2) : totalDebt.toFixed(2)} €
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-xs font-sans font-medium opacity-90 uppercase tracking-wider">
-                  {showDaily ? "Tages-Menge" : "Gesamt-Menge"}
+                <div className="text-[10px] font-sans font-semibold uppercase tracking-widest opacity-60">
+                  {showDaily ? "Heute" : "Gesamt"}
                 </div>
-                <div className="text-2xl font-sans font-black animate-in fade-in slide-in-from-bottom-1 duration-300" key={showDaily ? "dailyC" : "totalC"}>
+                <div className="text-2xl font-serif font-bold animate-in fade-in slide-in-from-bottom-1 duration-300" key={showDaily ? "dailyC" : "totalC"}>
                   {showDaily ? todaysDrinksCount : consumptions.reduce((sum, c) => sum + c.quantity, 0)}
                 </div>
               </div>
             </div>
           </CardHeader>
           <CardContent className="relative z-10 pb-4 pt-0">
-            <div className="flex items-center justify-between bg-primary-foreground/10 rounded-lg p-2 mt-2 border border-primary-foreground/5 shadow-inner">
+            <div className="flex items-center justify-between bg-black/5 rounded-2xl p-2.5 mt-2 border border-black/5">
               <div className="flex items-center gap-3">
                 <span className="text-3xl filter drop-shadow-sm transition-transform group-hover:scale-110 duration-300">
                   {currentElchLevel.emoji}
                 </span>
                 <div className="flex flex-col">
                   <span className="text-xs font-sans font-bold leading-tight">{currentElchLevel.text}</span>
-                  <span className="text-[10px] font-sans opacity-75 leading-tight">Level {elchScore.toFixed(1)}</span>
+                  <span className="text-[10px] font-sans uppercase tracking-widest opacity-50 leading-tight">Level {elchScore.toFixed(1)}</span>
                 </div>
               </div>
             </div>
@@ -331,40 +332,40 @@ export function CamperBeverageDashboard({
         </Link>
       </div>
 
-      {/* Beverage Grid – Punkt 3: Glassmorphism + Punkt 1: font-sans */}
+      {/* Beverage Grid – Beige Glasskarten, Neon-Hover, Uppercase Label */}
       <div>
-        <h2 className="text-xl font-sans font-bold tracking-tight mb-4 px-1">Was trinkst du?</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <h2 className="text-xs font-sans font-semibold uppercase tracking-widest text-muted-foreground mb-3 px-1">Was trinkst du?</h2>
+        <div className="grid grid-cols-2 gap-3">
           {beverages.map(bev => (
             <button
               key={bev.id}
               onClick={() => handleOpenModal(bev)}
               disabled={loadingId === bev.id}
-              className="relative overflow-hidden group flex flex-col items-center justify-center p-6 text-center bg-white/5 backdrop-blur-sm text-card-foreground rounded-2xl border border-white/10 shadow-sm hover:border-primary/60 hover:bg-white/10 transition-all duration-200 hover:scale-105 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-primary select-none"
+              className="relative overflow-hidden group flex flex-col items-center justify-center p-5 text-center bg-card text-card-foreground rounded-2xl border-0 shadow-sm hover:ring-2 hover:ring-primary hover:shadow-primary/20 transition-all duration-200 hover:scale-105 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-primary select-none"
             >
               {loadingId === bev.id ? (
-                <Loader2 className="w-12 h-12 mb-3 text-primary animate-spin" />
+                <Loader2 className="w-10 h-10 mb-3 text-primary animate-spin" />
               ) : (
               <div className="text-5xl mb-3 drop-shadow-sm group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300">
                 {getBeverageIcon(bev.name)}
               </div>
               )}
-              <h3 className="font-sans font-bold text-lg leading-none mb-1">{bev.name}</h3>
-              <p className="text-sm font-sans font-semibold text-primary">{Number(bev.price).toFixed(2)} €</p>
+              <h3 className="font-sans font-bold text-base leading-none mb-1">{bev.name}</h3>
+              <p className="text-xs font-sans font-semibold uppercase tracking-wider text-muted-foreground mt-0.5">{Number(bev.price).toFixed(2)} €</p>
             </button>
           ))}
           {beverages.length === 0 && (
-            <div className="col-span-2 text-center p-8 border border-white/10 border-dashed rounded-2xl text-muted-foreground">
+            <div className="col-span-2 text-center p-8 border border-dashed border-muted-foreground/30 rounded-2xl text-muted-foreground">
               Keine Getränke im System. Der Admin muss den Kühlschrank auffüllen!
             </div>
           )}
         </div>
       </div>
 
-      {/* Meine Statistiken (Persönliche Übersicht) – Punkt 3: Glassmorphism */}
+      {/* Meine Statistiken – Beige Karte, rounded-3xl, Uppercase Labels */}
       <div className="mt-8">
-        <h2 className="text-lg font-sans font-bold tracking-tight mb-4 px-1">Meine Statistiken</h2>
-        <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
+        <h2 className="text-xs font-sans font-semibold uppercase tracking-widest text-muted-foreground mb-3 px-1">Meine Statistiken</h2>
+        <Card className="bg-card border-0 rounded-3xl shadow-sm overflow-hidden">
           <CardContent className="p-0">
             {personalStats.length === 0 ? (
               <div className="p-8 flex flex-col items-center justify-center text-center text-muted-foreground animate-in fade-in duration-500">
