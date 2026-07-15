@@ -24,7 +24,7 @@ Module
 Getränke-Deckel
 
 - Mobile-First, große Touch-Ziele für Bedienung am Kühlwagen
-- Animierter "Pegel-Elch" als Tagesanzeige (Reset 6:00 Uhr)
+- Animierter "Pegel-Elch" als Tagesanzeige mit 21 Betrunkenheits-Stufen (Reset 7:00 Uhr)
 - "Hydration Hero" – Auszeichnung für meisten Wasserkonsum
 
 Grillfleisch-Umlage
@@ -90,7 +90,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - **Mobile-First Camper Dashboard (`/dashboard/getraenke`):**
   - Riesige Buttons für schnelle Buchungen am Kühlwagen (Optimistic UI Updates).
   - Anzeige des aktuellen Deckels (Gesamtschulden) und des Tagespegels.
-  - Reset des Tagespegels automatisch um exakt 06:00 Uhr morgens (Zeltlager-Takt).
+  - Reset des Tagespegels automatisch um exakt 07:00 Uhr morgens (Lösen des "Mitternachts-Bugs").
 - **3-Minuten-Storno:**
   - Neue UI-Sektion für kürzliche Buchungen mit Live-Countdown.
   - Camper können Fehlklicks innerhalb von 3 Minuten rückgängig machen.
@@ -108,10 +108,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - **Echtzeit-Updates (Supabase Realtime):**
   - Das Leaderboard, der persönliche Deckel (inkl. Tages-Pegel) sowie das Schwarze Brett aktualisieren sich live und synchron auf allen Geräten, ohne die Seite neu laden zu müssen.
 - **Quality-of-Life UI & Ergonomie:**
-  - Kompaktes, *sticky* Deckel-Design mit direkt darunter platzierter, kompakter Storno-Historie.
+  - Kompaktes, *sticky* Deckel-Design. Ein Klick wechselt animiert zwischen "Gesamtdeckel" und "Tagesdeckel".
+  - **Zeltlager-Elch Gamification:** Der Tagespegel berechnet Punkte pro Getränk (z.B. +1.0 Bier, -1.0 Wasser) und ändert den Elch in 21 Stufen (vom "Nüchternen Elch" bis zum "Legenden-Elch").
   - Sicheres Buchen: Klick auf ein Getränk öffnet ein Mengen-Auswahl-Popup statt direkt zu buchen (verhindert Fehlklicks).
   - Kisten-Schnellbuchung: Admins können "Bundle-Größen" (z.B. 24) hinterlegen, woraufhin ein Schnell-Button im Popup erscheint.
-  - Liebevoll kuratierte, farbige Emojis (wie 🍊🍺, 🧊🍺) als Icons für einen modernen, touch-freundlichen Look.
+  - Maßgeschneiderte, flache Vektor-SVGs für jedes Getränk (Bierkrug, Becher mit Halm, etc.) ersetzen herkömmliche Emojis für einen aufgeräumten, professionellen Look.
 - **Kassenwart CSV-Export:**
   - Admins können die Endabrechnung (Gesamtkosten und Menge pro Camper) als Excel-kompatible `.csv`-Datei exportieren.
 - **Schwarzes Brett (News) & Löschanfragen:**
@@ -139,6 +140,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   * Admins können Nutzer per Klick auf "Annehmen" freischalten oder mit "Ablehnen" das Profil löschen.
 * **RESTRICTIVE Row Level Security:**
   * Auf Datenbankebene sind alle Lese- und Schreibzugriffe auf Konsum-Einträge, News etc. strikt blockiert, solange das eigene Profil nicht explizit auf `is_approved = true` gesetzt wurde.
+
+### Phase 9: Security Audit & Secrets Management
+- **Audit bestanden:** Die Codebase wurde auf Hardcoded Secrets (z.B. `SUPABASE_SERVICE_ROLE_KEY`, DB-Strings, JWTs) sowie auf `.env` Leaks in der Git-Historie geprüft. Alle Verbindungen laufen sicher über `NEXT_PUBLIC` Environment Variables.
 
 ### Nächste Schritte (Noch fehlend)
 - **Modul: Grillfleisch-Umlage (`/dashboard/grillfleisch`):**
