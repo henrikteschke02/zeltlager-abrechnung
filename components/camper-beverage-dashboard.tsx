@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import { createClient } from "@/utils/supabase/client"
 import { Info, Plus, Minus, Check, ChevronDown, Beer, Loader2, Undo2, BarChart3, Medal } from "lucide-react"
+import { DRINK_ICONS, Cola } from "@/components/icons/DrinkIcons"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -35,44 +36,9 @@ export function CamperBeverageDashboard({
   beverages: Beverage[]
   initialConsumptions: Consumption[]
 }) {
-  const getBeverageIcon = (name: string) => {
-    const n = name.toLowerCase()
-    
-    // Spezielle Biere & Mixgetränke
-    if (n.includes("schöfferhofer") || n.includes("grapefruit")) return "🍊🍺"
-    if ((n.includes("radler") || n.includes("alster")) && (n.includes("0,0") || n.includes("alkoholfrei"))) return "🍋🧊"
-    if (n.includes("radler") || n.includes("alster") || n.includes("naturradler")) return "🍋🍺"
-    if ((n.includes("bier") || n.includes("pils") || n.includes("bitburger") || n.includes("weizen")) && (n.includes("0,0") || n.includes("alkoholfrei"))) return "🧊🍺" // Alkoholfrei
-    
-    // Klassisches Bier
-    if (n.includes("bier") || n.includes("pils") || n.includes("weizen") || n.includes("export") || n.includes("helles") || n.includes("bitburger") || n.includes("veltins")) return "🍺"
-    
-    // Wasser
-    if (n.includes("wasser") || n.includes("water") || n.includes("sprudel")) return "💧"
-    
-    // Spezielle Softdrinks
-    if (n.includes("fanta")) return "🍊🥤"
-    if (n.includes("sprite") || n.includes("7up")) return "🍋🥤"
-    if (n.includes("cola") || n.includes("spezi") || n.includes("mezzo")) return "🥤"
-    if (n.includes("mate")) return "🧉"
-    
-    // Kaffee
-    if (n.includes("kaffee") || n.includes("coffee") || n.includes("espresso") || n.includes("cappuccino")) return "☕"
-    
-    // Wein / Sekt
-    if (n.includes("wein") || n.includes("wine") || n.includes("sekt") || n.includes("schorle")) return "🍷"
-    
-    // Saft
-    if (n.includes("saft") || n.includes("apfel") || n.includes("orange")) return "🧃"
-    
-    // Milch / Kakao
-    if (n.includes("milch") || n.includes("kakao")) return "🥛"
-    
-    // Harter Alkohol / Cocktails
-    if (n.includes("cocktail") || n.includes("gin") || n.includes("vodka") || n.includes("mische") || n.includes("schnaps")) return "🍸"
-    
-    // Default
-    return "🥤"
+  const getBeverageIcon = (name: string, className?: string) => {
+    const Icon = DRINK_ICONS[name] || Cola;
+    return <Icon className={className || "w-14 h-14"} />;
   }
 
   const [consumptions, setConsumptions] = useState<Consumption[]>(initialConsumptions)
@@ -366,7 +332,7 @@ export function CamperBeverageDashboard({
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-2xl">
-              <span className="text-3xl drop-shadow-sm">{selectedBev && getBeverageIcon(selectedBev.name)}</span>
+              <span className="text-3xl drop-shadow-sm flex items-center justify-center">{selectedBev && getBeverageIcon(selectedBev.name, "w-8 h-8")}</span>
               {selectedBev?.name} buchen
             </DialogTitle>
             <DialogDescription>
