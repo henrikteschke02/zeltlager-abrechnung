@@ -236,7 +236,8 @@ export function CamperBeverageDashboard({
       {/* Sticky Header / Mein Deckel – Beige Karte mit olivem Text, rounded-3xl, Serif Preis */}
       <div className="sticky top-16 z-40 mb-4">
         <Card 
-          className="bg-card text-card-foreground shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
+          className="shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
+          style={{ backgroundColor: "#E5E4DE", color: "#4c503d" }}
           onClick={() => setShowDaily(!showDaily)}
         >
           <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
@@ -341,17 +342,33 @@ export function CamperBeverageDashboard({
               key={bev.id}
               onClick={() => handleOpenModal(bev)}
               disabled={loadingId === bev.id}
-              className="relative overflow-hidden group flex flex-col items-center justify-center p-5 text-center bg-card text-card-foreground rounded-2xl border-0 shadow-sm hover:ring-2 hover:ring-primary hover:shadow-primary/20 transition-all duration-200 hover:scale-105 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-primary select-none"
+              className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md text-left transition-all duration-200 hover:scale-[1.03] hover:border-[#D9FF3D]/40 hover:shadow-lg hover:shadow-[#D9FF3D]/10 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-[#D9FF3D] select-none"
+              style={{ backgroundColor: "rgba(76,80,61,0.55)" }}
             >
-              {loadingId === bev.id ? (
-                <Loader2 className="w-10 h-10 mb-3 text-primary animate-spin" />
-              ) : (
-              <div className="text-5xl mb-3 drop-shadow-sm group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300">
-                {getBeverageIcon(bev.name)}
+              {/* Square icon area */}
+              <div className="relative w-full aspect-square overflow-hidden flex items-center justify-center bg-white/5">
+                {loadingId === bev.id ? (
+                  <Loader2 className="w-10 h-10 text-[#D9FF3D] animate-spin" />
+                ) : (
+                  <div className="text-6xl drop-shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1">
+                    {getBeverageIcon(bev.name, "w-16 h-16")}
+                  </div>
+                )}
               </div>
-              )}
-              <h3 className="font-sans font-bold text-base leading-none mb-1">{bev.name}</h3>
-              <p className="text-xs font-sans font-semibold uppercase tracking-wider text-muted-foreground mt-0.5">{Number(bev.price).toFixed(2)} €</p>
+
+              {/* Name + price row with neon +1 badge */}
+              <div className="flex items-center justify-between p-3 gap-2">
+                <div className="min-w-0">
+                  <h3 className="font-sans font-bold text-sm leading-tight truncate text-white">{bev.name}</h3>
+                  <p className="text-xs font-sans font-semibold uppercase tracking-wider text-white/50 mt-0.5">{Number(bev.price).toFixed(2)} €</p>
+                </div>
+                <div
+                  className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl font-black text-sm transition-all duration-150 group-hover:scale-110"
+                  style={{ backgroundColor: "#D9FF3D", color: "#1a1e12" }}
+                >
+                  +1
+                </div>
+              </div>
             </button>
           ))}
           {beverages.length === 0 && (
