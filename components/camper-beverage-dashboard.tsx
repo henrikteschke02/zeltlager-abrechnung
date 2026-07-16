@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { createClient } from "@/utils/supabase/client"
 import { Info, Plus, Minus, Check, ChevronDown, Beer, Loader2, Undo2, BarChart3, Medal } from "lucide-react"
@@ -39,6 +40,19 @@ export function CamperBeverageDashboard({
   const getBeverageIcon = (name: string, className?: string) => {
     const Icon = DRINK_ICONS[name] || Cola;
     return <Icon className={className || "w-14 h-14"} />;
+  }
+
+  // ── Photo mapping: keyword → public image path ────────────────────────────
+  // Checked against real DB names in DRINK_ICONS; falls back to null → SVG icon
+  const getBeverageImage = (name: string): string | null => {
+    const n = name.toLowerCase()
+    if (n.includes("schöfferhofer") || n.includes("schofferhofer") || n.includes("grapefruit")) return "/images/drinks/schofferhofer.png"
+    if (n.includes("radler")) return "/images/drinks/radler.png"
+    if (n.includes("bitburger") || n.includes("0,0") || n.includes("0.0") || n.includes("alkoholfrei")) return "/images/drinks/pils.png"
+    if (n.includes("cola")) return "/images/drinks/cola.png"
+    if (n.includes("fanta")) return "/images/drinks/fanta.png"
+    if (n.includes("mate") || n.includes("mio")) return "/images/drinks/miomate.png"
+    return null
   }
 
   const [consumptions, setConsumptions] = useState<Consumption[]>(initialConsumptions)
@@ -345,10 +359,18 @@ export function CamperBeverageDashboard({
               className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md text-left transition-all duration-200 hover:scale-[1.03] hover:border-[#D9FF3D]/40 hover:shadow-lg hover:shadow-[#D9FF3D]/10 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-[#D9FF3D] select-none"
               style={{ backgroundColor: "rgba(76,80,61,0.55)" }}
             >
-              {/* Square icon area */}
+              {/* Square image / icon area */}
               <div className="relative w-full aspect-square overflow-hidden flex items-center justify-center bg-white/5">
                 {loadingId === bev.id ? (
                   <Loader2 className="w-10 h-10 text-[#D9FF3D] animate-spin" />
+                ) : getBeverageImage(bev.name) ? (
+                  <Image
+                    src={getBeverageImage(bev.name)!}
+                    alt={bev.name}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
                 ) : (
                   <div className="text-6xl drop-shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1">
                     {getBeverageIcon(bev.name, "w-16 h-16")}
