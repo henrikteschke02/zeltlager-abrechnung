@@ -153,18 +153,31 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   - Initialisierung von **shadcn/ui** für konsistente Basis-Komponenten und **Anime.js** für künftige komplexe Animationen.
   - Globale Toasts mit `sonner` in der `layout.tsx` integriert.
   - Verbesserte Next.js App-Struktur mit globalen Error-Boundaries (`error.tsx`) und Ladezuständen (`loading.tsx`).
-- **Custom Liquid Loader:**
-  - Standard-Skeleton-Loader wurde durch eine edle, freischwebende SVG-Animation ("Liquid Loader" von Uiverse) samt `LOADING` Schriftzug ausgetauscht.
+- **Camping-Loader (Uiverse-Animation):**
+  - Der Liquid-Loader wurde durch eine vollständig animierte Zeltlager-Szene ersetzt (Zelt, Lagerfeuer, Bäume, Tag-Nacht-Zyklus mit Mond & Sternen).
+  - Implementiert als sicher isoliertes **CSS Module** (`CampingLoader.module.css`), um Konflikte mit globalen Klassennamen (z.B. `.time`, `.door`, `.fire`) vollständig zu verhindern.
 - **Optimierte Auth-UI:**
   - Registrierungsseite überarbeitet (Hinweis auf Spam-Ordner bei Bestätigungs-Emails).
   - Zuverlässiger Production-Redirect (`emailRedirectTo`) für Supabase Email-Links in `auth/callback`.
 - **UI-Cleanup auf dem Dashboard:**
   - Die numerische "Zeltlager-Promille"-Zahl wurde visuell vom Deckel entfernt, aber die interne Elch-Logik mit Punkten läuft im Hintergrund für das Gamification-System weiter.
 
+### Phase 11: Grillfleisch-Modul (Grundgerüst)
+- **Grillfleisch-Seite (`/dashboard/grillfleisch`):**
+  - Eigenständige Client-Komponente `CamperGrillDashboard` mit vollständig **unabhängigem** State – kein gemeinsamer Kontext mit dem Getränke-Deckel.
+  - **„Mein Grill-Deckel"** – Sticky-Banner im exakt selben Editorial-Design wie der Getränke-Deckel (helle Beige-Karte `#E5E4DE`, Serif-Preiszahl, Schatten, Toggle Gesamt ↔ Tagesdeckel).
+  - **Glassmorphism-Grid** (2 Spalten) für die Fleischsorten: `bg-white/5`, `backdrop-blur-md`, `border-white/10` auf dunkel-olivem Hintergrund, Hover mit Neon-Limettengrün-Ring (`#D9FF3D`).
+  - Jede Karte zeigt ein quadratisches KI-generiertes Food-Foto, Name, Preis und einen neongelben **+1**-Badge.
+  - Buchungs-Modal mit Mengenauswahl (identisches UX wie Getränke).
+  - 3-Minuten-Storno-Leiste für Fehlklicks.
+  - Dummy-Daten für vier Fleischsorten (Nackensteak 2,50 €, Bratwurst 1,50 €, Bauchspeck 2,00 €, Hähnchen 2,50 €); alle DB-Calls sind als `TODO:`-Kommentare vorbereitet.
+- **Admin-Placeholder (`/dashboard/admin/grillfleisch`):**
+  - Leere Seite mit Kommentaren, die das geplante CRUD-Panel beschreiben (Anlegen/Bearbeiten/Löschen von Fleischsorten, Buchungsübersicht, Admin-Storno).
+- **Food-Fotografie:** KI-generierte quadratische Placeholder-Bilder für alle vier Fleischsorten unter `public/images/`.
+
 ### Nächste Schritte (Noch fehlend)
-- **Modul: Grillfleisch-Umlage (`/dashboard/grillfleisch`):**
-  - Erfassung des täglichen Fleischbedarfs pro Camper.
-  - Berechnung der fairen Kostenteilung (Umlage am Ende des Lagers).
+- **Grillfleisch-DB:** Supabase-Tabellen `grill_items` & `grill_orders` anlegen, RLS-Policies setzen und die vorbereiteten `TODO:`-Kommentare in der Page aktivieren.
+- **Admin-CRUD für Grillfleisch** (`/dashboard/admin/grillfleisch`): Fleischsorten verwalten, Buchungen einsehen, Stornos durch Admins.
 - **Modul: Brötchen-Bestellsystem (`/dashboard/broetchen`):**
   - Digitale Vorbestellung für den nächsten Morgen.
   - Automatische Belastung des Camper-Deckels basierend auf den Bäckerei-Preisen.
