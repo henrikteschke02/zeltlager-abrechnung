@@ -20,8 +20,7 @@ import { createClient } from "@/utils/supabase/client"
 export type GrillItem = {
   id: string
   name: string
-  price: number
-  image: string
+  preis: number
 }
 
 export function AdminGrillDashboard() {
@@ -42,7 +41,7 @@ export function AdminGrillDashboard() {
 
   useEffect(() => {
     const fetchItems = async () => {
-      const { data, error } = await supabase.from('grill_items').select('*').order('name')
+      const { data, error } = await supabase.from('grill_items').select('id, name, preis').order('name')
       if (error) {
         console.error("Error fetching grill items:", error)
       } else if (data) {
@@ -62,7 +61,7 @@ export function AdminGrillDashboard() {
   const openEditModal = (item: GrillItem) => {
     setSelectedItem(item)
     setName(item.name)
-    setPrice(item.price.toString())
+    setPrice(item.preis?.toString() || "0")
     setIsEditOpen(true)
   }
 
@@ -84,8 +83,8 @@ export function AdminGrillDashboard() {
 
     const { data, error } = await supabase
       .from('grill_items')
-      .insert([{ name, price: priceNum, image: "/images/steak.png" }]) // Default Image per User Request
-      .select()
+      .insert([{ name, preis: priceNum }])
+      .select('id, name, preis')
 
     if (error) {
       alert("Fehler beim Speichern: " + error.message)
@@ -109,14 +108,14 @@ export function AdminGrillDashboard() {
 
     const { error } = await supabase
       .from('grill_items')
-      .update({ name, price: priceNum })
+      .update({ name, preis: priceNum })
       .eq('id', selectedItem.id)
 
     if (error) {
       alert("Fehler beim Aktualisieren: " + error.message)
     } else {
       setItems((prev) => 
-        prev.map(i => i.id === selectedItem.id ? { ...i, name, price: priceNum } : i).sort((a, b) => a.name.localeCompare(b.name))
+        prev.map(i => i.id === selectedItem.id ? { ...i, name, preis: priceNum } : i).sort((a, b) => a.name.localeCompare(b.name))
       )
       setIsEditOpen(false)
     }
@@ -180,7 +179,7 @@ export function AdminGrillDashboard() {
                     </div>
                     <div className="min-w-0">
                       <h3 className="font-bold text-[#E5E4DE] truncate">{item.name}</h3>
-                      <p className="text-[#D9FF3D] font-serif font-semibold">{item.price.toFixed(2)} €</p>
+                      <p className="text-[#D9FF3D] font-serif font-semibold">{Number(item.preis || 0).toFixed(2)} €</p>
                     </div>
                   </div>
                   

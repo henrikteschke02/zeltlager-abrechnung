@@ -21,8 +21,7 @@ import {
 export type GrillItem = {
   id: string
   name: string
-  price: number
-  image: string
+  preis: number
 }
 
 type GrillOrder = {
@@ -80,14 +79,14 @@ export function CamperGrillDashboard({
     (o) => new Date(o.created_at) >= startOfCampDay
   )
 
-  const totalDebt = orders.reduce((sum, o) => {
-    const item = items.find((i) => i.id === o.grill_item_id)
-    return sum + (item ? item.price * o.quantity : 0)
+  const totalCost = orders.reduce((sum, order) => {
+    const item = items.find((i) => i.id === order.grill_item_id)
+    return sum + (item?.preis || 0) * order.quantity
   }, 0)
 
   const todaysDebt = todaysOrders.reduce((sum, o) => {
     const item = items.find((i) => i.id === o.grill_item_id)
-    return sum + (item ? item.price * o.quantity : 0)
+    return sum + (item ? item.preis * o.quantity : 0)
   }, 0)
 
   const totalCount = orders.reduce((s, o) => s + o.quantity, 0)
@@ -182,7 +181,7 @@ export function CamperGrillDashboard({
                   className="text-4xl font-serif font-bold tracking-tight leading-none mt-1 animate-in fade-in slide-in-from-bottom-1 duration-300"
                   key={showDaily ? "daily" : "total"}
                 >
-                  {(showDaily ? todaysDebt : totalDebt).toFixed(2)} €
+                  {(showDaily ? todaysDebt : totalCost).toFixed(2)} €
                 </div>
               </div>
               <div className="text-right">
@@ -282,7 +281,7 @@ export function CamperGrillDashboard({
                 </div>
               ) : (
                 <Image
-                  src={item.image}
+                  src="/images/steak.png"
                   alt={item.name}
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -300,7 +299,7 @@ export function CamperGrillDashboard({
                   {item.name}
                 </h3>
                 <p className="text-xs font-sans font-semibold uppercase tracking-wider text-white/50 mt-0.5">
-                  {item.price.toFixed(2)} €
+                  {Number(item.preis || 0).toFixed(2)} €
                 </p>
               </div>
 
@@ -327,7 +326,7 @@ export function CamperGrillDashboard({
               {selectedItem && (
                 <div className="relative w-12 h-12 rounded-xl overflow-hidden flex-shrink-0">
                   <Image
-                    src={selectedItem.image}
+                    src="/images/steak.png"
                     alt={selectedItem.name}
                     fill
                     className="object-cover"
@@ -366,7 +365,7 @@ export function CamperGrillDashboard({
             </div>
 
             <div className="text-center font-bold text-xl text-primary">
-              Gesamt: {(selectedQty * (selectedItem?.price ?? 0)).toFixed(2)} €
+              Gesamt: {(selectedQty * (selectedItem?.preis ?? 0)).toFixed(2)} €
             </div>
           </div>
 
