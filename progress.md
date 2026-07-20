@@ -25,3 +25,7 @@ Hier dokumentieren wir Schritt für Schritt, was wir gebaut haben, damit die Mag
 - **Grill-Deckel:** Aufbau einer neuen Route (`app/dashboard/grillfleisch/page.tsx`) nach dem "Erst essen, dann eintragen"-Prinzip, getrennt von den Getränken (eigener Sticky-Banner).
 - **Fotorealistische Bilder:** Ersatz aller Standard-Icons durch KI-generierte Bilder im Editorial-Stil (Cinematic Studio Lighting, exakt passender olivgrüner `#4c503d` Hintergrund).
 - **Echte Marken:** Einbindung von realen Flaschendesigns (Veltins, Bitburger 0,0, Coca-Cola etc.) für einen noch höheren Wiedererkennungswert.
+
+## Phase 6: Admin-Ausbau & Datenbank-Synchronisation
+- **Admin-Grill-Dashboard:** Wir haben der Admin-Ansicht eine coole Tab-Navigation verpasst. So kannst du blitzschnell zwischen Getränken und Grillfleisch wechseln. Dort lassen sich jetzt Name und Preis für das Fleisch per CRUD direkt in der Datenbank pflegen.
+- **Live-Daten statt Dummys:** Der Grillfleisch-Reiter der Camper lädt jetzt keine harten Platzhalter mehr. Sobald du als Admin neues Fleisch anlegst, zieht sich das Frontend die frischen Daten nahtlos und in Echtzeit aus der `grill_items`-Tabelle. Auch die Buchungen und Stornos der Camper feuern jetzt die echten Queries gegen die `grill_orders`.

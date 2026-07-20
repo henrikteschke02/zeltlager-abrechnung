@@ -5,7 +5,7 @@
 Eine moderne Web-App zur digitalen Verwaltung von Getränken und Grillfleisch auf Zeltlagern. Die Anwendung ersetzt den klassischen Strichlisten-Bierdeckel durch ein echtzeitfähiges Dashboard im "High-End Editorial"-Design.
 
 ## 🚀 Core Features
-- **Digitale Deckel:** Getrennte, echtzeit-synchronisierte Abrechnungskonten für Getränke und Grillfleisch.
+- **Digitale Deckel:** Getrennte, echtzeit-synchronisierte Abrechnungskonten für Getränke und Grillfleisch, jeweils mit vollumfänglicher Admin-Verwaltung.
 - **Gamification:** "Bierkönig"-Rangliste und spielerische Promille-Anzeige ("Zeltlager-Elch") mit täglichem Auto-Reset um 7:00 Uhr.
 - **Fehlertoleranz:** 3-Minuten-Stornofunktion für versehentliche Buchungen.
 - **Admin-Auth:** Manuelle Account-Vergabe zur Umgehung von E-Mail-Verifizierungen auf dem Zeltplatz.
