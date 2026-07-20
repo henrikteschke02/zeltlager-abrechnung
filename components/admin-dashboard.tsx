@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { AdminNav } from "@/components/admin-nav"
 
 type Beverage = {
   id: string
@@ -185,6 +186,9 @@ export function AdminDashboard({
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      
+      <AdminNav />
+
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Admin Panel</h1>
         <p className="text-muted-foreground mt-2">

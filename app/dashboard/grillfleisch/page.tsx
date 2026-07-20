@@ -29,16 +29,16 @@ export default async function GrillfleischPage() {
     return <Warteraum />
   }
 
-  // TODO: Sobald die DB-Tabelle existiert, hier Daten laden:
-  // const { data: grillItems }  = await supabase.from("grill_items").select("*").order("name")
-  // const { data: grillOrders } = await supabase.from("grill_orders").select("*").eq("user_id", user.id).order("created_at", { ascending: false })
+  // Daten laden
+  const { data: grillItems }  = await supabase.from("grill_items").select("*").order("name")
+  const { data: grillOrders } = await supabase.from("grill_orders").select("*").eq("user_id", user.id).order("created_at", { ascending: false })
 
   return (
     <div className="max-w-md mx-auto">
       <CamperGrillDashboard
         userId={user.id}
-        // items={grillItems || GRILL_ITEMS}      ← aktivieren sobald DB bereit
-        // initialOrders={grillOrders || []}
+        items={grillItems || []}
+        initialOrders={grillOrders || []}
       />
     </div>
   )

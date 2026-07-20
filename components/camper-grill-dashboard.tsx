@@ -33,20 +33,14 @@ type GrillOrder = {
   created_at: string
 }
 
-// ─── Dummy data (until the DB table exists) ───────────────────────────────────
-
-export const GRILL_ITEMS: GrillItem[] = [
-  { id: "nackensteak", name: "Nackensteak", price: 2.5, image: "/images/steak.png" },
-  { id: "bratwurst",   name: "Bratwurst",   price: 1.5, image: "/images/bratwurst.png" },
-  { id: "bauchspeck",  name: "Bauchspeck",  price: 2.0, image: "/images/bauchspeck.png" },
-  { id: "haehnchen",   name: "Hähnchen",    price: 2.5, image: "/images/haehnchen.png" },
-]
+// ─── Dummy data (entfernt) ───────────────────────────────────
+// Die Daten kommen nun ausschließlich aus der DB (grill_items).
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function CamperGrillDashboard({
   userId,
-  items = GRILL_ITEMS,
+  items = [],
   initialOrders = [],
 }: {
   userId: string
@@ -126,15 +120,22 @@ export function CamperGrillDashboard({
     }
     setOrders((prev) => [temp, ...prev])
 
-    // TODO: replace with real Supabase insert once table exists
-    // const { data, error } = await supabase
-    //   .from("grill_orders")
-    //   .insert([{ user_id: userId, grill_item_id: item.id, quantity: qty }])
-    //   .select()
-    //   .single()
+    const { data, error } = await supabase
+       .from("grill_orders")
+       .insert([{ user_id: userId, grill_item_id: item.id, quantity: qty }])
+       .select()
+       .single()
 
-    // Simulate a small delay for demo
-    await new Promise((r) => setTimeout(r, 300))
+    if (error) {
+      console.error("Booking error", error)
+      // Revert optimistic
+      setOrders((prev) => prev.filter(o => o.id !== temp.id))
+      alert("Buchung fehlgeschlagen!")
+    } else if (data) {
+      // Replace optimistic temp with real DB record
+      setOrders((prev) => prev.map(o => o.id === temp.id ? data as GrillOrder : o))
+    }
+
     setLoadingId(null)
   }
 
@@ -142,7 +143,14 @@ export function CamperGrillDashboard({
     const original = orders.find((o) => o.id === id)
     if (!original) return
     setOrders((prev) => prev.filter((o) => o.id !== id))
-    // TODO: supabase.from("grill_orders").delete().eq("id", id)
+    
+    const { error } = await supabase.from("grill_orders").delete().eq("id", id)
+    if (error) {
+      console.error("Storno error", error)
+      // Revert storno
+      setOrders((prev) => [original, ...prev])
+      alert("Storno fehlgeschlagen!")
+    }
   }
 
   // ── Render ──────────────────────────────────────────────────────────────────

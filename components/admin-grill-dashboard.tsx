@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Plus, Edit2, Trash2 } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Plus, Edit2, Trash2, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -14,18 +14,21 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { GrillItem, GRILL_ITEMS } from "@/components/camper-grill-dashboard"
+import { AdminNav } from "@/components/admin-nav"
+import { createClient } from "@/utils/supabase/client"
+
+export type GrillItem = {
+  id: string
+  name: string
+  price: number
+  image: string
+}
 
 export function AdminGrillDashboard() {
-  // TODO: Supabase integration
-  // The table should be called `grill_items` with the following schema:
-  // id: uuid (primary key, default gen_random_uuid())
-  // name: text
-  // price: numeric (e.g. 2.50)
-  // image: text (url or path, e.g. '/images/steak.png')
-  // created_at: timestampz
-
-  const [items, setItems] = useState<GrillItem[]>(GRILL_ITEMS)
+  const supabase = createClient()
+  const [items, setItems] = useState<GrillItem[]>([])
+  const [loadingItems, setLoadingItems] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
@@ -36,6 +39,19 @@ export function AdminGrillDashboard() {
   // Form state
   const [name, setName] = useState("")
   const [price, setPrice] = useState("")
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      const { data, error } = await supabase.from('grill_items').select('*').order('name')
+      if (error) {
+        console.error("Error fetching grill items:", error)
+      } else if (data) {
+        setItems(data as GrillItem[])
+      }
+      setLoadingItems(false)
+    }
+    fetchItems()
+  }, [supabase])
 
   const openAddModal = () => {
     setName("")
@@ -55,39 +71,79 @@ export function AdminGrillDashboard() {
     setIsDeleteOpen(true)
   }
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!name || !price) return
-    const newItem: GrillItem = {
-      id: crypto.randomUUID(),
-      name,
-      price: parseFloat(price),
-      image: "/images/steak.png" // default dummy image for now
+    setIsSubmitting(true)
+    
+    const priceNum = parseFloat(price.replace(',', '.'))
+    if (isNaN(priceNum)) {
+      alert("Bitte einen gültigen Preis eingeben")
+      setIsSubmitting(false)
+      return
     }
-    setItems((prev) => [...prev, newItem])
-    setIsAddOpen(false)
+
+    const { data, error } = await supabase
+      .from('grill_items')
+      .insert([{ name, price: priceNum, image: "/images/steak.png" }]) // Default Image per User Request
+      .select()
+
+    if (error) {
+      alert("Fehler beim Speichern: " + error.message)
+    } else if (data) {
+      setItems((prev) => [...prev, data[0] as GrillItem].sort((a, b) => a.name.localeCompare(b.name)))
+      setIsAddOpen(false)
+    }
+    setIsSubmitting(false)
   }
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     if (!selectedItem || !name || !price) return
-    setItems((prev) => 
-      prev.map(i => i.id === selectedItem.id 
-        ? { ...i, name, price: parseFloat(price) }
-        : i
+    setIsSubmitting(true)
+
+    const priceNum = parseFloat(price.replace(',', '.'))
+    if (isNaN(priceNum)) {
+      alert("Bitte einen gültigen Preis eingeben")
+      setIsSubmitting(false)
+      return
+    }
+
+    const { error } = await supabase
+      .from('grill_items')
+      .update({ name, price: priceNum })
+      .eq('id', selectedItem.id)
+
+    if (error) {
+      alert("Fehler beim Aktualisieren: " + error.message)
+    } else {
+      setItems((prev) => 
+        prev.map(i => i.id === selectedItem.id ? { ...i, name, price: priceNum } : i).sort((a, b) => a.name.localeCompare(b.name))
       )
-    )
-    setIsEditOpen(false)
+      setIsEditOpen(false)
+    }
+    setIsSubmitting(false)
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!selectedItem) return
-    setItems((prev) => prev.filter(i => i.id !== selectedItem.id))
-    setIsDeleteOpen(false)
+    setIsSubmitting(true)
+    
+    const { error } = await supabase.from('grill_items').delete().eq('id', selectedItem.id)
+    
+    if (error) {
+      alert("Fehler beim Löschen: " + error.message)
+    } else {
+      setItems((prev) => prev.filter(i => i.id !== selectedItem.id))
+      setIsDeleteOpen(false)
+    }
+    setIsSubmitting(false)
   }
 
   return (
     <div className="min-h-screen bg-[#4c503d] text-white p-4 sm:p-8 font-sans">
       <div className="max-w-3xl mx-auto space-y-6">
         
+        <AdminNav />
+
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -96,6 +152,7 @@ export function AdminGrillDashboard() {
           </div>
           <Button 
             onClick={openAddModal}
+            disabled={loadingItems || isSubmitting}
             className="bg-[#D9FF3D] text-[#1a1e12] hover:bg-[#D9FF3D]/80 font-bold flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
@@ -105,7 +162,11 @@ export function AdminGrillDashboard() {
 
         {/* Meat List */}
         <div className="space-y-3">
-          {items.length === 0 ? (
+          {loadingItems ? (
+            <div className="text-center p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl flex justify-center items-center">
+              <Loader2 className="w-8 h-8 animate-spin text-[#D9FF3D]" />
+            </div>
+          ) : items.length === 0 ? (
              <div className="text-center p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
                <p className="text-[#E5E4DE]/70">Kein Fleisch angelegt. Füge ein neues Produkt hinzu!</p>
              </div>
