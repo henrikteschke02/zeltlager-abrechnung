@@ -39,7 +39,8 @@ const AVAILABLE_IMAGES = [
   "lammkoteletts.png",
   "schweinefilet.png",
   "currywurst.png",
-  "kotelett.png"
+  "kotelett.png",
+  "bauchfleisch.png"
 ]
 
 export function AdminGrillDashboard() {
