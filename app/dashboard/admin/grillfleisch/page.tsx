@@ -1,18 +1,29 @@
-// CRUD-Panel für Grillfleisch-Verwaltung
-// Hier kommen später:
-// - Neue Fleischsorten anlegen (Name, Preis, Bild-Upload)
-// - Bestehende Sorten bearbeiten / löschen
-// - Übersicht aller gebuchten Grill-Posten
-// - Manuelles Stornieren durch Admins
+import { redirect } from "next/navigation"
+import { createClient } from "@/utils/supabase/server"
+import { AdminGrillDashboard } from "@/components/admin-grill-dashboard"
 
-export default function AdminGrillfleischPage() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
-      <span className="text-6xl">🔥</span>
-      <h1 className="text-2xl font-serif font-bold">Grillfleisch-Verwaltung</h1>
-      <p className="text-muted-foreground text-sm max-w-sm">
-        Das Admin-Panel für Grillfleisch wird hier gebaut. Platzhalter aktiv.
-      </p>
-    </div>
-  )
+export const metadata = {
+  title: "Admin | Grillfleisch | Zeltlager Manager",
+  description: "Grillfleisch Verwaltung für Admins",
+}
+
+export default async function AdminGrillfleischPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) {
+    return redirect("/login")
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.role !== 'admin') {
+    return redirect("/dashboard")
+  }
+
+  return <AdminGrillDashboard />
 }
