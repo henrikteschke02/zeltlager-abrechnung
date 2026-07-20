@@ -3,11 +3,12 @@
 ## 1. Projektübersicht
 Web-App zur digitalen Verwaltung von Getränken, Grillfleisch und Brötchen für ein Zeltlager. 
 
-## 2. Dokumentations-Regeln (WICHTIG!)
-Die Dateien `readme.md` und `progress.md` sind ZWEI VÖLLIG UNTERSCHIEDLICHE DOKUMENTE und müssen strikt getrennt behandelt werden:
+## 2. Dokumentations-Regeln (ABSOLUTE PFLICHT!)
+Die Dateien `readme.md` und `progress.md` haben völlig unterschiedliche Zielgruppen. DU DARFST NIEMALS DEN INHALT DER EINEN DATEI IN DIE ANDERE KOPIEREN!
 
-- **`readme.md` (Das Schaufenster):** Das ist die Standard-Projektdokumentation. Sie ist sachlich, professionell und beschreibt *was* das Projekt ist. Keine chronologischen Updates!
-- **`progress.md` (Das Entwickler-Tagebuch):** Diese Datei ist exklusiv für den Entwickler zum persönlichen Verständnis. Sie dokumentiert chronologisch, verständlich und detailliert, *wie* und *warum* Dinge gebaut wurden. 
+- **`readme.md` (Für die Öffentlichkeit & andere Entwickler):** Das ist das offizielle Aushängeschild. Hier steht AUSSCHLIESSLICH: Was ist das Projekt? Welche Features gibt es? Wie lautet der Tech-Stack? Wie lauten die konkreten Installations-Befehle (z. B. `npm install`, `.env` Setup, `npm run dev`), um das Projekt lokal zu starten? Hier gibt es KEINE chronologischen Updates und KEIN Tagebuch!
+- **`progress.md` (Für mich privat):** Das ist mein persönliches Entwickler-Tagebuch. Hier steht chronologisch, *was* wir *wann* und *warum* gebaut haben. Es dient meiner eigenen Erinnerung und Dokumentation der Arbeitsschritte.
+
 
 ## 3. Der Trigger-Befehl für Doku-Updates
 Wenn der User den Befehl **"Aktualisiere die Doku"** gibt, musst du:
