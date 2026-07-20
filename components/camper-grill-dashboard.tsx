@@ -22,6 +22,7 @@ export type GrillItem = {
   id: string
   name: string
   preis: number
+  image_name?: string | null
 }
 
 type GrillOrder = {
@@ -281,7 +282,7 @@ export function CamperGrillDashboard({
                 </div>
               ) : (
                 <Image
-                  src="/images/steak.png"
+                  src={item.image_name ? `/images/grill/${item.image_name}` : "/images/steak.png"}
                   alt={item.name}
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -326,7 +327,7 @@ export function CamperGrillDashboard({
               {selectedItem && (
                 <div className="relative w-12 h-12 rounded-xl overflow-hidden flex-shrink-0">
                   <Image
-                    src="/images/steak.png"
+                    src={selectedItem.image_name ? `/images/grill/${selectedItem.image_name}` : "/images/steak.png"}
                     alt={selectedItem.name}
                     fill
                     className="object-cover"

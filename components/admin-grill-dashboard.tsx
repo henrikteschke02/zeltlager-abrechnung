@@ -21,7 +21,26 @@ export type GrillItem = {
   id: string
   name: string
   preis: number
+  image_name?: string | null
 }
+
+const AVAILABLE_IMAGES = [
+  "schweinenackensteak.png",
+  "bratwurst.png",
+  "rinderhueftsteak.png",
+  "rumpsteak.png",
+  "haehnchenbrust.png",
+  "haehnchenschenkel.png",
+  "rinderfilet.png",
+  "spareribs.png",
+  "nuernberger.png",
+  "merguez.png",
+  "pute.png",
+  "lammkoteletts.png",
+  "schweinefilet.png",
+  "currywurst.png",
+  "kotelett.png"
+]
 
 export function AdminGrillDashboard() {
   const supabase = createClient()
@@ -38,10 +57,11 @@ export function AdminGrillDashboard() {
   // Form state
   const [name, setName] = useState("")
   const [price, setPrice] = useState("")
+  const [imageName, setImageName] = useState("")
 
   useEffect(() => {
     const fetchItems = async () => {
-      const { data, error } = await supabase.from('grill_items').select('id, name, preis').order('name')
+      const { data, error } = await supabase.from('grill_items').select('id, name, preis, image_name').order('name')
       if (error) {
         console.error("Error fetching grill items:", error)
       } else if (data) {
@@ -55,6 +75,7 @@ export function AdminGrillDashboard() {
   const openAddModal = () => {
     setName("")
     setPrice("")
+    setImageName("")
     setIsAddOpen(true)
   }
 
@@ -62,6 +83,7 @@ export function AdminGrillDashboard() {
     setSelectedItem(item)
     setName(item.name)
     setPrice(item.preis?.toString() || "0")
+    setImageName(item.image_name || "")
     setIsEditOpen(true)
   }
 
@@ -81,10 +103,12 @@ export function AdminGrillDashboard() {
       return
     }
 
+    const finalImageName = imageName.trim() === "" ? null : imageName.trim()
+
     const { data, error } = await supabase
       .from('grill_items')
-      .insert([{ name, preis: priceNum }])
-      .select('id, name, preis')
+      .insert([{ name, preis: priceNum, image_name: finalImageName }])
+      .select('id, name, preis, image_name')
 
     if (error) {
       alert("Fehler beim Speichern: " + error.message)
@@ -106,16 +130,18 @@ export function AdminGrillDashboard() {
       return
     }
 
+    const finalImageName = imageName.trim() === "" ? null : imageName.trim()
+
     const { error } = await supabase
       .from('grill_items')
-      .update({ name, preis: priceNum })
+      .update({ name, preis: priceNum, image_name: finalImageName })
       .eq('id', selectedItem.id)
 
     if (error) {
       alert("Fehler beim Aktualisieren: " + error.message)
     } else {
       setItems((prev) => 
-        prev.map(i => i.id === selectedItem.id ? { ...i, name, preis: priceNum } : i).sort((a, b) => a.name.localeCompare(b.name))
+        prev.map(i => i.id === selectedItem.id ? { ...i, name, preis: priceNum, image_name: finalImageName } : i).sort((a, b) => a.name.localeCompare(b.name))
       )
       setIsEditOpen(false)
     }
@@ -180,6 +206,7 @@ export function AdminGrillDashboard() {
                     <div className="min-w-0">
                       <h3 className="font-bold text-[#E5E4DE] truncate">{item.name}</h3>
                       <p className="text-[#D9FF3D] font-serif font-semibold">{Number(item.preis || 0).toFixed(2)} €</p>
+                      {item.image_name && <p className="text-xs text-white/50">{item.image_name}</p>}
                     </div>
                   </div>
                   
@@ -237,6 +264,20 @@ export function AdminGrillDashboard() {
                 className="bg-white/50 border-[#4c503d]/20 text-[#4c503d] placeholder:text-[#4c503d]/40"
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="add-image" className="text-[#4c503d] font-bold">Bild auswählen</Label>
+              <select
+                id="add-image"
+                value={imageName}
+                onChange={(e) => setImageName(e.target.value)}
+                className="flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-white/50 border-[#4c503d]/20 text-[#4c503d]"
+              >
+                <option value="">Kein Bild (Fallback nutzen)</option>
+                {AVAILABLE_IMAGES.map((img) => (
+                  <option key={img} value={img}>{img}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setIsAddOpen(false)} className="text-[#4c503d]">Abbrechen</Button>
@@ -271,6 +312,20 @@ export function AdminGrillDashboard() {
                 onChange={(e) => setPrice(e.target.value)}
                 className="bg-white/50 border-[#4c503d]/20 text-[#4c503d] placeholder:text-[#4c503d]/40"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-image" className="text-[#4c503d] font-bold">Bild auswählen</Label>
+              <select
+                id="edit-image"
+                value={imageName}
+                onChange={(e) => setImageName(e.target.value)}
+                className="flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-white/50 border-[#4c503d]/20 text-[#4c503d]"
+              >
+                <option value="">Kein Bild (Fallback nutzen)</option>
+                {AVAILABLE_IMAGES.map((img) => (
+                  <option key={img} value={img}>{img}</option>
+                ))}
+              </select>
             </div>
           </div>
           <DialogFooter>
