@@ -1,191 +1,70 @@
 # zeltlager-abrechnung
-Digitale Getränke/Fleisch/Brötchen-Strichliste für mobile Endgeräte
 
-Zeltlager Manager (3-in-1 Abrechnungs-App)
+Digitale Strichliste für Getränke, Grillfleisch und Brötchen — gebaut für den Einsatz am Kühlwagen, nicht am Schreibtisch.
 
-Modulare Web-App zur Digitalisierung der Lager-Abrechnung (Getränke, Grillfleisch, Brötchen). Next.js + Supabase.
+Erster MVP entstand mit Lovable. Diese Version ist der Rewrite mit Next.js + Supabase und einer vernünftigen Architektur.
 
-Problem
+**Tech-Stack:** Next.js 15 (App Router), React, Tailwind CSS, shadcn/ui, Supabase (PostgreSQL + RLS), Vercel.
 
-Klassische Zettel-Abrechnung bei Zeltlagern führt zu:
-
-- Fehlerquoten durch aufgeweichte Papierlisten am Kühlwagen
-- fehlender Übersicht ("was hab ich schon getrunken?")
-- stundenlanger manueller Endabrechnung am letzten Tag
-
-Lösung
-
-Jeder Camper hat einen Account, trägt Konsum in Echtzeit ein, die Endabrechnung läuft automatisch.
-
-Entstehungsgeschichte: erster MVP mit Lovable gebaut, diese Version ist der Rewrite mit robuster Architektur.
-
-Module
-
-Getränke-Deckel
-
-- Mobile-First, große Touch-Ziele für Bedienung am Kühlwagen
-- Animierter "Pegel-Elch" als Tagesanzeige mit 21 Betrunkenheits-Stufen (Reset 7:00 Uhr)
-- "Hydration Hero" – Auszeichnung für meisten Wasserkonsum
-
-Grillfleisch-Umlage
-
-- Erfassung pro Tag/Person, faire Kostenteilung
-
-Brötchen-Bestellsystem
-
-- Digitale Vorbestellung, automatische Kontobelastung
-
-Tech-Stack
-
-- Frontend: Next.js (App Router), React, Tailwind CSS, shadcn/ui
-- Backend/Auth: Supabase (PostgreSQL, Row Level Security)
-- Animation: Framer Motion
-
-Status
-
-In aktiver Entwicklung. 
-
-**🚀 Live-Status:** Die App wird erfolgreich über **Vercel** gehostet und ist für alle Camper rund um die Uhr online verfügbar. Alle Daten sind dank Supabase synchronisiert.
+Live auf Vercel, CI/CD läuft automatisch bei jedem Push auf `main`.
 
 ---
 
-## Next.js Setup
-
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-### Getting Started
-
-First, run the development server:
+## Quickstart
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Läuft auf [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## Aktueller Entwicklungsstand (Changelog)
+## Module
 
-### Phase 1: Foundation & Auth
-- **Setup:** Next.js 15+ (App Router), Tailwind CSS, shadcn/ui.
-- **Theming:** Darkmode Support (`next-themes`, `lucide-react`).
-- **Supabase Auth:** E-Mail/Passwort Authentifizierung mit serverseitigen Sessions.
-- **Pages:** `/login`, `/register`, sowie ein durch Middleware geschütztes `/dashboard`.
+**Getränke-Deckel** — Camper buchen Getränke per Touch, der persönliche Schuldenstand wird live aktualisiert. Reset um 7:00 Uhr morgens. Gamification über den „Zeltlager-Elch" (21 Stufen).
 
-### Phase 2: Getränkeabrechnung - Rollen & Admin-Panel
-- **Datenbank & Rollen-System:** 
-  - `profiles` Tabelle referenziert `auth.users`.
-  - Postgres Trigger legt bei Registrierung automatisch ein Profil mit der Rolle `camper` an.
-- **Sicherheits-Fix (RLS):**
-  - Um einen _infinite recursion error_ bei den Row Level Security Policies zu vermeiden, wird die Admin-Überprüfung über eine dedizierte Helper-Funktion (`is_admin()` mit `SECURITY DEFINER`) durchgeführt.
-- **Admin-Dashboard (`/dashboard/admin`):**
-  - Serverseitig geschützt (Zugriff nur mit `role = 'admin'`).
-  - Verwalten von Getränken (Tabelle `beverages`) inkl. Hinzufügen, Löschen und Preisänderung über shadcn/ui Dialoge.
-  - Umbenennen von Getränken nachträglich möglich.
-  - Read-Only Übersicht aller registrierten Profile (`profiles`).
-- **Konsum-Tracking:** Die Tabelle `consumptions` steht bereit und sichert via RLS, dass Camper nur ihre eigenen Einträge lesen und schreiben können, während Admins alles einsehen dürfen.
+**Grillfleisch** — Buchung pro Person, Grill-Deckel läuft unabhängig vom Getränke-Deckel.
 
-### Phase 3 & 4: Camper-Frontend, Stornos & Profil-Vollständigkeit
-- **Mobile-First Camper Dashboard (`/dashboard/getraenke`):**
-  - Riesige Buttons für schnelle Buchungen am Kühlwagen (Optimistic UI Updates).
-  - Anzeige des aktuellen Deckels (Gesamtschulden) und des Tagespegels.
-  - Reset des Tagespegels automatisch um exakt 07:00 Uhr morgens (Lösen des "Mitternachts-Bugs").
-- **3-Minuten-Storno:**
-  - Neue UI-Sektion für kürzliche Buchungen mit Live-Countdown.
-  - Camper können Fehlklicks innerhalb von 3 Minuten rückgängig machen.
-  - RLS-Absicherung in Supabase erlaubt serverseitig keine `DELETE`s nach Ablauf dieser 3 Minuten.
-- **Profil-Pflicht & Avatar-Upload:**
-  - Zwingende Profil-Vervollständigung (Name) beim ersten Login.
-  - Optional können Camper eine Telefonnummer angeben.
-  - Profilbilder können hochgeladen werden und werden sicher im Supabase Storage Bucket (`avatars`) gespeichert.
+**Brötchen** — Vorbestellung für den nächsten Morgen, noch in Arbeit.
 
-### Phase 5 & 6: Gamification, Realtime & Admin-Features
-- **Leaderboard & Statistiken (`/dashboard/leaderboard`):**
-  - Live-Rangliste (Wer hat wie viel getrunken?) inkl. exklusivem **Bierkönig 👑**-Badge.
-  - Globale Lager-Statistik (Wie viel wurde im gesamten Lager von welchem Getränk konsumiert?).
-  - Persönliche Übersicht auf dem Deckel ("Meine Statistiken").
-- **Echtzeit-Updates (Supabase Realtime):**
-  - Das Leaderboard, der persönliche Deckel (inkl. Tages-Pegel) sowie das Schwarze Brett aktualisieren sich live und synchron auf allen Geräten, ohne die Seite neu laden zu müssen.
-- **Quality-of-Life UI & Ergonomie:**
-  - Kompaktes, *sticky* Deckel-Design. Ein Klick wechselt animiert zwischen "Gesamtdeckel" und "Tagesdeckel".
-  - **Zeltlager-Elch Gamification:** Der Tagespegel berechnet Punkte pro Getränk (z.B. +1.0 Bier, -1.0 Wasser) und ändert den Elch in 21 Stufen (vom "Nüchternen Elch" bis zum "Legenden-Elch").
-  - Sicheres Buchen: Klick auf ein Getränk öffnet ein Mengen-Auswahl-Popup statt direkt zu buchen (verhindert Fehlklicks).
-  - Kisten-Schnellbuchung: Admins können "Bundle-Größen" (z.B. 24) hinterlegen, woraufhin ein Schnell-Button im Popup erscheint.
-  - Maßgeschneiderte, flache Vektor-SVGs für jedes Getränk (Bierkrug, Becher mit Halm, etc.) ersetzen herkömmliche Emojis für einen aufgeräumten, professionellen Look.
-- **Kassenwart CSV-Export:**
-  - Admins können die Endabrechnung (Gesamtkosten und Menge pro Camper) als Excel-kompatible `.csv`-Datei exportieren.
-- **Schwarzes Brett (News) & Löschanfragen:**
-  - Alle angemeldeten Camper können auf dem Haupt-Dashboard Durchsagen in Echtzeit veröffentlichen.
-  - Ersteller und Admins können Posts direkt löschen.
-  - Fremde Nutzer können eine Löschfreigabe anfragen. Der Ersteller sieht dann ein Genehmigungs-Panel, über das er die Anfrage erlauben oder ablehnen kann.
+---
 
-### Phase 7: Live-Deployment & Hosting
+## Changelog
 
-* **Cloud-Hosting (Vercel):**
-  * Die App ist erfolgreich auf Vercel deployed und rund um die Uhr für alle Camper erreichbar.
-  * Automatische CI/CD-Pipeline: Jeder Push in den `main`-Branch auf GitHub (z.B. neue Features oder Bugfixes) löst automatisch einen neuen Build bei Vercel aus.
-  * **Build-Striktheit & Git-Tracking:** Vercel erzwingt strikte TypeScript/ESLint-Regeln und baut nur Dateien, die explizit in Git getrackt werden (Vorsicht bei neu erstellten Dateien und `git commit -a`!).
-* **Datenbank-Anbindung (Supabase):**
-  * Die Next.js App kommuniziert nahtlos mit der Supabase-Datenbank in der Cloud.
-  * Sichere Integration der Datenbank-Schlüssel über Vercel Environment Variables (`NEXT_PUBLIC_SUPABASE_URL` & `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
+### Phase 1 — Foundation & Auth
+Next.js 15 + Tailwind + shadcn/ui aufgesetzt. Supabase Auth (E-Mail/Passwort) mit serverseitigen Sessions. Seiten: `/login`, `/register`, `/dashboard` (Middleware-geschützt).
 
-### Phase 8: Sicherheit & Admin-Freigabesystem (Approval Workflow)
+### Phase 2 — Rollen & Admin-Panel
+`profiles`-Tabelle, Postgres-Trigger legt bei Registrierung automatisch ein Profil mit Rolle `camper` an. RLS-Problem mit infinite recursion gelöst durch eine `is_admin()`-Funktion mit `SECURITY DEFINER`. Admin-Dashboard unter `/dashboard/admin`: Getränke verwalten (hinzufügen, löschen, umbenennen, Preise ändern), Nutzerübersicht.
 
-* **Warteraum & Freigaben:**
-  * Neue Nutzer können sich registrieren, müssen jedoch ihr Profil (Name, Handynummer) ausfüllen.
-  * Anschließend landen sie im "Warteraum" und können das Dashboard noch nicht sehen oder nutzen.
-* **Admin-Kontrolle:**
-  * Admins sehen im Admin-Dashboard eine Liste der offenen Freigaben (inklusive Name, Email und Telefonnummer).
-  * Admins können Nutzer per Klick auf "Annehmen" freischalten oder mit "Ablehnen" das Profil löschen.
-* **RESTRICTIVE Row Level Security:**
-  * Auf Datenbankebene sind alle Lese- und Schreibzugriffe auf Konsum-Einträge, News etc. strikt blockiert, solange das eigene Profil nicht explizit auf `is_approved = true` gesetzt wurde.
+### Phase 3 & 4 — Camper-Frontend, Storno, Profile
+Getränke-Dashboard mit Optimistic UI — Buchungen erscheinen sofort, ohne auf die DB zu warten. 3-Minuten-Storno mit Live-Countdown; RLS verhindert `DELETE` nach Ablauf serverseitig. Profil-Pflicht beim ersten Login (Name), optionale Telefonnummer, Avatar-Upload in Supabase Storage (`avatars`-Bucket).
 
-### Phase 9: Security Audit & Secrets Management
-- **Audit bestanden:** Die Codebase wurde auf Hardcoded Secrets (z.B. `SUPABASE_SERVICE_ROLE_KEY`, DB-Strings, JWTs) sowie auf `.env` Leaks in der Git-Historie geprüft. Alle Verbindungen laufen sicher über `NEXT_PUBLIC` Environment Variables.
+### Phase 5 & 6 — Gamification, Realtime, Admin-Features
+Leaderboard unter `/dashboard/leaderboard` mit Live-Rangliste und Bierkönig-Badge. Supabase Realtime hält Deckel, Leaderboard und Schwarzes Brett auf allen Geräten synchron. Elch-Gamification: Punkte pro Getränk (+1.0 Bier, -1.0 Wasser usw.), 21 Stufen. Sicheres Buchen per Modal statt Direktklick. CSV-Export der Endabrechnung für den Kassenwart. Schwarzes Brett mit Echtzeit-Posts und Löschanfrage-Workflow.
 
-### Phase 10: Editorial Design Overhaul & UX-Upgrades
-- **Neues Design-System ("High-End Editorial"):**
-  - Kompletter Farb-Wechsel: Dunkles Olivgrün (`#4c503d`) als edler Hintergrund, sanftes Beige (`#E5E4DE`) für schwebende Inhaltskarten (`rounded-3xl`, `shadow-2xl`) und starkes Neon-Limettengrün (`#D9FF3D`) als Akzentfarbe für Buttons und Hover-Ringe.
-  - Mix aus eleganten **Serif**-Schriften (Playfair Display) für Logos & wichtige Kennzahlen (z.B. den Deckelpreis) und cleanen **Sans-Serif**-Schriften (Manrope) für den Rest.
-  - Uppercase-Strukturierung: Subtile Label (z.B. Tabellenköpfe) als Großbuchstaben mit weitem Laufabstand (`tracking-widest`).
-- **Framework & Tooling Upgrades:**
-  - Initialisierung von **shadcn/ui** für konsistente Basis-Komponenten und **Anime.js** für künftige komplexe Animationen.
-  - Globale Toasts mit `sonner` in der `layout.tsx` integriert.
-  - Verbesserte Next.js App-Struktur mit globalen Error-Boundaries (`error.tsx`) und Ladezuständen (`loading.tsx`).
-- **Camping-Loader (Uiverse-Animation):**
-  - Der Liquid-Loader wurde durch eine vollständig animierte Zeltlager-Szene ersetzt (Zelt, Lagerfeuer, Bäume, Tag-Nacht-Zyklus mit Mond & Sternen).
-  - Implementiert als sicher isoliertes **CSS Module** (`CampingLoader.module.css`), um Konflikte mit globalen Klassennamen (z.B. `.time`, `.door`, `.fire`) vollständig zu verhindern.
-- **Optimierte Auth-UI:**
-  - Registrierungsseite überarbeitet (Hinweis auf Spam-Ordner bei Bestätigungs-Emails).
-  - Zuverlässiger Production-Redirect (`emailRedirectTo`) für Supabase Email-Links in `auth/callback`.
-- **UI-Cleanup auf dem Dashboard:**
-  - Die numerische "Zeltlager-Promille"-Zahl wurde visuell vom Deckel entfernt, aber die interne Elch-Logik mit Punkten läuft im Hintergrund für das Gamification-System weiter.
+### Phase 7 — Deployment
+Vercel-Deployment, automatische CI/CD-Pipeline. Supabase-Keys über Vercel Environment Variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`). Vercel erzwingt strikte TypeScript/ESLint-Regeln — nur getrackte Dateien werden gebaut.
 
-### Phase 11: Grillfleisch-Modul (Grundgerüst)
-- **Grillfleisch-Seite (`/dashboard/grillfleisch`):**
-  - Eigenständige Client-Komponente `CamperGrillDashboard` mit vollständig **unabhängigem** State – kein gemeinsamer Kontext mit dem Getränke-Deckel.
-  - **„Mein Grill-Deckel"** – Sticky-Banner im exakt selben Editorial-Design wie der Getränke-Deckel (helle Beige-Karte `#E5E4DE`, Serif-Preiszahl, Schatten, Toggle Gesamt ↔ Tagesdeckel).
-  - **Glassmorphism-Grid** (2 Spalten) für die Fleischsorten: `bg-white/5`, `backdrop-blur-md`, `border-white/10` auf dunkel-olivem Hintergrund, Hover mit Neon-Limettengrün-Ring (`#D9FF3D`).
-  - Jede Karte zeigt ein quadratisches KI-generiertes Food-Foto, Name, Preis und einen neongelben **+1**-Badge.
-  - Buchungs-Modal mit Mengenauswahl (identisches UX wie Getränke).
-  - 3-Minuten-Storno-Leiste für Fehlklicks.
-  - Dummy-Daten für vier Fleischsorten (Nackensteak 2,50 €, Bratwurst 1,50 €, Bauchspeck 2,00 €, Hähnchen 2,50 €); alle DB-Calls sind als `TODO:`-Kommentare vorbereitet.
-- **Admin-Placeholder (`/dashboard/admin/grillfleisch`):**
-  - Leere Seite mit Kommentaren, die das geplante CRUD-Panel beschreiben (Anlegen/Bearbeiten/Löschen von Fleischsorten, Buchungsübersicht, Admin-Storno).
-- **Food-Fotografie:** KI-generierte quadratische Placeholder-Bilder für alle vier Fleischsorten unter `public/images/`.
+### Phase 8 — Approval-Workflow
+Neue Nutzer landen nach der Profil-Vervollständigung im Warteraum. Admins sehen offene Freigaben und können per Klick freischalten oder ablehnen. Auf DB-Ebene blockiert RESTRICTIVE RLS alle Zugriffe solange `is_approved = false`.
 
-### Phase 12: Getränke-UI-Sync & Drink-Fotografie
+### Phase 9 — Security Audit
+Codebase auf Hardcoded Secrets geprüft (`SUPABASE_SERVICE_ROLE_KEY`, DB-Strings, JWTs, `.env`-Leaks in der Git-Historie). Alle Verbindungen laufen über `NEXT_PUBLIC` Environment Variables.
 
-Die Getränke-Seite wurde visuell auf denselben Stand wie das Grillfleisch-Layout gebracht.
+### Phase 10 — Editorial Design
+Neues Design-System: Olivgrün `#4c503d` als Hintergrund, Beige `#E5E4DE` für Karten (`rounded-3xl`, `shadow-2xl`), Neon-Limette `#D9FF3D` als Akzent. Serif (Playfair Display) für Logos und Preiszahlen, Sans-Serif (Manrope) für alles andere. shadcn/ui und Anime.js integriert, globale Toasts via `sonner`. Camping-Loader (animierte Zeltlager-Szene von Uiverse) ersetzt den alten Liquid-Loader, als CSS Module implementiert wegen generischer Klassennamen wie `.time`, `.door`, `.fire`.
 
-`components/camper-beverage-dashboard.tsx`: Der „Mein Deckel"-Banner nutzt jetzt hart-kodierte Farbwerte (`#E5E4DE`, `#4c503d`) statt theme-abhängiger Tokens — der Beige-Look ist damit in Dark- und Lightmode identisch. Die Getränke-Karten wurden von zentrierten Icon-Buttons auf das Glassmorphism-Grid umgestellt (`bg-white/5 backdrop-blur-md border-white/10`). Jede Karte zeigt oben ein quadratisches Foto, darunter Name, Preis und den neon-grünen `+1`-Badge.
+### Phase 11 — Grillfleisch-Modul
+`/dashboard/grillfleisch` mit eigenem `CamperGrillDashboard` — komplett unabhängiger State vom Getränke-Deckel. Gleicher Sticky-Banner-Look (`#E5E4DE`, Serif-Preis, Toggle Gesamt/Tag), gleiches Glassmorphism-Grid (`bg-white/5`, `backdrop-blur-md`, `border-white/10`). Karten zeigen Food-Fotos, Name, Preis und `+1`-Badge. 3-Minuten-Storno. Dummy-Daten für vier Fleischsorten; DB-Calls als `TODO:` vorbereitet. Admin-Placeholder unter `/dashboard/admin/grillfleisch`.
 
-`public/images/drinks/`: 10 Markenflaschen-Shots auf olivem Studiohintergrund (`#4c503d`) — Veltins, Bitburger 0,0, Bitburger Radler, Krombacher Radler, Fassbrause, Emsland Wasser, Coca-Cola, Fanta, Sprite, Schöfferhofer Grapefruit. Die Funktion `getBeverageImage()` matcht per case-insensitiver Keyword-Suche auf den DB-Namen; unbekannte Getränke fallen auf die SVG-Icons zurück.
+### Phase 12 — Getränke-UI-Sync & Drink-Fotografie
+Getränke-Karten auf denselben Stand wie Grillfleisch gebracht: Glassmorphism-Grid, quadratische Fotos, `+1`-Badge. Deckel-Banner nutzt jetzt hart-kodierte Farbwerte statt theme-abhängiger Tokens. Zehn Markenflaschen-Shots für `public/images/drinks/` (Veltins, Bitburger 0,0, Bitburger Radler, Krombacher Radler, Fassbrause, Emsland Wasser, Coca-Cola, Fanta, Sprite, Schöfferhofer Grapefruit) — auf olivem Studiohintergrund, nahtlos im UI. `getBeverageImage()` matcht per Keyword-Suche auf den DB-Namen, SVG-Icons als Fallback. `ai-anweisungen.md` neu angelegt als Steuerdatei für KI-Sessions.
 
-`ai-anweisungen.md`: Neue Steuerdatei für KI-Sessions. Enthält Projektkontext, die Trennung README vs. progress.md, Design-System-Tokens und einen Text-Humanizer-Styleguide.
+---
 
-### Nächste Schritte
-- Grillfleisch-DB: Supabase-Tabellen `grill_items` & `grill_orders` anlegen, RLS setzen, `TODO:`-Kommentare aktivieren.
-- Admin-CRUD für Grillfleisch (`/dashboard/admin/grillfleisch`).
-- Brötchen-Modul (`/dashboard/broetchen`): Vorbestellung für den nächsten Morgen, automatische Deckel-Belastung.
+## Offene Punkte
+- Supabase-Tabellen `grill_items` & `grill_orders` anlegen, RLS setzen, `TODO:`-Kommentare aktivieren
+- Admin-CRUD für Grillfleisch (`/dashboard/admin/grillfleisch`)
+- Brötchen-Modul (`/dashboard/broetchen`)
