@@ -43,15 +43,21 @@ export function CamperBeverageDashboard({
   }
 
   // ── Photo mapping: keyword → public image path ────────────────────────────
-  // Checked against real DB names in DRINK_ICONS; falls back to null → SVG icon
+  // More-specific patterns first so "Bitburger Radler" doesn't match "pils" first.
   const getBeverageImage = (name: string): string | null => {
     const n = name.toLowerCase()
     if (n.includes("schöfferhofer") || n.includes("schofferhofer") || n.includes("grapefruit")) return "/images/drinks/schofferhofer.png"
-    if (n.includes("radler")) return "/images/drinks/radler.png"
-    if (n.includes("bitburger") || n.includes("0,0") || n.includes("0.0") || n.includes("alkoholfrei")) return "/images/drinks/pils.png"
-    if (n.includes("cola")) return "/images/drinks/cola.png"
-    if (n.includes("fanta")) return "/images/drinks/fanta.png"
-    if (n.includes("mate") || n.includes("mio")) return "/images/drinks/miomate.png"
+    if (n.includes("krombacher") && n.includes("radler")) return "/images/drinks/krombacher_radler.png"
+    if (n.includes("bitburger") && n.includes("radler"))  return "/images/drinks/bitburger_radler.png"
+    if (n.includes("radler"))                             return "/images/drinks/bitburger_radler.png"
+    if (n.includes("bitburger") || n.includes("0,0") || n.includes("0.0")) return "/images/drinks/pils.png"
+    if (n.includes("veltins"))                            return "/images/drinks/veltins.png"
+    if (n.includes("fassbrause"))                         return "/images/drinks/fassbrause.png"
+    if (n.includes("wasser") || n.includes("emsland"))   return "/images/drinks/wasser.png"
+    if (n.includes("cola"))                               return "/images/drinks/cola.png"
+    if (n.includes("fanta"))                              return "/images/drinks/fanta.png"
+    if (n.includes("sprite"))                             return "/images/drinks/sprite.png"
+    if (n.includes("mate") || n.includes("mio"))         return "/images/drinks/miomate.png"
     return null
   }
 
