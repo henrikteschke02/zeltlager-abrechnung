@@ -175,9 +175,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   - Leere Seite mit Kommentaren, die das geplante CRUD-Panel beschreiben (Anlegen/Bearbeiten/Löschen von Fleischsorten, Buchungsübersicht, Admin-Storno).
 - **Food-Fotografie:** KI-generierte quadratische Placeholder-Bilder für alle vier Fleischsorten unter `public/images/`.
 
-### Nächste Schritte (Noch fehlend)
-- **Grillfleisch-DB:** Supabase-Tabellen `grill_items` & `grill_orders` anlegen, RLS-Policies setzen und die vorbereiteten `TODO:`-Kommentare in der Page aktivieren.
-- **Admin-CRUD für Grillfleisch** (`/dashboard/admin/grillfleisch`): Fleischsorten verwalten, Buchungen einsehen, Stornos durch Admins.
-- **Modul: Brötchen-Bestellsystem (`/dashboard/broetchen`):**
-  - Digitale Vorbestellung für den nächsten Morgen.
-  - Automatische Belastung des Camper-Deckels basierend auf den Bäckerei-Preisen.
+### Phase 12: Getränke-UI-Sync & Drink-Fotografie
+
+Die Getränke-Seite wurde visuell auf denselben Stand wie das Grillfleisch-Layout gebracht.
+
+`components/camper-beverage-dashboard.tsx`: Der „Mein Deckel"-Banner nutzt jetzt hart-kodierte Farbwerte (`#E5E4DE`, `#4c503d`) statt theme-abhängiger Tokens — der Beige-Look ist damit in Dark- und Lightmode identisch. Die Getränke-Karten wurden von zentrierten Icon-Buttons auf das Glassmorphism-Grid umgestellt (`bg-white/5 backdrop-blur-md border-white/10`). Jede Karte zeigt oben ein quadratisches Foto, darunter Name, Preis und den neon-grünen `+1`-Badge.
+
+`public/images/drinks/`: 10 Markenflaschen-Shots auf olivem Studiohintergrund (`#4c503d`) — Veltins, Bitburger 0,0, Bitburger Radler, Krombacher Radler, Fassbrause, Emsland Wasser, Coca-Cola, Fanta, Sprite, Schöfferhofer Grapefruit. Die Funktion `getBeverageImage()` matcht per case-insensitiver Keyword-Suche auf den DB-Namen; unbekannte Getränke fallen auf die SVG-Icons zurück.
+
+`ai-anweisungen.md`: Neue Steuerdatei für KI-Sessions. Enthält Projektkontext, die Trennung README vs. progress.md, Design-System-Tokens und einen Text-Humanizer-Styleguide.
+
+### Nächste Schritte
+- Grillfleisch-DB: Supabase-Tabellen `grill_items` & `grill_orders` anlegen, RLS setzen, `TODO:`-Kommentare aktivieren.
+- Admin-CRUD für Grillfleisch (`/dashboard/admin/grillfleisch`).
+- Brötchen-Modul (`/dashboard/broetchen`): Vorbestellung für den nächsten Morgen, automatische Deckel-Belastung.
