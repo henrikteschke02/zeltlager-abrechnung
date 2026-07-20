@@ -9,7 +9,6 @@ Die Dateien `readme.md` und `progress.md` haben völlig unterschiedliche Zielgru
 - **`readme.md` (Für die Öffentlichkeit & andere Entwickler):** Das ist das offizielle Aushängeschild. Hier steht AUSSCHLIESSLICH: Was ist das Projekt? Welche Features gibt es? Wie lautet der Tech-Stack? Wie lauten die konkreten Installations-Befehle (z. B. `npm install`, `.env` Setup, `npm run dev`), um das Projekt lokal zu starten? Hier gibt es KEINE chronologischen Updates und KEIN Tagebuch!
 - **`progress.md` (Für mich privat):** Das ist mein persönliches Entwickler-Tagebuch. Hier steht chronologisch, *was* wir *wann* und *warum* gebaut haben. Es dient meiner eigenen Erinnerung und Dokumentation der Arbeitsschritte.
 
-
 ## 3. Der Trigger-Befehl für Doku-Updates
 Wenn der User den Befehl **"Aktualisiere die Doku"** gibt, musst du:
 1. Die `readme.md` prüfen und ggf. um neue Haupt-Features ergänzen.
