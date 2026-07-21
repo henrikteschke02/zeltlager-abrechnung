@@ -282,20 +282,16 @@ export function CamperGrillDashboard({
                   <Loader2 className="w-10 h-10 text-[#D9FF3D] animate-spin" />
                 </div>
               ) : (
-                <>
-                  <Image
-                    src={item.image_name ? `/images/grill/${item.image_name}` : "/images/steak.png"}
-                    alt={item.name}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110 opacity-90"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                  />
-                  {/* Radial gradient vignette to blend image edges seamlessly into #4c503d */}
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#4c503d_100%)] pointer-events-none z-10" />
-                </>
+                <Image
+                  src={item.image_name ? `/images/grill/${item.image_name}` : "/images/steak.png"}
+                  alt={item.name}
+                  fill
+                  className="object-cover scale-[1.2] transition-transform duration-500 group-hover:scale-[1.3]"
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                />
               )}
               {/* Gradient overlay at bottom of image for text readability */}
-              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#4c503d] to-transparent pointer-events-none z-10" />
+              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#4c503d]/80 to-transparent pointer-events-none z-10" />
             </div>
 
             {/* Card body */}
