@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Tent, Menu, LogOut, Beer, Drumstick, Croissant, Settings, Home, MessageSquare } from "lucide-react"
+import { Tent, Menu, LogOut, Beer, Drumstick, Croissant, Settings, Home, MessageSquare, Calculator } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
 
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -17,6 +17,7 @@ const navItems = [
   { name: "Getränke", href: "/dashboard/getraenke", icon: Beer },
   { name: "Grillfleisch", href: "/dashboard/grillfleisch", icon: Drumstick },
   { name: "Brötchen", href: "/dashboard/broetchen", icon: Croissant },
+  { name: "Statistik", href: "/dashboard/statistik", icon: Calculator },
 ]
 
 export function Navigation() {
