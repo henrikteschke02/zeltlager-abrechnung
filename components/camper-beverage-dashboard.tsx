@@ -254,7 +254,7 @@ export function CamperBeverageDashboard({
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* Sticky Header / Mein Deckel – Beige Karte mit olivem Text, rounded-3xl, Serif Preis */}
-      <div className="sticky top-16 z-40 mb-4">
+      <div className="sticky top-16 z-40 mb-4 max-w-2xl mx-auto">
         <Card 
           className="shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
           style={{ backgroundColor: "#E5E4DE", color: "#4c503d" }}
@@ -303,7 +303,7 @@ export function CamperBeverageDashboard({
 
       {/* Storno Bereich direkt unter dem Deckel */}
       {stornoEintraege.length > 0 && (
-        <div className="mb-6">
+        <div className="mb-6 max-w-2xl mx-auto">
           <h2 className="text-sm font-bold tracking-tight mb-2 px-1 text-muted-foreground flex items-center">
             <Undo2 className="w-4 h-4 mr-2" /> Kürzliche Buchungen (Storno)
           </h2>
@@ -334,7 +334,7 @@ export function CamperBeverageDashboard({
       )}
 
       {/* Navigation zu Leaderboard & Statistik – Punkt 2: elegante neutrale Buttons */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 max-w-2xl mx-auto">
         <Link href="/dashboard/leaderboard" className="block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
           <Card className="bg-white/10 backdrop-blur-sm border border-white/20 text-foreground hover:bg-white/20 transition-all duration-200 hover:scale-105 active:scale-95">
             <CardContent className="p-3 flex items-center justify-center gap-2">
@@ -354,9 +354,9 @@ export function CamperBeverageDashboard({
       </div>
 
       {/* Beverage Grid – Beige Glasskarten, Neon-Hover, Uppercase Label */}
-      <div>
+      <div className="max-w-7xl mx-auto">
         <h2 className="text-xs font-sans font-semibold uppercase tracking-widest text-muted-foreground mb-3 px-1">Was trinkst du?</h2>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {beverages.map(bev => (
             <button
               key={bev.id}
@@ -408,7 +408,7 @@ export function CamperBeverageDashboard({
       </div>
 
       {/* Meine Statistiken – Beige Karte, rounded-3xl, Uppercase Labels */}
-      <div className="mt-8">
+      <div className="mt-8 max-w-2xl mx-auto">
         <h2 className="text-xs font-sans font-semibold uppercase tracking-widest text-muted-foreground mb-3 px-1">Meine Statistiken</h2>
         <Card className="bg-card border-0 rounded-3xl shadow-sm overflow-hidden">
           <CardContent className="p-0">

@@ -40,7 +40,7 @@ export default async function GetraenkePage() {
     .order('created_at', { ascending: false })
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="container mx-auto px-4 max-w-7xl">
       <CamperBeverageDashboard 
         userId={user.id} 
         beverages={beverages || []} 

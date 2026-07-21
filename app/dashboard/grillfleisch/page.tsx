@@ -34,7 +34,7 @@ export default async function GrillfleischPage() {
   const { data: grillOrders } = await supabase.from("grill_orders").select("*").eq("user_id", user.id).order("created_at", { ascending: false })
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="container mx-auto px-4 max-w-7xl">
       <CamperGrillDashboard
         userId={user.id}
         items={grillItems || []}

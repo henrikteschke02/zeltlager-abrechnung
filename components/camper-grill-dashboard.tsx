@@ -159,7 +159,7 @@ export function CamperGrillDashboard({
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
       {/* ── MEIN GRILL-DECKEL (Sticky Banner) ─────────────────────────────── */}
-      <div className="sticky top-16 z-40 mb-4">
+      <div className="sticky top-16 z-40 mb-4 max-w-2xl mx-auto">
         <Card
           className="bg-card text-card-foreground shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
           onClick={() => setShowDaily(!showDaily)}
@@ -212,7 +212,7 @@ export function CamperGrillDashboard({
 
       {/* ── Storno Strip ──────────────────────────────────────────────────────── */}
       {stornoEntries.length > 0 && (
-        <div className="mb-6">
+        <div className="mb-6 max-w-2xl mx-auto">
           <h2 className="text-sm font-bold tracking-tight mb-2 px-1 text-muted-foreground flex items-center">
             <Undo2 className="w-4 h-4 mr-2" /> Kürzliche Buchungen (Storno)
           </h2>
@@ -260,12 +260,13 @@ export function CamperGrillDashboard({
       )}
 
       {/* ── Section heading ───────────────────────────────────────────────────── */}
-      <h2 className="text-xs font-sans font-semibold uppercase tracking-widest text-muted-foreground px-1">
-        Was grillst du?
-      </h2>
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-xs font-sans font-semibold uppercase tracking-widest text-muted-foreground px-1 mb-3">
+          Was grillst du?
+        </h2>
 
-      {/* ── Meat Grid ─────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-3">
+        {/* ── Meat Grid ─────────────────────────────────────────────────────────── */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {items.map((item) => (
           <button
             key={item.id}
@@ -317,6 +318,7 @@ export function CamperGrillDashboard({
             </div>
           </button>
         ))}
+      </div>
       </div>
 
       {/* ── Booking Modal ─────────────────────────────────────────────────────── */}
