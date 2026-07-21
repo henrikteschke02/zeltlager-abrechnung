@@ -80,39 +80,39 @@ export function StatistikDashboard({ data }: StatistikDashboardProps) {
       <Card className="bg-white/40 backdrop-blur-md border-white/20 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-[#4c503d]/70 uppercase bg-black/5 border-b border-[#4c503d]/10">
+            <thead className="text-xs text-slate-900 uppercase bg-black/10 border-b border-black/20">
               <tr>
                 <th className="px-6 py-4 font-bold">Camper Name</th>
                 <th className="px-6 py-4 font-bold text-right">Getränke</th>
                 <th className="px-6 py-4 font-bold text-right">Grillfleisch</th>
                 <th className="px-6 py-4 font-bold text-right">Brötchen</th>
-                <th className="px-6 py-4 font-bold text-right text-[#4c503d]">Gesamtsumme</th>
+                <th className="px-6 py-4 font-bold text-right text-slate-900">Gesamtsumme</th>
               </tr>
             </thead>
             <tbody>
               {filteredData.length > 0 ? (
                 filteredData.map((row) => (
-                  <tr key={row.userId} className="border-b border-[#4c503d]/5 hover:bg-white/30 transition-colors">
-                    <td className="px-6 py-4 font-medium text-[#4c503d] whitespace-nowrap">
+                  <tr key={row.userId} className="border-b border-black/10 hover:bg-white/40 transition-colors">
+                    <td className="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">
                       {row.fullName}
                     </td>
-                    <td className="px-6 py-4 text-right text-[#4c503d]/80">
+                    <td className="px-6 py-4 text-right text-slate-800">
                       {row.getraenkeSum.toFixed(2)} €
                     </td>
-                    <td className="px-6 py-4 text-right text-[#4c503d]/80">
+                    <td className="px-6 py-4 text-right text-slate-800">
                       {row.grillSum.toFixed(2)} €
                     </td>
-                    <td className="px-6 py-4 text-right text-muted-foreground/50">
+                    <td className="px-6 py-4 text-right text-slate-500">
                       {row.broetchenSum.toFixed(2)} €
                     </td>
-                    <td className="px-6 py-4 text-right font-bold text-[#4c503d] bg-black/[0.02]">
+                    <td className="px-6 py-4 text-right font-bold text-slate-900 bg-black/[0.03]">
                       {row.totalSum.toFixed(2)} €
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-[#4c503d]/60">
+                  <td colSpan={5} className="px-6 py-8 text-center text-slate-600 font-medium">
                     Keine Camper gefunden.
                   </td>
                 </tr>
