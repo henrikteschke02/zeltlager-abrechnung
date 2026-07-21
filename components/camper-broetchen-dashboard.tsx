@@ -29,7 +29,7 @@ type BroetchenOrder = {
   id: string
   user_id: string
   item_id: string
-  quantity: number
+  menge: number
   created_at: string
 }
 
@@ -82,16 +82,16 @@ export function CamperBroetchenDashboard({
 
   const totalCost = orders.reduce((sum, order) => {
     const item = items.find((i) => i.id === order.item_id)
-    return sum + (item?.preis || 0) * order.quantity
+    return sum + (item?.preis || 0) * order.menge
   }, 0)
 
   const todaysDebt = todaysOrders.reduce((sum, o) => {
     const item = items.find((i) => i.id === o.item_id)
-    return sum + (item ? item.preis * o.quantity : 0)
+    return sum + (item ? item.preis * o.menge : 0)
   }, 0)
 
-  const totalCount = orders.reduce((s, o) => s + o.quantity, 0)
-  const todaysCount = todaysOrders.reduce((s, o) => s + o.quantity, 0)
+  const totalCount = orders.reduce((s, o) => s + o.menge, 0)
+  const todaysCount = todaysOrders.reduce((s, o) => s + o.menge, 0)
 
   // Storno window: 3 min
   const stornoEntries = orders.filter(
@@ -115,14 +115,14 @@ export function CamperBroetchenDashboard({
       id: crypto.randomUUID(),
       user_id: userId,
       item_id: item.id,
-      quantity: qty,
+      menge: qty,
       created_at: new Date().toISOString(),
     }
     setOrders((prev) => [temp, ...prev])
 
     const { data, error } = await supabase
        .from("broetchen_buchungen")
-       .insert([{ user_id: userId, item_id: item.id, quantity: qty }])
+       .insert([{ user_id: userId, item_id: item.id, menge: qty }])
        .select()
        .single()
 
@@ -236,7 +236,7 @@ export function CamperBroetchenDashboard({
                     <div className="flex justify-between items-start mb-2">
                       <div className="min-w-0 pr-2">
                         <p className="font-bold text-sm truncate">
-                          {o.quantity}× {item?.name ?? "Unbekannt"}
+                          {o.menge}× {item?.name ?? "Unbekannt"}
                         </p>
                         <p className="text-xs text-muted-foreground font-medium">
                           {mins}:{secs.toString().padStart(2, "0")} min stornierbar
