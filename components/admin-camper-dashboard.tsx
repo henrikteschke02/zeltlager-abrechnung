@@ -209,10 +209,8 @@ export function AdminCamperDashboard({
                       </TableCell>
                       <TableCell className="text-right">
                         <Dialog>
-                          <DialogTrigger asChild>
-                            <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                              <Info className="h-4 w-4" />
-                            </Button>
+                          <DialogTrigger render={<Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity" />}>
+                            <Info className="h-4 w-4" />
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
