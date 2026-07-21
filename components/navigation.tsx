@@ -13,9 +13,9 @@ import { cn } from "@/lib/utils"
 
 const navItems = [
   { name: "Startseite", href: "/dashboard", icon: Home, exact: true },
+  { name: "Schwarzes Brett", href: "/dashboard/schwarzes-brett", icon: MessageSquare },
   { name: "Getränke", href: "/dashboard/getraenke", icon: Beer },
   { name: "Grillfleisch", href: "/dashboard/grillfleisch", icon: Drumstick },
-  { name: "Schwarzes Brett", href: "/dashboard/schwarzes-brett", icon: MessageSquare },
   { name: "Brötchen", href: "/dashboard/broetchen", icon: Croissant },
 ]
 
