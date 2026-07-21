@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus, Edit2, Trash2, Loader2 } from "lucide-react"
+import { Plus, Edit2, Trash2, Loader2, CheckCircle2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -201,13 +201,33 @@ export function AdminGrillDashboard() {
               <Card key={item.id} className="bg-white/5 backdrop-blur-sm border-white/10 overflow-hidden">
                 <CardContent className="p-4 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4 min-w-0">
-                    <div className="w-12 h-12 rounded-xl bg-black/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-2xl">🥩</span>
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-bold text-[#E5E4DE] truncate">{item.name}</h3>
-                      <p className="text-[#D9FF3D] font-serif font-semibold">{Number(item.preis || 0).toFixed(2)} €</p>
-                      {item.image_name && <p className="text-xs text-white/50">{item.image_name}</p>}
+                    {item.image_name ? (
+                      <img 
+                        src={`/images/grill/${item.image_name}`} 
+                        alt={item.name} 
+                        className="w-12 h-12 rounded-md object-cover flex-shrink-0" 
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-md bg-black/20 flex items-center justify-center flex-shrink-0 opacity-50">
+                        <span className="text-2xl">🥩</span>
+                      </div>
+                    )}
+                    <div className="min-w-0 flex flex-col justify-center">
+                      <h3 className="font-bold text-[#E5E4DE] truncate leading-tight">{item.name}</h3>
+                      <p className="text-[#D9FF3D] font-serif font-semibold text-sm leading-tight">{Number(item.preis || 0).toFixed(2)} €</p>
+                      <div className="flex items-center gap-1 mt-1">
+                        {item.image_name ? (
+                          <>
+                            <CheckCircle2 className="w-3 h-3 text-[#D9FF3D]" />
+                            <span className="text-[10px] text-[#D9FF3D] uppercase tracking-wider font-semibold">Aktiv <span className="text-white/40 font-normal lowercase tracking-normal">({item.image_name})</span></span>
+                          </>
+                        ) : (
+                          <>
+                            <AlertCircle className="w-3 h-3 text-red-400" />
+                            <span className="text-[10px] text-red-400 uppercase tracking-wider font-semibold">Bild fehlt</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                   
