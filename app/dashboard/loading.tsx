@@ -6,7 +6,7 @@ export default function DashboardLoading() {
       <div className="transform scale-[0.6] sm:scale-[0.8] md:scale-100 flex items-center justify-center">
         <CampingLoader />
       </div>
-      <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#E5E4DE]/70 font-medium animate-pulse -mt-8 sm:-mt-4 md:mt-0">
+      <p className="text-sm font-sans uppercase tracking-[0.3em] text-[#4c503d]/70 dark:text-[#E5E4DE]/70 font-medium animate-pulse -mt-8 sm:-mt-4 md:mt-0">
         LOADING
       </p>
     </div>

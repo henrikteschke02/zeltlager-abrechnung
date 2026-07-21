@@ -48,7 +48,7 @@ export function AdminNav() {
               "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-sans font-semibold uppercase tracking-widest transition-all",
               isActive 
                 ? "bg-[#E5E4DE] text-[#4c503d] shadow-sm" 
-                : "text-white/70 hover:text-white hover:bg-white/10"
+                : "text-[#4c503d]/70 dark:text-white/70 hover:text-[#4c503d] dark:hover:text-white hover:bg-white/10"
             )}
           >
             <item.icon className="w-4 h-4" />

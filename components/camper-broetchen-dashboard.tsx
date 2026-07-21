@@ -272,7 +272,7 @@ export function CamperBroetchenDashboard({
             key={item.id}
             onClick={() => openModal(item)}
             disabled={loadingId === item.id}
-            className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md text-left transition-all duration-200 hover:scale-[1.03] hover:border-[#D9FF3D]/40 hover:shadow-lg hover:shadow-[#D9FF3D]/10 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-[#D9FF3D] select-none"
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-black/10 dark:border-white/10 bg-white/5 backdrop-blur-md text-left transition-all duration-200 hover:scale-[1.03] hover:border-[#D9FF3D]/40 hover:shadow-lg hover:shadow-[#D9FF3D]/10 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-[#D9FF3D] select-none"
             style={{ backgroundColor: "rgba(76,80,61,0.55)" }}
           >
             {/* Square image area */}
@@ -297,10 +297,10 @@ export function CamperBroetchenDashboard({
             {/* Card body */}
             <div className="flex items-center justify-between p-3 gap-2">
               <div className="min-w-0">
-                <h3 className="font-sans font-bold text-sm leading-tight truncate text-white">
+                <h3 className="font-sans font-bold text-sm leading-tight truncate text-[#4c503d] dark:text-white">
                   {item.name}
                 </h3>
-                <p className="text-xs font-sans font-semibold uppercase tracking-wider text-white/50 mt-0.5">
+                <p className="text-xs font-sans font-semibold uppercase tracking-wider text-[#4c503d]/50 dark:text-white/50 mt-0.5">
                   {Number(item.preis || 0).toFixed(2)} €
                 </p>
               </div>

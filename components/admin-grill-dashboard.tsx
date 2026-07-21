@@ -165,7 +165,7 @@ export function AdminGrillDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#4c503d] text-white p-4 sm:p-8 font-sans">
+    <div className="min-h-screen bg-background text-foreground dark:bg-[#4c503d] dark:text-white p-4 sm:p-8 font-sans">
       <div className="max-w-3xl mx-auto space-y-6">
         
         <AdminNav />
@@ -174,7 +174,7 @@ export function AdminGrillDashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-serif font-bold text-[#E5E4DE]">Grillfleisch Verwaltung</h1>
-            <p className="text-[#E5E4DE]/70 text-sm mt-1">Verwalte die verfügbaren Fleischsorten für das Lager.</p>
+            <p className="text-[#4c503d]/70 dark:text-[#E5E4DE]/70 text-sm mt-1">Verwalte die verfügbaren Fleischsorten für das Lager.</p>
           </div>
           <Button 
             onClick={openAddModal}
@@ -189,16 +189,16 @@ export function AdminGrillDashboard() {
         {/* Meat List */}
         <div className="space-y-3">
           {loadingItems ? (
-            <div className="text-center p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl flex justify-center items-center">
+            <div className="text-center p-8 bg-white/5 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-2xl flex justify-center items-center">
               <Loader2 className="w-8 h-8 animate-spin text-[#D9FF3D]" />
             </div>
           ) : items.length === 0 ? (
-             <div className="text-center p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
-               <p className="text-[#E5E4DE]/70">Kein Fleisch angelegt. Füge ein neues Produkt hinzu!</p>
+             <div className="text-center p-8 bg-white/5 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-2xl">
+               <p className="text-[#4c503d]/70 dark:text-[#E5E4DE]/70">Kein Fleisch angelegt. Füge ein neues Produkt hinzu!</p>
              </div>
           ) : (
             items.map((item) => (
-              <Card key={item.id} className="bg-white/5 backdrop-blur-sm border-white/10 overflow-hidden">
+              <Card key={item.id} className="bg-white/5 backdrop-blur-sm border-black/10 dark:border-white/10 overflow-hidden">
                 <CardContent className="p-4 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4 min-w-0">
                     {item.image_name ? (
@@ -219,7 +219,7 @@ export function AdminGrillDashboard() {
                         {item.image_name ? (
                           <>
                             <CheckCircle2 className="w-3 h-3 text-[#D9FF3D]" />
-                            <span className="text-[10px] text-[#D9FF3D] uppercase tracking-wider font-semibold">Aktiv <span className="text-white/40 font-normal lowercase tracking-normal">({item.image_name})</span></span>
+                            <span className="text-[10px] text-[#D9FF3D] uppercase tracking-wider font-semibold">Aktiv <span className="text-[#4c503d]/40 dark:text-white/40 font-normal lowercase tracking-normal">({item.image_name})</span></span>
                           </>
                         ) : (
                           <>

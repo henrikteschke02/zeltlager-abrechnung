@@ -336,7 +336,7 @@ export function CamperBeverageDashboard({
       {/* Navigation zu Leaderboard */}
       <div className="max-w-md mx-auto">
         <Link href="/dashboard/leaderboard" className="block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
-          <Card className="bg-white/10 backdrop-blur-sm border border-white/20 text-foreground hover:bg-white/20 transition-all duration-200 hover:scale-105 active:scale-95">
+          <Card className="bg-white/10 backdrop-blur-sm border border-black/10 dark:border-white/20 text-foreground hover:bg-white/20 transition-all duration-200 hover:scale-105 active:scale-95">
             <CardContent className="p-3 flex items-center justify-center gap-2">
               <Medal className="w-5 h-5 flex-shrink-0 text-primary" />
               <div className="text-sm font-sans font-bold leading-tight">Zum Leaderboard</div>
@@ -354,7 +354,7 @@ export function CamperBeverageDashboard({
               key={bev.id}
               onClick={() => handleOpenModal(bev)}
               disabled={loadingId === bev.id}
-              className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md text-left transition-all duration-200 hover:scale-[1.03] hover:border-[#D9FF3D]/40 hover:shadow-lg hover:shadow-[#D9FF3D]/10 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-[#D9FF3D] select-none"
+              className="group relative flex flex-col overflow-hidden rounded-2xl border border-black/10 dark:border-white/10 bg-white/5 backdrop-blur-md text-left transition-all duration-200 hover:scale-[1.03] hover:border-[#D9FF3D]/40 hover:shadow-lg hover:shadow-[#D9FF3D]/10 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-[#D9FF3D] select-none"
               style={{ backgroundColor: "rgba(76,80,61,0.55)" }}
             >
               {/* Square image / icon area */}
@@ -379,8 +379,8 @@ export function CamperBeverageDashboard({
               {/* Name + price row with neon +1 badge */}
               <div className="flex items-center justify-between p-3 gap-2">
                 <div className="min-w-0">
-                  <h3 className="font-sans font-bold text-sm leading-tight truncate text-white">{bev.name}</h3>
-                  <p className="text-xs font-sans font-semibold uppercase tracking-wider text-white/50 mt-0.5">{Number(bev.price).toFixed(2)} €</p>
+                  <h3 className="font-sans font-bold text-sm leading-tight truncate text-[#4c503d] dark:text-white">{bev.name}</h3>
+                  <p className="text-xs font-sans font-semibold uppercase tracking-wider text-[#4c503d]/50 dark:text-white/50 mt-0.5">{Number(bev.price).toFixed(2)} €</p>
                 </div>
                 <div
                   className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl font-black text-sm transition-all duration-150 group-hover:scale-110"

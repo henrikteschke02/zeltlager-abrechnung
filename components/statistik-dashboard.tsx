@@ -60,37 +60,37 @@ export function StatistikDashboard({ data, isAdmin }: StatistikDashboardProps) {
     const myData = data[0] || { getraenkeSum: 0, grillSum: 0, broetchenSum: 0, totalSum: 0 }
     return (
       <div className="max-w-md mx-auto mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <Card className="bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl overflow-hidden rounded-2xl relative">
+        <Card className="bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/20 shadow-2xl overflow-hidden rounded-2xl relative">
           {/* Dekorative Kassenbon-Zackenkante oben */}
           <div className="absolute top-0 left-0 right-0 h-3" style={{ backgroundImage: 'linear-gradient(-45deg, transparent 33.33%, rgba(255,255,255,0.1) 33.33%, rgba(255,255,255,0.1) 66.66%, transparent 66.66%), linear-gradient(45deg, transparent 33.33%, rgba(255,255,255,0.1) 33.33%, rgba(255,255,255,0.1) 66.66%, transparent 66.66%)', backgroundSize: '12px 24px' }}></div>
           
           <CardHeader className="pt-8 pb-4 text-center">
             <div className="mx-auto bg-white/20 w-12 h-12 rounded-full flex items-center justify-center mb-3 shadow-inner">
-              <Receipt className="w-6 h-6 text-white" />
+              <Receipt className="w-6 h-6 text-[#4c503d] dark:text-white" />
             </div>
-            <CardTitle className="font-black text-2xl text-white tracking-tight">
+            <CardTitle className="font-black text-2xl text-[#4c503d] dark:text-white tracking-tight">
               Abrechnung
             </CardTitle>
-            <p className="text-white/80 font-medium mt-1">{myData.fullName}</p>
+            <p className="text-[#4c503d]/80 dark:text-white/80 font-medium mt-1">{myData.fullName}</p>
           </CardHeader>
 
           <CardContent className="px-6 pb-8 space-y-5">
             <div className="space-y-4">
-              <div className="flex justify-between items-center text-white/90">
+              <div className="flex justify-between items-center text-[#4c503d]/90 dark:text-white/90">
                 <span className="font-medium tracking-wide">Getränke</span>
                 <span className="font-semibold">{myData.getraenkeSum.toFixed(2)} €</span>
               </div>
-              <div className="flex justify-between items-center text-white/90">
+              <div className="flex justify-between items-center text-[#4c503d]/90 dark:text-white/90">
                 <span className="font-medium tracking-wide">Grillfleisch</span>
                 <span className="font-semibold">{myData.grillSum.toFixed(2)} €</span>
               </div>
-              <div className="flex justify-between items-center text-white/70">
+              <div className="flex justify-between items-center text-[#4c503d]/70 dark:text-white/70">
                 <span className="font-medium tracking-wide">Brötchen</span>
                 <span className="font-semibold">{myData.broetchenSum.toFixed(2)} €</span>
               </div>
             </div>
             
-            <div className="pt-5 mt-2 border-t-2 border-dashed border-white/20">
+            <div className="pt-5 mt-2 border-t-2 border-dashed border-black/10 dark:border-white/20">
               <div className="flex justify-between items-center text-2xl font-black text-[#D9FF3D]">
                 <span className="tracking-tight">Gesamtsumme</span>
                 <span>{myData.totalSum.toFixed(2)} €</span>
@@ -109,14 +109,14 @@ export function StatistikDashboard({ data, isAdmin }: StatistikDashboardProps) {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="relative w-full sm:max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4c503d]/70 dark:text-white/70" />
           <Input 
             type="search" 
             autoComplete="off"
             placeholder="Camper suchen..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/70 focus-visible:ring-white/50"
+            className="pl-9 bg-white/10 border-black/10 dark:border-white/20 text-[#4c503d] dark:text-white placeholder:text-[#4c503d]/70 dark:text-white/70 focus-visible:ring-white/50"
           />
         </div>
         <Button 
@@ -128,7 +128,7 @@ export function StatistikDashboard({ data, isAdmin }: StatistikDashboardProps) {
         </Button>
       </div>
 
-      <Card className="bg-white/40 backdrop-blur-md border-white/20 overflow-hidden shadow-sm">
+      <Card className="bg-white/40 backdrop-blur-md border-black/10 dark:border-white/20 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="text-xs text-slate-900 uppercase bg-black/10 border-b border-black/20">
