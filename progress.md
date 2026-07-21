@@ -36,3 +36,16 @@ Hier dokumentieren wir Schritt für Schritt, was wir gebaut haben, damit die Mag
 - **Asset-Generierung:** Weitere extrem hochwertige, fotorealistische KI-Bilder für "Bauchfleisch" und "Hähnchen" (90-Grad Top-Down, Schieferplatte, Rosmarin, Gabel) generiert und im System eingebunden.
 - **Deep Debugging (Vercel & Supabase):** Einen vertrackten TypeScript/Vercel-Build-Error bezüglich `DialogTrigger asChild` durch den korrekten `render`-Prop gelöst. Zusätzlich einen versteckten RLS (Row Level Security) Fehler identifiziert, der Admins beim Test-Kauf aussperrte, und das entsprechende SQL-Migration-Skript sowie Frontend-Fehler-Handling korrigiert.
 - **Mobile UI/UX Refactoring:** Strenge "Mobile-First" Anpassungen umgesetzt. Den Zelt-Loader auf Smartphones skaliert (CSS Transform Scale) und zentriert. Das Admin-Panel wurde von festen Breiten befreit: Die Sub-Navigation ist nun horizontal scrollbar (`overflow-x-auto`) und erzeugt keinen ungewollten horizontalen Overflow mehr. Alle Dashboards nutzen konsistente Wrapper (`max-w-7xl`), und Full-Bleed-Hintergründe im Grill-Admin-Panel nutzen exakt berechnete negative Margins, um auf dem Smartphone bündig mit dem Bildschirmrand abzuschließen.
+
+
+## Phase 8: Brötchen-Modul
+Aufbau analog zu Getränke und Grillfleisch: eigene Tabelle in Supabase, Admin-CRUD und Mengen-Stepper statt reinem '+1'-Klick. Dabei ist ein Encoding-Bug durch einen UTF-8/Latin-1-Mismatch aufgetreten (kaputte Umlaute und Emojis), den wir über ein Skript global behoben haben.
+
+## Phase 9: Statistik & Gesamtabrechnung
+Neue zentrale Route mit rollenbasierter Logik (Admin vs. Camper) und CSV-Export. Außerdem ein Hotfix für die Aggregation, da die Grillfleisch-Summe anfangs fehlte.
+
+## Phase 10: Schwarzes Brett & Profil-Feature
+Die Info-Seite wurde in eine eigene Route ausgelagert. Die Autor-Zuordnung nutzt jetzt echte Usernames statt "Lagerleitung" und das Lösch-Anfragen-System läuft. Im Profil-Bereich gibt es nun ein Feld für "Mitglieder", damit Familien-Accounts vernünftig verwaltet werden können.
+
+## Phase 11: UI-Politur & Aufräumen
+Der schwache Light-Mode-Kontrast ist behoben, ohne den Dark Mode anzufassen. Die Navigation hat eine neue sinnvolle Reihenfolge bekommen (Startseite -> Schwarzes Brett -> Getränke -> Grillfleisch -> Brötchen -> Statistik -> Admin) und Dashboard-Karten sind thematisch in "Verpflegung" und "Infos & Verwaltung" gegliedert. Zu guter Letzt haben wir das Repo ausgemistet und alte Skripte sowie generische Doku-Dateien gelöscht.

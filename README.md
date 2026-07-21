@@ -10,9 +10,14 @@ Eine moderne Web-App zur digitalen Verwaltung von Getränken und Grillfleisch au
 - **Fehlertoleranz:** 3-Minuten-Stornofunktion für versehentliche Buchungen.
 - **Admin-Auth:** Manuelle Account-Vergabe zur Umgehung von E-Mail-Verifizierungen auf dem Zeltplatz.
 - **Premium UI:** Hochwertiges Glassmorphism-Design (Olivgrün/Neon-Limette) mit animiertem Tag/Nacht-Camping-Loader.
+- **Brötchen-Deckel:** Eigenes Modul analog zu Getränken/Grillfleisch, mit Mengen-Stepper (Plus/Minus) und Admin-CRUD.
+- **Schwarzes Brett:** Zentrale Ankündigungs- und Infoseite für alle Camper, mit echter Autor-Zuordnung und Lösch-Anfragen-System.
+- **Gesamtabrechnung & Statistik:** Zentrale Statistik-Seite mit rollenbasierter Ansicht (Admins sehen alle Camper inkl. CSV-Export, Camper sehen ihren eigenen "Kassenbon" mit Einzelposten).
+- **Profil-Verwaltung:** Selbstständige Pflege von Name, Telefonnummer und Mitgliedern (für Familien- oder Gruppen-Accounts) direkt im Dashboard.
+- **Light & Dark Mode:** Beide Modi mit exakt abgestimmten Kontrastwerten für optimale Lesbarkeit.
 
 ## 🛠️ Tech Stack
-- **Frontend:** Next.js (App Router), Tailwind CSS
+- **Frontend:** Next.js (App Router), Tailwind CSS, shadcn/ui
 - **Backend:** Supabase (PostgreSQL, Realtime, Auth)
 - **Hosting:** Vercel
 
