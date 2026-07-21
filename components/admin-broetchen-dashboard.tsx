@@ -25,7 +25,10 @@ export type BroetchenItem = {
 }
 
 const AVAILABLE_IMAGES = [
-  "default.png"
+  "kaese.png",
+  "mehrkorn.png",
+  "normales.png",
+  "roggen.png"
 ]
 
 export function AdminBroetchenDashboard() {

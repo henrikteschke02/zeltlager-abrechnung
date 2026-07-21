@@ -25,22 +25,10 @@ export type GrillItem = {
 }
 
 const AVAILABLE_IMAGES = [
-  "schweinenackensteak.png",
-  "bratwurst.png",
-  "rinderhueftsteak.png",
-  "rumpsteak.png",
+  "bauchfleisch.png",
   "haehnchen.png",
-  "haehnchenschenkel.png",
-  "rinderfilet.png",
-  "spareribs.png",
-  "nuernberger.png",
-  "merguez.png",
-  "pute.png",
-  "lammkoteletts.png",
-  "schweinefilet.png",
-  "currywurst.png",
-  "kotelett.png",
-  "bauchfleisch.png"
+  "nackensteak.png",
+  "wurst.png"
 ]
 
 export function AdminGrillDashboard() {
