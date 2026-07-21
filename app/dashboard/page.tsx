@@ -112,6 +112,19 @@ export default async function DashboardPage() {
                   </CardContent>
                 </Card>
               </Link>
+
+              <Link href="/dashboard/profile" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+                <Card className="border-primary/10 hover:border-primary/30 transition-colors h-full">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Mein Profil</CardTitle>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-muted-foreground"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">Profil</div>
+                    <p className="text-xs text-muted-foreground">Daten & Mitglieder verwalten</p>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
           </section>
         </div>

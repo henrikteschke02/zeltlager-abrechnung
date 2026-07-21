@@ -17,6 +17,7 @@ type ProfileFormProps = {
     fullName: string
     phone: string
     avatarUrl: string
+    members?: string | null
   }
 }
 
@@ -24,6 +25,7 @@ export function ProfileForm({ userId, initialProfile }: ProfileFormProps) {
   const [fullName, setFullName] = useState(initialProfile.fullName)
   const [phone, setPhone] = useState(initialProfile.phone)
   const [avatarUrl, setAvatarUrl] = useState(initialProfile.avatarUrl)
+  const [members, setMembers] = useState(initialProfile.members || "")
   const [isUploading, setIsUploading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   
@@ -65,6 +67,7 @@ export function ProfileForm({ userId, initialProfile }: ProfileFormProps) {
         full_name: fullName,
         phone,
         avatar_url: avatarUrl,
+        members: members,
       })
       .eq('id', userId)
 
@@ -116,6 +119,17 @@ export function ProfileForm({ userId, initialProfile }: ProfileFormProps) {
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Max Mustermann"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="members">Mitglieder (optional)</Label>
+            <Input 
+              id="members" 
+              value={members}
+              onChange={(e) => setMembers(e.target.value)}
+              placeholder="z.B. Anna, Tom, Lisa"
+            />
+            <p className="text-xs text-muted-foreground">Falls ihr als Familie einen gemeinsamen Deckel nutzt, tragt hier die Namen ein.</p>
           </div>
 
           <div className="space-y-2">

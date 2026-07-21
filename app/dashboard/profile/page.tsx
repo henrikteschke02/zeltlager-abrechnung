@@ -31,7 +31,8 @@ export default async function ProfilePage() {
           initialProfile={{
             fullName: profile?.full_name || "",
             phone: profile?.phone || "",
-            avatarUrl: profile?.avatar_url || ""
+            avatarUrl: profile?.avatar_url || "",
+            members: profile?.members || ""
           }} 
         />
       </div>

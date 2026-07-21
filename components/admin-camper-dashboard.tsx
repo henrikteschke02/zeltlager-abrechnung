@@ -25,6 +25,7 @@ type Profile = {
   email: string
   full_name: string | null
   phone?: string | null
+  members?: string | null
   is_approved?: boolean
 }
 
@@ -209,7 +210,7 @@ export function AdminCamperDashboard({
                       </TableCell>
                       <TableCell className="text-right">
                         <Dialog>
-                          <DialogTrigger render={<Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity" />}>
+                          <DialogTrigger render={<Button variant="ghost" size="icon" className="md:opacity-0 md:group-hover:opacity-100 transition-opacity" />}>
                             <Info className="h-4 w-4" />
                           </DialogTrigger>
                           <DialogContent>
@@ -223,6 +224,10 @@ export function AdminCamperDashboard({
                               <div className="grid grid-cols-3 items-center gap-4">
                                 <span className="font-medium text-sm text-muted-foreground">Name</span>
                                 <span className="col-span-2">{user.full_name || "-"}</span>
+                              </div>
+                              <div className="grid grid-cols-3 items-center gap-4">
+                                <span className="font-medium text-sm text-muted-foreground">Mitglieder</span>
+                                <span className="col-span-2">{user.members || "-"}</span>
                               </div>
                               <div className="grid grid-cols-3 items-center gap-4">
                                 <span className="font-medium text-sm text-muted-foreground">Email</span>
