@@ -165,7 +165,7 @@ export function AdminGrillDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#4c503d] text-white p-4 sm:p-8 font-sans">
+    <div className="min-h-screen w-full bg-[#4c503d] text-white p-4 sm:p-8 font-sans -mx-4 md:-mx-8">
       <div className="max-w-3xl mx-auto space-y-6">
         
         <AdminNav />

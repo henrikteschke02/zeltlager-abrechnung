@@ -30,7 +30,7 @@ export function AdminNav() {
   ]
 
   return (
-    <div className="flex items-center space-x-2 mb-8 p-1 bg-black/20 rounded-xl w-fit">
+    <div className="flex items-center space-x-2 mb-8 p-1 bg-black/20 rounded-xl w-full md:w-fit overflow-x-auto whitespace-nowrap no-scrollbar">
       {navItems.map((item) => {
         const isActive = item.matchExact ? pathname === item.href : pathname?.startsWith(item.href)
         
