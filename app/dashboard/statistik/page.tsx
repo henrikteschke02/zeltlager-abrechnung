@@ -40,7 +40,7 @@ export default async function StatistikPage() {
   if (isAdmin) {
     const { data: p } = await supabase.from('profiles').select('id, full_name').eq('is_approved', true)
     const { data: c } = await supabase.from('consumptions').select('user_id, beverage_id, quantity')
-    const { data: o } = await supabase.from('grill_orders').select('user_id, item_id, quantity')
+    const { data: o } = await supabase.from('grill_orders').select('user_id, grill_item_id, quantity')
     profilesData = p
     consumptionsData = c
     grillOrdersData = o
@@ -48,17 +48,17 @@ export default async function StatistikPage() {
     // Camper sieht nur sich selbst
     profilesData = [{ id: user.id, full_name: profile.full_name }]
     const { data: c } = await supabase.from('consumptions').select('user_id, beverage_id, quantity').eq('user_id', user.id)
-    const { data: o } = await supabase.from('grill_orders').select('user_id, item_id, quantity').eq('user_id', user.id)
+    const { data: o } = await supabase.from('grill_orders').select('user_id, grill_item_id, quantity').eq('user_id', user.id)
     consumptionsData = c
     grillOrdersData = o
   }
 
   const { data: beverages } = await supabase.from('beverages').select('id, price')
-  const { data: grillItems } = await supabase.from('grill_items').select('id, preis')
+  const { data: grillItems } = await supabase.from('grill_items').select('id, price')
 
   // Maps für schnelle Preis-Lookups
   const beveragePrices = new Map((beverages || []).map(b => [b.id, b.price || 0]))
-  const grillPrices = new Map((grillItems || []).map(g => [g.id, g.preis || 0]))
+  const grillPrices = new Map((grillItems || []).map(g => [g.id, g.price || 0]))
 
   // Maps für Summen pro User
   const getraenkeSums = new Map<string, number>()
@@ -74,7 +74,7 @@ export default async function StatistikPage() {
 
   if (grillOrdersData) {
     grillOrdersData.forEach(o => {
-      const price = grillPrices.get(o.item_id) || 0
+      const price = grillPrices.get(o.grill_item_id) || 0
       const currentSum = grillSums.get(o.user_id) || 0
       grillSums.set(o.user_id, currentSum + (price * o.quantity))
     })
