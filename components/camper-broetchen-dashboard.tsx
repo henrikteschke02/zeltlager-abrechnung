@@ -1,0 +1,390 @@
+﻿"use client"
+
+import { useState, useMemo, useEffect } from "react"
+import Image from "next/image"
+import { createClient } from "@/utils/supabase/client"
+import { Croissant, Plus, Minus, ChevronDown, Loader2, Undo2 } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+
+// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export type BroetchenItem = {
+  id: string
+  name: string
+  preis: number
+  image_name?: string | null
+}
+
+type BroetchenOrder = {
+  id: string
+  user_id: string
+  item_id: string
+  quantity: number
+  created_at: string
+}
+
+// â”€â”€â”€ Dummy data (entfernt) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Die Daten kommen nun ausschlieÃŸlich aus der DB (grill_items).
+
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export function CamperBroetchenDashboard({
+  userId,
+  items = [],
+  initialOrders = [],
+}: {
+  userId: string
+  items?: BroetchenItem[]
+  initialOrders?: BroetchenOrder[]
+}) {
+  const supabase = createClient()
+
+  const [orders, setOrders] = useState<BroetchenOrder[]>(initialOrders)
+  const [loadingId, setLoadingId] = useState<string | null>(null)
+  const [now, setNow] = useState(new Date())
+
+  // Deckel toggle (Gesamt vs. Tagesdeckel)
+  const [showDaily, setShowDaily] = useState(false)
+
+  // Booking modal
+  const [selectedItem, setSelectedItem] = useState<BroetchenItem | null>(null)
+  const [selectedQty, setSelectedQty] = useState(1)
+
+  // Camp day reset at 07:00
+  const startOfCampDay = useMemo(() => {
+    const d = new Date()
+    if (d.getHours() < 7) d.setDate(d.getDate() - 1)
+    d.setHours(7, 0, 0, 0)
+    return d
+  }, [])
+
+  // Countdown timer for undo
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // â”€â”€ Derived values â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  const todaysOrders = orders.filter(
+    (o) => new Date(o.created_at) >= startOfCampDay
+  )
+
+  const totalCost = orders.reduce((sum, order) => {
+    const item = items.find((i) => i.id === order.item_id)
+    return sum + (item?.preis || 0) * order.quantity
+  }, 0)
+
+  const todaysDebt = todaysOrders.reduce((sum, o) => {
+    const item = items.find((i) => i.id === o.item_id)
+    return sum + (item ? item.preis * o.quantity : 0)
+  }, 0)
+
+  const totalCount = orders.reduce((s, o) => s + o.quantity, 0)
+  const todaysCount = todaysOrders.reduce((s, o) => s + o.quantity, 0)
+
+  // Storno window: 3 min
+  const stornoEntries = orders.filter(
+    (o) => now.getTime() - new Date(o.created_at).getTime() <= 3 * 60 * 1000
+  )
+
+  // â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  const openModal = (item: BroetchenItem) => {
+    setSelectedItem(item)
+    setSelectedQty(1)
+  }
+
+  const executeBooking = async (item: BroetchenItem, qty: number) => {
+    if (loadingId) return
+    setLoadingId(item.id)
+    setSelectedItem(null)
+
+    // Optimistic insert
+    const temp: BroetchenOrder = {
+      id: crypto.randomUUID(),
+      user_id: userId,
+      item_id: item.id,
+      quantity: qty,
+      created_at: new Date().toISOString(),
+    }
+    setOrders((prev) => [temp, ...prev])
+
+    const { data, error } = await supabase
+       .from("broetchen_buchungen")
+       .insert([{ user_id: userId, item_id: item.id, quantity: qty }])
+       .select()
+       .single()
+
+    if (error) {
+      console.error("Booking error details:", error)
+      // Revert optimistic
+      setOrders((prev) => prev.filter(o => o.id !== temp.id))
+      alert(`Buchung fehlgeschlagen: ${error.message || "Unbekannter Fehler"}\nDetails in der Konsole.`)
+    } else if (data) {
+      // Replace optimistic temp with real DB record
+      setOrders((prev) => prev.map(o => o.id === temp.id ? data as BroetchenOrder : o))
+    }
+
+    setLoadingId(null)
+  }
+
+  const handleStorno = async (id: string) => {
+    const original = orders.find((o) => o.id === id)
+    if (!original) return
+    setOrders((prev) => prev.filter((o) => o.id !== id))
+    
+    const { error } = await supabase.from("broetchen_buchungen").delete().eq("id", id)
+    if (error) {
+      console.error("Storno error", error)
+      // Revert storno
+      setOrders((prev) => [original, ...prev])
+      alert("Storno fehlgeschlagen!")
+    }
+  }
+
+  // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+  return (
+    <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+      {/* â”€â”€ MEIN Brötchen-Deckel (Sticky Banner) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div className="sticky top-16 z-40 mb-4 max-w-2xl mx-auto">
+        <Card
+          className="bg-card text-card-foreground shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
+          onClick={() => setShowDaily(!showDaily)}
+        >
+          {/* Background Croissant icon decoration */}
+          <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+            <Croissant className="w-24 h-24" />
+          </div>
+
+          <CardHeader className="relative z-10 pb-2">
+            <div className="flex justify-between items-end">
+              <div>
+                <CardTitle className="text-[10px] font-sans font-semibold uppercase tracking-widest opacity-60 flex items-center gap-1">
+                  {showDaily ? "Tages-Brötchen-Deckel" : "Gesamt-Brötchen-Deckel"}
+                  <ChevronDown
+                    className={`w-3 h-3 transition-transform ${showDaily ? "rotate-180" : ""}`}
+                  />
+                </CardTitle>
+                <div
+                  className="text-4xl font-serif font-bold tracking-tight leading-none mt-1 animate-in fade-in slide-in-from-bottom-1 duration-300"
+                  key={showDaily ? "daily" : "total"}
+                >
+                  {(showDaily ? todaysDebt : totalCost).toFixed(2)} â‚¬
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-[10px] font-sans font-semibold uppercase tracking-widest opacity-60">
+                  {showDaily ? "Heute" : "Gesamt"}
+                </div>
+                <div
+                  className="text-2xl font-serif font-bold animate-in fade-in slide-in-from-bottom-1 duration-300"
+                  key={showDaily ? "dailyC" : "totalC"}
+                >
+                  {showDaily ? todaysCount : totalCount}
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="relative z-10 pb-4 pt-0">
+            <div className="flex items-center gap-3 bg-black/5 rounded-2xl p-2.5 mt-2 border border-black/5">
+              <span className="text-2xl">ðŸ”¥</span>
+              <p className="text-xs font-sans font-semibold uppercase tracking-widest opacity-70">
+                Mein Brötchen-Deckel â€” unabhÃ¤ngig vom GetrÃ¤nke-Deckel
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* â”€â”€ Storno Strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {stornoEntries.length > 0 && (
+        <div className="mb-6 max-w-2xl mx-auto">
+          <h2 className="text-sm font-bold tracking-tight mb-2 px-1 text-muted-foreground flex items-center">
+            <Undo2 className="w-4 h-4 mr-2" /> KÃ¼rzliche Buchungen (Storno)
+          </h2>
+          <div className="flex gap-2 overflow-x-auto pb-2 snap-x">
+            {stornoEntries.map((o) => {
+              const item = items.find((i) => i.id === o.item_id)
+              const timeLeft = Math.max(
+                0,
+                Math.floor(
+                  (3 * 60 * 1000 - (now.getTime() - new Date(o.created_at).getTime())) / 1000
+                )
+              )
+              const mins = Math.floor(timeLeft / 60)
+              const secs = timeLeft % 60
+              return (
+                <Card
+                  key={o.id}
+                  className="bg-destructive/10 border-destructive/20 shadow-sm flex-shrink-0 w-[240px] snap-start"
+                >
+                  <CardContent className="p-3">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="min-w-0 pr-2">
+                        <p className="font-bold text-sm truncate">
+                          {o.quantity}Ã— {item?.name ?? "Unbekannt"}
+                        </p>
+                        <p className="text-xs text-muted-foreground font-medium">
+                          {mins}:{secs.toString().padStart(2, "0")} min stornierbar
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="w-full h-7 text-xs"
+                      onClick={() => handleStorno(o.id)}
+                    >
+                      RÃ¼ckgÃ¤ngig
+                    </Button>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* â”€â”€ Section heading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-xs font-sans font-semibold uppercase tracking-widest text-muted-foreground px-1 mb-3">
+          Welche Brötchen möchtest du\?
+        </h2>
+
+        {/* â”€â”€ Meat Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {items.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => openModal(item)}
+            disabled={loadingId === item.id}
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md text-left transition-all duration-200 hover:scale-[1.03] hover:border-[#D9FF3D]/40 hover:shadow-lg hover:shadow-[#D9FF3D]/10 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-[#D9FF3D] select-none"
+            style={{ backgroundColor: "rgba(76,80,61,0.55)" }}
+          >
+            {/* Square image area */}
+            <div className="relative w-full aspect-square overflow-hidden bg-[#4c503d]">
+              {loadingId === item.id ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-20">
+                  <Loader2 className="w-10 h-10 text-[#D9FF3D] animate-spin" />
+                </div>
+              ) : (
+                <Image
+                  src={item.image_name ? `/images/broetchen/${item.image_name}` : "/images/broetchen/default.png"}
+                  alt={item.name}
+                  fill
+                  className="object-cover scale-[1.2] transition-transform duration-500 group-hover:scale-[1.3]"
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                />
+              )}
+              {/* Gradient overlay at bottom of image for text readability */}
+              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#4c503d]/80 to-transparent pointer-events-none z-10" />
+            </div>
+
+            {/* Card body */}
+            <div className="flex items-center justify-between p-3 gap-2">
+              <div className="min-w-0">
+                <h3 className="font-sans font-bold text-sm leading-tight truncate text-white">
+                  {item.name}
+                </h3>
+                <p className="text-xs font-sans font-semibold uppercase tracking-wider text-white/50 mt-0.5">
+                  {Number(item.preis || 0).toFixed(2)} â‚¬
+                </p>
+              </div>
+
+              {/* Neon +1 button */}
+              <div
+                className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl font-black text-sm transition-all duration-150 group-hover:scale-110"
+                style={{
+                  backgroundColor: "#D9FF3D",
+                  color: "#1a1e12",
+                }}
+              >
+                +1
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+      </div>
+
+      {/* â”€â”€ Booking Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3 text-2xl">
+              {selectedItem && (
+                <div className="relative w-12 h-12 rounded-xl overflow-hidden flex-shrink-0">
+                  <Image
+                    src={selectedItem.image_name ? `/images/broetchen/${selectedItem.image_name}` : "/images/broetchen/default.png"}
+                    alt={selectedItem.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              )}
+              {selectedItem?.name} buchen
+            </DialogTitle>
+            <DialogDescription>WÃ¤hle die Menge fÃ¼r deine Buchung.</DialogDescription>
+          </DialogHeader>
+
+          <div className="py-6 space-y-6">
+            <div className="flex items-center justify-center gap-6">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-14 w-14 rounded-full border-2"
+                onClick={() => setSelectedQty(Math.max(1, selectedQty - 1))}
+                disabled={selectedQty <= 1}
+              >
+                <Minus className="h-5 w-5" />
+              </Button>
+
+              <div className="w-20 text-center">
+                <span className="text-5xl font-black">{selectedQty}</span>
+              </div>
+
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-14 w-14 rounded-full border-2"
+                onClick={() => setSelectedQty(selectedQty + 1)}
+              >
+                <Plus className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="text-center font-bold text-xl text-primary">
+              Gesamt: {(selectedQty * (selectedItem?.preis ?? 0)).toFixed(2)} â‚¬
+            </div>
+          </div>
+
+          <DialogFooter className="flex-col sm:flex-col gap-2">
+            <Button
+              className="w-full h-14 text-lg font-bold"
+              onClick={() => selectedItem && executeBooking(selectedItem, selectedQty)}
+            >
+              Kostenpflichtig buchen
+            </Button>
+            <Button variant="ghost" className="w-full" onClick={() => setSelectedItem(null)}>
+              Abbrechen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
