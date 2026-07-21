@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Calculator, Download, Search } from "lucide-react"
+import { Calculator, Download, Search, Receipt } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 
 export type StatistikRow = {
@@ -17,9 +17,10 @@ export type StatistikRow = {
 
 interface StatistikDashboardProps {
   data: StatistikRow[]
+  isAdmin: boolean
 }
 
-export function StatistikDashboard({ data }: StatistikDashboardProps) {
+export function StatistikDashboard({ data, isAdmin }: StatistikDashboardProps) {
   const [searchQuery, setSearchQuery] = useState("")
 
   const filteredData = data.filter(row => 
@@ -53,6 +54,43 @@ export function StatistikDashboard({ data }: StatistikDashboardProps) {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+  }
+
+  if (!isAdmin) {
+    const myData = data[0] || { getraenkeSum: 0, grillSum: 0, broetchenSum: 0, totalSum: 0 }
+    return (
+      <div className="max-w-md mx-auto mt-8">
+        <Card className="bg-white border-0 shadow-lg overflow-hidden rounded-xl">
+          <CardHeader className="bg-black/5 border-b border-black/10 pb-4">
+            <CardTitle className="text-center font-bold text-[#4c503d] flex items-center justify-center gap-2">
+              <Receipt className="w-5 h-5" />
+              Mein Kassenbon
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6 space-y-4">
+            <div className="flex justify-between items-center text-[#4c503d]">
+              <span className="font-medium">Getränke</span>
+              <span>{myData.getraenkeSum.toFixed(2)} €</span>
+            </div>
+            <div className="flex justify-between items-center text-[#4c503d]">
+              <span className="font-medium">Grillfleisch</span>
+              <span>{myData.grillSum.toFixed(2)} €</span>
+            </div>
+            <div className="flex justify-between items-center text-muted-foreground/80">
+              <span className="font-medium">Brötchen</span>
+              <span>{myData.broetchenSum.toFixed(2)} €</span>
+            </div>
+            
+            <div className="pt-4 mt-2 border-t border-dashed border-[#4c503d]/30">
+              <div className="flex justify-between items-center text-xl font-bold text-[#4c503d]">
+                <span>Gesamtsumme</span>
+                <span>{myData.totalSum.toFixed(2)} €</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (

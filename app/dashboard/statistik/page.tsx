@@ -30,12 +30,31 @@ export default async function StatistikPage() {
     return <Warteraum />
   }
 
+  const isAdmin = profile?.role === 'admin'
+
   // Daten abrufen
-  const { data: profiles } = await supabase.from('profiles').select('id, full_name').eq('is_approved', true)
+  let profilesData = null
+  let consumptionsData = null
+  let grillOrdersData = null
+
+  if (isAdmin) {
+    const { data: p } = await supabase.from('profiles').select('id, full_name').eq('is_approved', true)
+    const { data: c } = await supabase.from('consumptions').select('user_id, beverage_id, quantity')
+    const { data: o } = await supabase.from('grill_orders').select('user_id, item_id, quantity')
+    profilesData = p
+    consumptionsData = c
+    grillOrdersData = o
+  } else {
+    // Camper sieht nur sich selbst
+    profilesData = [{ id: user.id, full_name: profile.full_name }]
+    const { data: c } = await supabase.from('consumptions').select('user_id, beverage_id, quantity').eq('user_id', user.id)
+    const { data: o } = await supabase.from('grill_orders').select('user_id, item_id, quantity').eq('user_id', user.id)
+    consumptionsData = c
+    grillOrdersData = o
+  }
+
   const { data: beverages } = await supabase.from('beverages').select('id, price')
-  const { data: consumptions } = await supabase.from('consumptions').select('user_id, beverage_id, quantity')
   const { data: grillItems } = await supabase.from('grill_items').select('id, preis')
-  const { data: grillOrders } = await supabase.from('grill_orders').select('user_id, item_id, quantity')
 
   // Maps für schnelle Preis-Lookups
   const beveragePrices = new Map((beverages || []).map(b => [b.id, b.price || 0]))
@@ -45,16 +64,16 @@ export default async function StatistikPage() {
   const getraenkeSums = new Map<string, number>()
   const grillSums = new Map<string, number>()
 
-  if (consumptions) {
-    consumptions.forEach(c => {
+  if (consumptionsData) {
+    consumptionsData.forEach(c => {
       const price = beveragePrices.get(c.beverage_id) || 0
       const currentSum = getraenkeSums.get(c.user_id) || 0
       getraenkeSums.set(c.user_id, currentSum + (price * c.quantity))
     })
   }
 
-  if (grillOrders) {
-    grillOrders.forEach(o => {
+  if (grillOrdersData) {
+    grillOrdersData.forEach(o => {
       const price = grillPrices.get(o.item_id) || 0
       const currentSum = grillSums.get(o.user_id) || 0
       grillSums.set(o.user_id, currentSum + (price * o.quantity))
@@ -62,7 +81,7 @@ export default async function StatistikPage() {
   }
 
   // Row-Daten für die UI aggregieren
-  const rows: StatistikRow[] = (profiles || []).map(p => {
+  const rows: StatistikRow[] = (profilesData || []).map(p => {
     const getraenkeSum = getraenkeSums.get(p.id) || 0
     const grillSum = grillSums.get(p.id) || 0
     const broetchenSum = 0 // Platzhalter, da Tabelle noch fehlt
@@ -87,7 +106,7 @@ export default async function StatistikPage() {
           </p>
         </div>
 
-        <StatistikDashboard data={rows} />
+        <StatistikDashboard data={rows} isAdmin={isAdmin} />
       </div>
     </div>
   )

@@ -333,21 +333,13 @@ export function CamperBeverageDashboard({
         </div>
       )}
 
-      {/* Navigation zu Leaderboard & Statistik – Punkt 2: elegante neutrale Buttons */}
-      <div className="grid grid-cols-2 gap-3 max-w-2xl mx-auto">
+      {/* Navigation zu Leaderboard */}
+      <div className="max-w-md mx-auto">
         <Link href="/dashboard/leaderboard" className="block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
           <Card className="bg-white/10 backdrop-blur-sm border border-white/20 text-foreground hover:bg-white/20 transition-all duration-200 hover:scale-105 active:scale-95">
             <CardContent className="p-3 flex items-center justify-center gap-2">
               <Medal className="w-5 h-5 flex-shrink-0 text-primary" />
-              <div className="text-sm font-sans font-bold leading-tight">Leaderboard</div>
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/dashboard/leaderboard?tab=stats" className="block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
-          <Card className="bg-white/10 backdrop-blur-sm border border-white/20 text-foreground hover:bg-white/20 transition-all duration-200 hover:scale-105 active:scale-95">
-            <CardContent className="p-3 flex items-center justify-center gap-2">
-              <BarChart3 className="w-5 h-5 flex-shrink-0 text-primary" />
-              <div className="text-sm font-sans font-bold leading-tight">Statistik</div>
+              <div className="text-sm font-sans font-bold leading-tight">Zum Leaderboard</div>
             </CardContent>
           </Card>
         </Link>
