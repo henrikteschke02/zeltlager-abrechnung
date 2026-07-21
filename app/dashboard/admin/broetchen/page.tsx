@@ -4,7 +4,7 @@ import { AdminBroetchenDashboard } from "@/components/admin-broetchen-dashboard"
 
 export const metadata = {
   title: "Admin | Brötchen | Zeltlager Manager",
-  description: "Brötchen Verwaltung fÃ¼r Admins",
+  description: "Brötchen Verwaltung für Admins",
 }
 
 export default async function AdminBroetchenPage() {

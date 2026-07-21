@@ -49,7 +49,7 @@ export function AdminBroetchenDashboard() {
     const fetchItems = async () => {
       const { data, error } = await supabase.from('broetchen_items').select('id, name, preis, image_name').order('name')
       if (error) {
-        console.error("Error fetching broetchen items:", error)
+        console.error("Error fetching grill items:", error)
       } else if (data) {
         setItems(data as BroetchenItem[])
       }
@@ -84,7 +84,7 @@ export function AdminBroetchenDashboard() {
     
     const priceNum = parseFloat(price.replace(',', '.'))
     if (isNaN(priceNum)) {
-      alert("Bitte einen gÃ¼ltigen Preis eingeben")
+      alert("Bitte einen gültigen Preis eingeben")
       setIsSubmitting(false)
       return
     }
@@ -111,7 +111,7 @@ export function AdminBroetchenDashboard() {
 
     const priceNum = parseFloat(price.replace(',', '.'))
     if (isNaN(priceNum)) {
-      alert("Bitte einen gÃ¼ltigen Preis eingeben")
+      alert("Bitte einen gültigen Preis eingeben")
       setIsSubmitting(false)
       return
     }
@@ -141,7 +141,7 @@ export function AdminBroetchenDashboard() {
     const { error } = await supabase.from('broetchen_items').delete().eq('id', selectedItem.id)
     
     if (error) {
-      alert("Fehler beim LÃ¶schen: " + error.message)
+      alert("Fehler beim Löschen: " + error.message)
     } else {
       setItems((prev) => prev.filter(i => i.id !== selectedItem.id))
       setIsDeleteOpen(false)
@@ -159,7 +159,7 @@ export function AdminBroetchenDashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-serif font-bold text-[#E5E4DE]">Brötchen Verwaltung</h1>
-            <p className="text-[#E5E4DE]/70 text-sm mt-1">Verwalte die verfÃ¼gbaren Brötchensorten fÃ¼r das Lager.</p>
+            <p className="text-[#E5E4DE]/70 text-sm mt-1">Verwalte die verfügbaren Brötchensorten für das Lager.</p>
           </div>
           <Button 
             onClick={openAddModal}
@@ -167,7 +167,7 @@ export function AdminBroetchenDashboard() {
             className="bg-[#D9FF3D] text-[#1a1e12] hover:bg-[#D9FF3D]/80 font-bold flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
-            Neues Brötchen hinzufÃ¼gen
+            Neues Brötchen hinzufügen
           </Button>
         </div>
 
@@ -179,7 +179,7 @@ export function AdminBroetchenDashboard() {
             </div>
           ) : items.length === 0 ? (
              <div className="text-center p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
-               <p className="text-[#E5E4DE]/70">Kein Brötchen angelegt. FÃ¼ge ein neues Produkt hinzu!</p>
+               <p className="text-[#E5E4DE]/70">Kein Brötchen angelegt. Füge ein neues Produkt hinzu!</p>
              </div>
           ) : (
             items.map((item) => (
@@ -194,12 +194,12 @@ export function AdminBroetchenDashboard() {
                       />
                     ) : (
                       <div className="w-12 h-12 rounded-md bg-black/20 flex items-center justify-center flex-shrink-0 opacity-50">
-                        <span className="text-2xl">ðŸ¥©</span>
+                        <span className="text-2xl">🥯</span>
                       </div>
                     )}
                     <div className="min-w-0 flex flex-col justify-center">
                       <h3 className="font-bold text-[#E5E4DE] truncate leading-tight">{item.name}</h3>
-                      <p className="text-[#D9FF3D] font-serif font-semibold text-sm leading-tight">{Number(item.preis || 0).toFixed(2)} â‚¬</p>
+                      <p className="text-[#D9FF3D] font-serif font-semibold text-sm leading-tight">{Number(item.preis || 0).toFixed(2)} €</p>
                       <div className="flex items-center gap-1 mt-1">
                         {item.image_name ? (
                           <>
@@ -259,7 +259,7 @@ export function AdminBroetchenDashboard() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="add-price" className="text-[#4c503d] font-bold">Preis (â‚¬)</Label>
+              <Label htmlFor="add-price" className="text-[#4c503d] font-bold">Preis (€)</Label>
               <Input 
                 id="add-price" 
                 type="number" 
@@ -271,7 +271,7 @@ export function AdminBroetchenDashboard() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="add-image" className="text-[#4c503d] font-bold">Bild auswÃ¤hlen</Label>
+              <Label htmlFor="add-image" className="text-[#4c503d] font-bold">Bild auswählen</Label>
               <select
                 id="add-image"
                 value={imageName}
@@ -309,7 +309,7 @@ export function AdminBroetchenDashboard() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-price" className="text-[#4c503d] font-bold">Preis (â‚¬)</Label>
+              <Label htmlFor="edit-price" className="text-[#4c503d] font-bold">Preis (€)</Label>
               <Input 
                 id="edit-price" 
                 type="number" 
@@ -320,7 +320,7 @@ export function AdminBroetchenDashboard() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-image" className="text-[#4c503d] font-bold">Bild auswÃ¤hlen</Label>
+              <Label htmlFor="edit-image" className="text-[#4c503d] font-bold">Bild auswählen</Label>
               <select
                 id="edit-image"
                 value={imageName}
@@ -347,12 +347,12 @@ export function AdminBroetchenDashboard() {
           <DialogHeader>
             <DialogTitle className="font-serif text-xl">Sicher?</DialogTitle>
             <DialogDescription className="text-[#4c503d]/70">
-              MÃ¶chtest du "{selectedItem?.name}" wirklich aus dem System entfernen?
+              Möchtest du "{selectedItem?.name}" wirklich aus dem System entfernen?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setIsDeleteOpen(false)} className="text-[#4c503d] hover:bg-[#4c503d]/5">Abbrechen</Button>
-            <Button onClick={handleDelete} className="bg-red-500 text-white hover:bg-red-600">LÃ¶schen</Button>
+            <Button onClick={handleDelete} className="bg-red-500 text-white hover:bg-red-600">Löschen</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

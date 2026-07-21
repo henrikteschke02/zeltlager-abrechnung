@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useState, useMemo, useEffect } from "react"
 import Image from "next/image"
@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
-// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 export type BroetchenItem = {
   id: string
@@ -33,10 +33,10 @@ type BroetchenOrder = {
   created_at: string
 }
 
-// â”€â”€â”€ Dummy data (entfernt) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Die Daten kommen nun ausschlieÃŸlich aus der DB (grill_items).
+// ─── Dummy data (entfernt) ───────────────────────────────────
+// Die Daten kommen nun ausschließlich aus der DB (broetchen_items).
 
-// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export function CamperBroetchenDashboard({
   userId,
@@ -74,7 +74,7 @@ export function CamperBroetchenDashboard({
     return () => clearInterval(interval)
   }, [])
 
-  // â”€â”€ Derived values â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Derived values ──────────────────────────────────────────────────────────
 
   const todaysOrders = orders.filter(
     (o) => new Date(o.created_at) >= startOfCampDay
@@ -98,7 +98,7 @@ export function CamperBroetchenDashboard({
     (o) => now.getTime() - new Date(o.created_at).getTime() <= 3 * 60 * 1000
   )
 
-  // â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Actions ─────────────────────────────────────────────────────────────────
 
   const openModal = (item: BroetchenItem) => {
     setSelectedItem(item)
@@ -153,18 +153,18 @@ export function CamperBroetchenDashboard({
     }
   }
 
-  // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
-      {/* â”€â”€ MEIN Brötchen-Deckel (Sticky Banner) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── MEIN GRILL-DECKEL (Sticky Banner) ─────────────────────────────── */}
       <div className="sticky top-16 z-40 mb-4 max-w-2xl mx-auto">
         <Card
           className="bg-card text-card-foreground shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
           onClick={() => setShowDaily(!showDaily)}
         >
-          {/* Background Croissant icon decoration */}
+          {/* Background flame icon decoration */}
           <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
             <Croissant className="w-24 h-24" />
           </div>
@@ -182,7 +182,7 @@ export function CamperBroetchenDashboard({
                   className="text-4xl font-serif font-bold tracking-tight leading-none mt-1 animate-in fade-in slide-in-from-bottom-1 duration-300"
                   key={showDaily ? "daily" : "total"}
                 >
-                  {(showDaily ? todaysDebt : totalCost).toFixed(2)} â‚¬
+                  {(showDaily ? todaysDebt : totalCost).toFixed(2)} €
                 </div>
               </div>
               <div className="text-right">
@@ -201,20 +201,20 @@ export function CamperBroetchenDashboard({
 
           <CardContent className="relative z-10 pb-4 pt-0">
             <div className="flex items-center gap-3 bg-black/5 rounded-2xl p-2.5 mt-2 border border-black/5">
-              <span className="text-2xl">ðŸ”¥</span>
+              <span className="text-2xl">🥯</span>
               <p className="text-xs font-sans font-semibold uppercase tracking-widest opacity-70">
-                Mein Brötchen-Deckel â€” unabhÃ¤ngig vom GetrÃ¤nke-Deckel
+                Mein Brötchen-Deckel — unabhängig vom Getränke-Deckel
               </p>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* â”€â”€ Storno Strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Storno Strip ──────────────────────────────────────────────────────── */}
       {stornoEntries.length > 0 && (
         <div className="mb-6 max-w-2xl mx-auto">
           <h2 className="text-sm font-bold tracking-tight mb-2 px-1 text-muted-foreground flex items-center">
-            <Undo2 className="w-4 h-4 mr-2" /> KÃ¼rzliche Buchungen (Storno)
+            <Undo2 className="w-4 h-4 mr-2" /> Kürzliche Buchungen (Storno)
           </h2>
           <div className="flex gap-2 overflow-x-auto pb-2 snap-x">
             {stornoEntries.map((o) => {
@@ -236,7 +236,7 @@ export function CamperBroetchenDashboard({
                     <div className="flex justify-between items-start mb-2">
                       <div className="min-w-0 pr-2">
                         <p className="font-bold text-sm truncate">
-                          {o.quantity}Ã— {item?.name ?? "Unbekannt"}
+                          {o.quantity}× {item?.name ?? "Unbekannt"}
                         </p>
                         <p className="text-xs text-muted-foreground font-medium">
                           {mins}:{secs.toString().padStart(2, "0")} min stornierbar
@@ -249,7 +249,7 @@ export function CamperBroetchenDashboard({
                       className="w-full h-7 text-xs"
                       onClick={() => handleStorno(o.id)}
                     >
-                      RÃ¼ckgÃ¤ngig
+                      Rückgängig
                     </Button>
                   </CardContent>
                 </Card>
@@ -259,13 +259,13 @@ export function CamperBroetchenDashboard({
         </div>
       )}
 
-      {/* â”€â”€ Section heading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Section heading ───────────────────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto">
         <h2 className="text-xs font-sans font-semibold uppercase tracking-widest text-muted-foreground px-1 mb-3">
-          Welche Brötchen möchtest du\?
+          Welche Brötchen möchtest du?
         </h2>
 
-        {/* â”€â”€ Meat Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* ── Meat Grid ─────────────────────────────────────────────────────────── */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {items.map((item) => (
           <button
@@ -301,7 +301,7 @@ export function CamperBroetchenDashboard({
                   {item.name}
                 </h3>
                 <p className="text-xs font-sans font-semibold uppercase tracking-wider text-white/50 mt-0.5">
-                  {Number(item.preis || 0).toFixed(2)} â‚¬
+                  {Number(item.preis || 0).toFixed(2)} €
                 </p>
               </div>
 
@@ -321,7 +321,7 @@ export function CamperBroetchenDashboard({
       </div>
       </div>
 
-      {/* â”€â”€ Booking Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Booking Modal ─────────────────────────────────────────────────────── */}
       <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -338,7 +338,7 @@ export function CamperBroetchenDashboard({
               )}
               {selectedItem?.name} buchen
             </DialogTitle>
-            <DialogDescription>WÃ¤hle die Menge fÃ¼r deine Buchung.</DialogDescription>
+            <DialogDescription>Wähle die Menge für deine Buchung.</DialogDescription>
           </DialogHeader>
 
           <div className="py-6 space-y-6">
@@ -368,7 +368,7 @@ export function CamperBroetchenDashboard({
             </div>
 
             <div className="text-center font-bold text-xl text-primary">
-              Gesamt: {(selectedQty * (selectedItem?.preis ?? 0)).toFixed(2)} â‚¬
+              Gesamt: {(selectedQty * (selectedItem?.preis ?? 0)).toFixed(2)} €
             </div>
           </div>
 
