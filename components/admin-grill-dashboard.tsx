@@ -29,7 +29,7 @@ const AVAILABLE_IMAGES = [
   "bratwurst.png",
   "rinderhueftsteak.png",
   "rumpsteak.png",
-  "haehnchenbrust.png",
+  "haehnchen.png",
   "haehnchenschenkel.png",
   "rinderfilet.png",
   "spareribs.png",
