@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Tent, Menu, LogOut, Beer, Drumstick, Croissant, Settings } from "lucide-react"
+import { Tent, Menu, LogOut, Beer, Drumstick, Croissant, Settings, Home, MessageSquare } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
 
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -12,8 +12,10 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/co
 import { cn } from "@/lib/utils"
 
 const navItems = [
+  { name: "Startseite", href: "/dashboard", icon: Home, exact: true },
   { name: "Getränke", href: "/dashboard/getraenke", icon: Beer },
   { name: "Grillfleisch", href: "/dashboard/grillfleisch", icon: Drumstick },
+  { name: "Schwarzes Brett", href: "/dashboard/schwarzes-brett", icon: MessageSquare },
   { name: "Brötchen", href: "/dashboard/broetchen", icon: Croissant },
 ]
 
@@ -46,25 +48,25 @@ export function Navigation() {
         <div className="mr-4 hidden md:flex">
           <Link href="/dashboard" className="mr-8 flex items-center space-x-2">
             <Tent className="h-5 w-5 text-primary" />
-            {/* Serif-Schrift NUR für das Logo */}
             <span className="hidden font-serif font-bold text-lg tracking-tight sm:inline-block">
               Zeltlager Manager
             </span>
           </Link>
           <nav className="flex items-center space-x-6">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`text-xs font-sans font-semibold uppercase tracking-widest transition-colors hover:text-foreground ${
-                  pathname?.startsWith(item.href)
-                    ? "text-foreground"
-                    : "text-foreground/50"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`text-xs font-sans font-semibold uppercase tracking-widest transition-colors hover:text-foreground ${
+                    isActive ? "text-foreground" : "text-foreground/50"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              )
+            })}
             {isAdmin && (
               <Link
                 href="/dashboard/admin"
@@ -92,27 +94,30 @@ export function Navigation() {
           </SheetTrigger>
           <SheetContent side="left" className="pr-0">
             <SheetHeader>
-              <SheetTitle className="text-left flex items-center space-x-2">
-              <Tent className="h-5 w-5 text-primary" />
-              <span className="font-serif font-bold">Zeltlager Manager</span>
-            </SheetTitle>
+              <SheetTitle className="text-left">
+                <Link href="/dashboard" className="flex items-center space-x-2">
+                  <Tent className="h-5 w-5 text-primary" />
+                  <span className="font-serif font-bold">Zeltlager Manager</span>
+                </Link>
+              </SheetTitle>
             </SheetHeader>
             <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
               <div className="flex flex-col space-y-3">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`flex items-center space-x-2 py-2 text-xs uppercase tracking-widest font-semibold transition-colors hover:text-foreground ${
-                      pathname?.startsWith(item.href)
-                        ? "text-foreground"
-                        : "text-foreground/50"
-                    }`}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.name}</span>
-                  </Link>
-                ))}
+                {navItems.map((item) => {
+                  const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`flex items-center space-x-2 py-2 text-xs uppercase tracking-widest font-semibold transition-colors hover:text-foreground ${
+                        isActive ? "text-foreground" : "text-foreground/50"
+                      }`}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.name}</span>
+                    </Link>
+                  )
+                })}
                 {isAdmin && (
                   <Link
                     href="/dashboard/admin"
@@ -132,7 +137,6 @@ export function Navigation() {
         </Sheet>
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Optional search or other elements */}
           </div>
           <nav className="flex items-center space-x-2">
             <ModeToggle />

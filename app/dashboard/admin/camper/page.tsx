@@ -36,9 +36,11 @@ export default async function AdminCamperPage() {
     .order('email')
 
   return (
-    <AdminCamperDashboard 
-      initialBeverages={beverages || []} 
-      initialProfiles={profiles || []} 
-    />
+    <div className="container mx-auto p-4 md:p-8">
+      <AdminCamperDashboard 
+        initialBeverages={beverages || []} 
+        initialProfiles={profiles || []} 
+      />
+    </div>
   )
 }

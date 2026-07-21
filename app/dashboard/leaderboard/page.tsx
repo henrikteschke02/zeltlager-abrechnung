@@ -33,20 +33,22 @@ export default async function LeaderboardPage(props: { searchParams: Promise<{ t
   const { data: consumptions } = await supabase.from('consumptions').select('id, user_id, beverage_id, quantity')
 
   return (
-    <div className="max-w-xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Leaderboard & Statistik</h1>
-        <p className="text-muted-foreground mt-2">
-          Wer ist der Bierkönig und was wurde insgesamt getrunken?
-        </p>
-      </div>
+    <div className="container mx-auto">
+      <div className="max-w-xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Leaderboard & Statistik</h1>
+          <p className="text-muted-foreground mt-2">
+            Wer ist der Bierkönig und was wurde insgesamt getrunken?
+          </p>
+        </div>
 
-      <LeaderboardView 
-        profiles={profiles || []} 
-        beverages={beverages || []} 
-        consumptions={consumptions || []} 
-        initialTab={searchParams?.tab || "leaderboard"}
-      />
+        <LeaderboardView 
+          profiles={profiles || []} 
+          beverages={beverages || []} 
+          consumptions={consumptions || []} 
+          initialTab={searchParams?.tab || "leaderboard"}
+        />
+      </div>
     </div>
   )
 }

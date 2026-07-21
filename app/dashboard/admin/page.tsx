@@ -27,8 +27,10 @@ export default async function AdminPage() {
 
 
   return (
-    <AdminDashboard 
-      initialBeverages={beverages || []} 
-    />
+    <div className="container mx-auto p-4 md:p-8">
+      <AdminDashboard 
+        initialBeverages={beverages || []} 
+      />
+    </div>
   )
 }
