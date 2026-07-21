@@ -1,8 +1,13 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/utils/supabase/server"
-import { AdminDashboard } from "@/components/admin-dashboard"
+import { AdminCamperDashboard } from "@/components/admin-camper-dashboard"
 
-export default async function AdminPage() {
+export const metadata = {
+  title: "Admin | Camper | Zeltlager Manager",
+  description: "Camper und Profilverwaltung für Admins",
+}
+
+export default async function AdminCamperPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   
@@ -25,10 +30,15 @@ export default async function AdminPage() {
     .select('*')
     .order('name')
 
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('*')
+    .order('email')
 
   return (
-    <AdminDashboard 
+    <AdminCamperDashboard 
       initialBeverages={beverages || []} 
+      initialProfiles={profiles || []} 
     />
   )
 }

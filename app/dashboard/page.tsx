@@ -66,8 +66,8 @@ export default async function DashboardPage() {
           </Card>
         </Link>
         
-        <Link href="/dashboard/grillfleisch" className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
-          <Card className="border-primary/10 hover:border-primary/30 transition-colors h-full opacity-60">
+        <Link href="/dashboard/grillfleisch" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+          <Card className="border-primary/10 hover:border-primary/30 transition-colors h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 Grillfleisch
@@ -75,9 +75,9 @@ export default async function DashboardPage() {
               <Drumstick className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Bald verfügbar</div>
+              <div className="text-2xl font-bold">Grill-Deckel</div>
               <p className="text-xs text-muted-foreground">
-                Fleischliste Modul
+                Dein aktueller Fleischkonsum
               </p>
             </CardContent>
           </Card>
