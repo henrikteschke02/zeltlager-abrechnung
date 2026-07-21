@@ -59,13 +59,14 @@ export function StatistikDashboard({ data }: StatistikDashboardProps) {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="relative w-full sm:max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4c503d]/50" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
           <Input 
             type="search" 
+            autoComplete="off"
             placeholder="Camper suchen..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 bg-white/50 border-[#4c503d]/20 text-[#4c503d] placeholder:text-[#4c503d]/40 focus-visible:ring-[#4c503d]"
+            className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/70 focus-visible:ring-white/50"
           />
         </div>
         <Button 
@@ -93,16 +94,16 @@ export function StatistikDashboard({ data }: StatistikDashboardProps) {
               {filteredData.length > 0 ? (
                 filteredData.map((row) => (
                   <tr key={row.userId} className="border-b border-black/10 hover:bg-white/40 transition-colors">
-                    <td className="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">
+                    <td className="px-6 py-4 font-semibold text-slate-900 whitespace-nowrap">
                       {row.fullName}
                     </td>
-                    <td className="px-6 py-4 text-right text-slate-800">
+                    <td className="px-6 py-4 text-right font-semibold text-slate-900">
                       {row.getraenkeSum.toFixed(2)} €
                     </td>
-                    <td className="px-6 py-4 text-right text-slate-800">
+                    <td className="px-6 py-4 text-right font-semibold text-slate-900">
                       {row.grillSum.toFixed(2)} €
                     </td>
-                    <td className="px-6 py-4 text-right text-slate-500">
+                    <td className="px-6 py-4 text-right font-semibold text-slate-900">
                       {row.broetchenSum.toFixed(2)} €
                     </td>
                     <td className="px-6 py-4 text-right font-bold text-slate-900 bg-black/[0.03]">
