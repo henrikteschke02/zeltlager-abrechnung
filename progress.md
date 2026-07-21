@@ -29,3 +29,9 @@ Hier dokumentieren wir Schritt für Schritt, was wir gebaut haben, damit die Mag
 ## Phase 6: Admin-Ausbau & Datenbank-Synchronisation
 - **Admin-Grill-Dashboard:** Wir haben der Admin-Ansicht eine coole Tab-Navigation verpasst. So kannst du blitzschnell zwischen Getränken und Grillfleisch wechseln. Dort lassen sich jetzt Name und Preis für das Fleisch per CRUD direkt in der Datenbank pflegen.
 - **Live-Daten statt Dummys:** Der Grillfleisch-Reiter der Camper lädt jetzt keine harten Platzhalter mehr. Sobald du als Admin neues Fleisch anlegst, zieht sich das Frontend die frischen Daten nahtlos und in Echtzeit aus der `grill_items`-Tabelle. Auch die Buchungen und Stornos der Camper feuern jetzt die echten Queries gegen die `grill_orders`.
+
+## Phase 7: Admin-Refactoring, UI-Feinschliff & Bugfixes
+- **Admin-Strukturierung:** Camper-Profile aus dem allgemeinen Admin-Dashboard in einen dedizierten Reiter (`/dashboard/admin/camper`) ausgelagert. Inklusive einer starken CSV-Export-Funktion für die Endabrechnung.
+- **Grill-Dashboard UI:** Die Admin-Ansicht für Grillfleisch wurde um echte Thumbnail-Vorschauen (inkl. Glassmorphism/Opacity-Styling für Platzhalter) und dynamische Status-Indikatoren (Grünes Häkchen für "Aktiv", rotes Warn-Icon für "Bild fehlt") erweitert.
+- **Asset-Generierung:** Weitere extrem hochwertige, fotorealistische KI-Bilder für "Bauchfleisch" und "Hähnchen" (90-Grad Top-Down, Schieferplatte, Rosmarin, Gabel) generiert und im System eingebunden.
+- **Deep Debugging (Vercel & Supabase):** Einen vertrackten TypeScript/Vercel-Build-Error bezüglich `DialogTrigger asChild` durch den korrekten `render`-Prop gelöst. Zusätzlich einen versteckten RLS (Row Level Security) Fehler identifiziert, der Admins beim Test-Kauf aussperrte, und das entsprechende SQL-Migration-Skript sowie Frontend-Fehler-Handling korrigiert.
