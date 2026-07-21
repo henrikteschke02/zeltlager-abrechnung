@@ -54,11 +54,11 @@ export default async function StatistikPage() {
   }
 
   const { data: beverages } = await supabase.from('beverages').select('id, price')
-  const { data: grillItems } = await supabase.from('grill_items').select('id, price')
+  const { data: grillItems } = await supabase.from('grill_items').select('id, preis')
 
   // Maps für schnelle Preis-Lookups
   const beveragePrices = new Map((beverages || []).map(b => [b.id, b.price || 0]))
-  const grillPrices = new Map((grillItems || []).map(g => [g.id, g.price || 0]))
+  const grillPrices = new Map((grillItems || []).map(g => [g.id, g.preis || 0]))
 
   // Maps für Summen pro User
   const getraenkeSums = new Map<string, number>()
