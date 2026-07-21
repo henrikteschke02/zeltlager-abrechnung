@@ -2,8 +2,7 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/utils/supabase/server"
 import { LeaderboardView } from "@/components/leaderboard-view"
 
-export default async function LeaderboardPage(props: { searchParams: Promise<{ tab?: string }> }) {
-  const searchParams = await props.searchParams
+export default async function LeaderboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -36,7 +35,7 @@ export default async function LeaderboardPage(props: { searchParams: Promise<{ t
     <div className="container mx-auto">
       <div className="max-w-xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Leaderboard & Statistik</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Leaderboard</h1>
           <p className="text-muted-foreground mt-2">
             Wer ist der Bierkönig und was wurde insgesamt getrunken?
           </p>
@@ -46,7 +45,6 @@ export default async function LeaderboardPage(props: { searchParams: Promise<{ t
           profiles={profiles || []} 
           beverages={beverages || []} 
           consumptions={consumptions || []} 
-          initialTab={searchParams?.tab || "leaderboard"}
         />
       </div>
     </div>

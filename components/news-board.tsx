@@ -129,7 +129,9 @@ export function NewsBoard({ initialNews, initialRequests, isAdmin, userId }: New
   const handleApproveRequest = async (newsId: string) => {
     // Wenn genehmigt, löschen wir die News (und die DB löscht die Anfragen automatisch via CASCADE)
     const { error } = await supabase.from('news').delete().eq('id', newsId)
-    if (!error) {
+    if (error) {
+      alert("Fehler beim Löschen: " + error.message)
+    } else {
       setNews(news.filter(n => n.id !== newsId))
       setRequests(requests.filter(r => r.news_id !== newsId))
     }
@@ -137,7 +139,9 @@ export function NewsBoard({ initialNews, initialRequests, isAdmin, userId }: New
 
   const handleRejectRequest = async (requestId: string) => {
     const { error } = await supabase.from('news_delete_requests').delete().eq('id', requestId)
-    if (!error) {
+    if (error) {
+      alert("Fehler beim Ablehnen: " + error.message)
+    } else {
       setRequests(requests.filter(r => r.id !== requestId))
     }
   }
@@ -244,7 +248,7 @@ export function NewsBoard({ initialNews, initialRequests, isAdmin, userId }: New
                 <h3 className="font-bold text-lg mb-1 pr-8">{item.title}</h3>
                 <p className="text-sm text-foreground/90 whitespace-pre-wrap mb-2">{item.content}</p>
                 <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                  Von {item.profiles?.full_name || 'Lagerleitung'} • {new Date(item.created_at).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })} Uhr
+                  Von {item.profiles?.full_name || 'Unbekannt'} • {new Date(item.created_at).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })} Uhr
                 </div>
               </div>
             )

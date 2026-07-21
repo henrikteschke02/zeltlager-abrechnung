@@ -59,35 +59,47 @@ export function StatistikDashboard({ data, isAdmin }: StatistikDashboardProps) {
   if (!isAdmin) {
     const myData = data[0] || { getraenkeSum: 0, grillSum: 0, broetchenSum: 0, totalSum: 0 }
     return (
-      <div className="max-w-md mx-auto mt-8">
-        <Card className="bg-white border-0 shadow-lg overflow-hidden rounded-xl">
-          <CardHeader className="bg-black/5 border-b border-black/10 pb-4">
-            <CardTitle className="text-center font-bold text-[#4c503d] flex items-center justify-center gap-2">
-              <Receipt className="w-5 h-5" />
-              Mein Kassenbon
+      <div className="max-w-md mx-auto mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <Card className="bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl overflow-hidden rounded-2xl relative">
+          {/* Dekorative Kassenbon-Zackenkante oben */}
+          <div className="absolute top-0 left-0 right-0 h-3" style={{ backgroundImage: 'linear-gradient(-45deg, transparent 33.33%, rgba(255,255,255,0.1) 33.33%, rgba(255,255,255,0.1) 66.66%, transparent 66.66%), linear-gradient(45deg, transparent 33.33%, rgba(255,255,255,0.1) 33.33%, rgba(255,255,255,0.1) 66.66%, transparent 66.66%)', backgroundSize: '12px 24px' }}></div>
+          
+          <CardHeader className="pt-8 pb-4 text-center">
+            <div className="mx-auto bg-white/20 w-12 h-12 rounded-full flex items-center justify-center mb-3 shadow-inner">
+              <Receipt className="w-6 h-6 text-white" />
+            </div>
+            <CardTitle className="font-black text-2xl text-white tracking-tight">
+              Abrechnung
             </CardTitle>
+            <p className="text-white/80 font-medium mt-1">{myData.fullName}</p>
           </CardHeader>
-          <CardContent className="pt-6 space-y-4">
-            <div className="flex justify-between items-center text-[#4c503d]">
-              <span className="font-medium">Getränke</span>
-              <span>{myData.getraenkeSum.toFixed(2)} €</span>
-            </div>
-            <div className="flex justify-between items-center text-[#4c503d]">
-              <span className="font-medium">Grillfleisch</span>
-              <span>{myData.grillSum.toFixed(2)} €</span>
-            </div>
-            <div className="flex justify-between items-center text-muted-foreground/80">
-              <span className="font-medium">Brötchen</span>
-              <span>{myData.broetchenSum.toFixed(2)} €</span>
+
+          <CardContent className="px-6 pb-8 space-y-5">
+            <div className="space-y-4">
+              <div className="flex justify-between items-center text-white/90">
+                <span className="font-medium tracking-wide">Getränke</span>
+                <span className="font-semibold">{myData.getraenkeSum.toFixed(2)} €</span>
+              </div>
+              <div className="flex justify-between items-center text-white/90">
+                <span className="font-medium tracking-wide">Grillfleisch</span>
+                <span className="font-semibold">{myData.grillSum.toFixed(2)} €</span>
+              </div>
+              <div className="flex justify-between items-center text-white/70">
+                <span className="font-medium tracking-wide">Brötchen</span>
+                <span className="font-semibold">{myData.broetchenSum.toFixed(2)} €</span>
+              </div>
             </div>
             
-            <div className="pt-4 mt-2 border-t border-dashed border-[#4c503d]/30">
-              <div className="flex justify-between items-center text-xl font-bold text-[#4c503d]">
-                <span>Gesamtsumme</span>
+            <div className="pt-5 mt-2 border-t-2 border-dashed border-white/20">
+              <div className="flex justify-between items-center text-2xl font-black text-[#D9FF3D]">
+                <span className="tracking-tight">Gesamtsumme</span>
                 <span>{myData.totalSum.toFixed(2)} €</span>
               </div>
             </div>
           </CardContent>
+          
+          {/* Dekorative Kassenbon-Zackenkante unten */}
+          <div className="absolute bottom-0 left-0 right-0 h-3" style={{ backgroundImage: 'linear-gradient(-45deg, transparent 33.33%, rgba(255,255,255,0.1) 33.33%, rgba(255,255,255,0.1) 66.66%, transparent 66.66%), linear-gradient(45deg, transparent 33.33%, rgba(255,255,255,0.1) 33.33%, rgba(255,255,255,0.1) 66.66%, transparent 66.66%)', backgroundSize: '12px 24px', backgroundPosition: 'bottom' }}></div>
         </Card>
       </div>
     )
