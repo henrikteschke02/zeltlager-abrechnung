@@ -127,10 +127,10 @@ export function CamperGrillDashboard({
        .single()
 
     if (error) {
-      console.error("Booking error", error)
+      console.error("Booking error details:", error)
       // Revert optimistic
       setOrders((prev) => prev.filter(o => o.id !== temp.id))
-      alert("Buchung fehlgeschlagen!")
+      alert(`Buchung fehlgeschlagen: ${error.message || "Unbekannter Fehler"}\nDetails in der Konsole.`)
     } else if (data) {
       // Replace optimistic temp with real DB record
       setOrders((prev) => prev.map(o => o.id === temp.id ? data as GrillOrder : o))

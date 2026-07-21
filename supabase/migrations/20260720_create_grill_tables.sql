@@ -41,7 +41,10 @@ CREATE POLICY "Users can view their own grill orders" ON public.grill_orders
 CREATE POLICY "Users can insert their own grill orders" ON public.grill_orders
     FOR INSERT WITH CHECK (
         auth.uid() = user_id AND 
-        (SELECT is_approved FROM public.profiles WHERE id = auth.uid()) = true
+        (
+            (SELECT is_approved FROM public.profiles WHERE id = auth.uid()) = true OR
+            (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin'
+        )
     );
 
 CREATE POLICY "Users can delete their own grill orders within 3 minutes" ON public.grill_orders
