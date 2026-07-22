@@ -14,13 +14,13 @@ const menuItems = [
 
 export function GradientMenu() {
   return (
-    <div className="flex justify-center items-center py-4 w-full">
-      <ul className="flex gap-4 md:gap-6 flex-wrap justify-center">
+    <div className="flex justify-center items-center py-4 w-full overflow-hidden">
+      <ul className="flex gap-2 md:gap-4 flex-nowrap overflow-x-auto no-scrollbar justify-start sm:justify-center px-2 pb-2 w-full max-w-full">
         {menuItems.map(({ title, href, icon, gradientFrom, gradientTo }, idx) => (
           <Link key={idx} href={href}>
             <li
               style={{ '--gradient-from': gradientFrom, '--gradient-to': gradientTo } as React.CSSProperties}
-              className="relative w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-slate-900/80 backdrop-blur-md shadow-lg rounded-full flex items-center justify-center transition-all duration-500 hover:w-[140px] md:hover:w-[160px] hover:shadow-none group cursor-pointer border border-slate-700"
+              className="relative w-[44px] h-[44px] md:w-[50px] md:h-[50px] bg-slate-900/80 backdrop-blur-md shadow-lg rounded-full flex items-center justify-center transition-all duration-500 hover:w-[120px] md:hover:w-[140px] hover:shadow-none group cursor-pointer border border-slate-700 shrink-0"
             >
               <span className="absolute inset-0 rounded-full bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))] opacity-0 transition-all duration-500 group-hover:opacity-100"></span>
               <span className="absolute top-[10px] inset-x-0 h-full rounded-full bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))] blur-[15px] opacity-0 -z-10 transition-all duration-500 group-hover:opacity-50"></span>
@@ -34,6 +34,11 @@ export function GradientMenu() {
           </Link>
         ))}
       </ul>
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 }

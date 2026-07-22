@@ -28,7 +28,7 @@ function SimpleNav({ isAdmin, pathname }: { isAdmin: boolean, pathname: string |
   }
   return (
     <nav className="w-full flex justify-center py-2">
-      <div className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1.5 bg-black/10 dark:bg-black/40 rounded-full mx-4 my-2">
+      <div className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1 bg-black/10 dark:bg-black/40 rounded-full mx-1 lg:mx-4 my-2">
         {items.map((item) => {
           const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
           return (
@@ -37,8 +37,8 @@ function SimpleNav({ isAdmin, pathname }: { isAdmin: boolean, pathname: string |
               href={item.href}
               className={
                 isActive
-                  ? "bg-[#e6e2d6] text-slate-900 rounded-full px-4 py-2 flex items-center gap-2 whitespace-nowrap font-bold text-xs uppercase shadow-sm"
-                  : "text-foreground/80 hover:text-foreground hover:bg-foreground/10 rounded-full px-4 py-2 flex items-center gap-2 whitespace-nowrap font-medium text-xs uppercase transition-colors"
+                  ? "bg-[#e6e2d6] text-slate-900 rounded-full px-3 py-1.5 flex items-center gap-1.5 whitespace-nowrap font-bold text-xs uppercase shadow-sm shrink-0"
+                  : "text-foreground/80 hover:text-foreground hover:bg-foreground/10 rounded-full px-3 py-1.5 flex items-center gap-1.5 whitespace-nowrap font-medium text-xs uppercase transition-colors shrink-0"
               }
             >
               <item.icon size={16} />
@@ -97,7 +97,7 @@ export function Navigation() {
 
   return (
     <header className={isVibe ? "sticky top-0 z-50 w-full bg-black/20 backdrop-blur-md border-b border-white/5" : "sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"}>
-      <div className="container flex h-[72px] items-center px-4 md:px-8 justify-between gap-4">
+      <div className="container flex h-[72px] items-center px-2 md:px-4 lg:px-8 justify-between gap-2 md:gap-4">
         
         {/* LOGO */}
         <div className="hidden md:flex items-center min-w-max">
@@ -110,7 +110,7 @@ export function Navigation() {
         </div>
 
         {/* NAVIGATION (Zentriert) */}
-        <div className="flex-1 overflow-hidden flex justify-center">
+        <div className="flex-1 overflow-hidden flex justify-center min-w-0">
           {renderNav()}
         </div>
 
