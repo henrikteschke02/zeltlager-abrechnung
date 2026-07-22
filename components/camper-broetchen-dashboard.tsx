@@ -186,7 +186,7 @@ export function CamperBroetchenDashboard({
         <Card
           className={
             isVibe
-              ? "bg-slate-950/40 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden relative rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98] text-white"
+              ? "bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden relative rounded-2xl cursor-pointer group select-none transition-all duration-300 hover:bg-black/50 hover:border-white/20 active:scale-[0.98] text-white"
               : "bg-card text-card-foreground shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
           }
           onClick={() => setShowDaily(!showDaily)}
@@ -228,7 +228,7 @@ export function CamperBroetchenDashboard({
 
           <CardContent className="relative z-10 pb-4 pt-0">
             <div className={`flex items-center gap-3 rounded-2xl p-2.5 mt-2 border ${isVibe ? 'bg-white/10 border-white/10' : 'bg-black/5 border-black/5'}`}>
-              <Croissant className={`w-8 h-8 ${isVibe ? 'text-cyan-400' : 'text-amber-500'}`} />
+              <Croissant className={`w-8 h-8 ${isVibe ? 'text-white' : 'text-amber-500'}`} />
               <p className="text-xs font-sans font-semibold uppercase tracking-widest opacity-70">
                 Mein Brötchen-Deckel — unabhängig vom Getränke-Deckel
               </p>
@@ -301,16 +301,16 @@ export function CamperBroetchenDashboard({
             disabled={loadingId === item.id}
             className={
               isVibe
-                ? "group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40 backdrop-blur-xl text-left transition-all duration-200 hover:scale-[1.03] hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/20 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 select-none"
+                ? "group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl shadow-2xl text-left transition-all duration-300 hover:bg-black/50 hover:border-white/20 hover:scale-[1.03] active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-white select-none"
                 : "group relative flex flex-col overflow-hidden rounded-2xl border border-black/10 dark:border-white/10 bg-white/5 backdrop-blur-md text-left transition-all duration-200 hover:scale-[1.03] hover:border-[#D9FF3D]/40 hover:shadow-lg hover:shadow-[#D9FF3D]/10 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-[#D9FF3D] select-none"
             }
             style={isVibe ? {} : { backgroundColor: "rgba(76,80,61,0.55)" }}
           >
             {/* Square image area */}
-            <div className={`relative w-full aspect-square overflow-hidden ${isVibe ? 'bg-slate-900/50' : 'bg-[#4c503d]'}`}>
+            <div className={`relative w-full aspect-square overflow-hidden ${isVibe ? 'bg-transparent' : 'bg-[#4c503d]'}`}>
               {loadingId === item.id ? (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-20">
-                  <Loader2 className={`w-10 h-10 animate-spin ${isVibe ? 'text-cyan-400' : 'text-[#D9FF3D]'}`} />
+                  <Loader2 className={`w-10 h-10 animate-spin ${isVibe ? 'text-white' : 'text-[#D9FF3D]'}`} />
                 </div>
               ) : (
                 <Image
@@ -322,7 +322,7 @@ export function CamperBroetchenDashboard({
                 />
               )}
               {/* Gradient overlay at bottom of image for text readability */}
-              <div className={`absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t ${isVibe ? 'from-slate-950/80' : 'from-[#4c503d]/80'} to-transparent pointer-events-none z-10`} />
+              <div className={`absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t ${isVibe ? 'from-black/80' : 'from-[#4c503d]/80'} to-transparent pointer-events-none z-10`} />
             </div>
 
             {/* Card body */}
@@ -331,7 +331,7 @@ export function CamperBroetchenDashboard({
                 <h3 className={`font-sans font-bold text-sm leading-tight truncate ${isVibe ? 'text-white' : 'text-[#4c503d] dark:text-white'}`}>
                   {item.name}
                 </h3>
-                <p className={`text-xs font-sans font-semibold uppercase tracking-wider mt-0.5 ${isVibe ? 'text-slate-300' : 'text-[#4c503d]/50 dark:text-white/50'}`}>
+                <p className={`text-xs font-sans font-semibold uppercase tracking-wider mt-0.5 ${isVibe ? 'text-slate-400' : 'text-[#4c503d]/50 dark:text-white/50'}`}>
                   {Number(item.preis || 0).toFixed(2)} €
                 </p>
               </div>
@@ -340,7 +340,7 @@ export function CamperBroetchenDashboard({
               <div
                 className={
                   isVibe
-                    ? "flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl font-black text-sm transition-all duration-150 group-hover:scale-110 bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                    ? "flex-shrink-0 flex items-center justify-center w-9 h-9 font-medium text-sm transition-all duration-150 group-hover:scale-110 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-full backdrop-blur-md"
                     : "flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl font-black text-sm transition-all duration-150 group-hover:scale-110"
                 }
                 style={isVibe ? {} : { backgroundColor: "#D9FF3D", color: "#1a1e12" }}
@@ -355,26 +355,26 @@ export function CamperBroetchenDashboard({
 
       {/* Meine Statistiken – Beige Karte, rounded-3xl, Uppercase Labels */}
       <div className="max-w-2xl mx-auto">
-        <h2 className={`text-xs font-sans font-semibold uppercase tracking-widest mb-3 px-1 ${isVibe ? 'text-slate-300' : 'text-muted-foreground'}`}>Meine Statistiken</h2>
-        <Card className={isVibe ? 'bg-slate-950/40 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl overflow-hidden text-white' : 'bg-card border-0 rounded-3xl shadow-sm overflow-hidden'}>
+        <h2 className={`text-xs font-sans font-semibold uppercase tracking-widest mb-3 px-1 ${isVibe ? 'text-slate-400' : 'text-muted-foreground'}`}>Meine Statistiken</h2>
+        <Card className={isVibe ? 'bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl overflow-hidden text-white hover:bg-black/50 hover:border-white/20 transition-all duration-300' : 'bg-card border-0 rounded-3xl shadow-sm overflow-hidden'}>
           <CardContent className="p-0">
             {personalStats.length === 0 ? (
               <div className="p-8 flex flex-col items-center justify-center text-center text-muted-foreground animate-in fade-in duration-500">
-                <Croissant className={`w-12 h-12 mb-3 ${isVibe ? 'text-cyan-400 opacity-80' : 'opacity-50'}`} />
+                <Croissant className={`w-12 h-12 mb-3 ${isVibe ? 'text-white opacity-80' : 'opacity-50'}`} />
                 <p className={`font-semibold mb-1 ${isVibe ? 'text-white' : 'text-foreground/80'}`}>Noch sieht es hier leer aus!</p>
-                <p className={`text-sm ${isVibe ? 'text-slate-300' : ''}`}>Bestell dir dein erstes Brötchen.</p>
+                <p className={`text-sm ${isVibe ? 'text-slate-400' : ''}`}>Bestell dir dein erstes Brötchen.</p>
               </div>
             ) : (
               <div className="divide-y divide-white/10">
                 {personalStats.map((stat, i) => (
                   <div key={i} className="flex justify-between items-center p-4">
                     <div className="flex items-center gap-3">
-                      <div className={`font-bold w-8 h-8 rounded-full flex items-center justify-center ${isVibe ? 'bg-cyan-500/20 text-cyan-400' : 'bg-primary/10 text-primary'}`}>
+                      <div className={`font-bold w-8 h-8 rounded-full flex items-center justify-center ${isVibe ? 'bg-white/10 text-white' : 'bg-primary/10 text-primary'}`}>
                         {stat.count}x
                       </div>
                       <span className="font-medium">{stat.name}</span>
                     </div>
-                    <span className={`font-semibold ${isVibe ? 'text-slate-300' : 'text-muted-foreground'}`}>
+                    <span className={`font-semibold ${isVibe ? 'text-slate-400' : 'text-muted-foreground'}`}>
                       {stat.totalCost.toFixed(2)} €
                     </span>
                   </div>
