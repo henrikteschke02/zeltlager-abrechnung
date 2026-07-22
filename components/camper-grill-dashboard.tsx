@@ -98,6 +98,21 @@ export function CamperGrillDashboard({
     (o) => now.getTime() - new Date(o.created_at).getTime() <= 3 * 60 * 1000
   )
 
+  // Meine persönlichen Statistiken (aggregiert)
+  const personalStats = useMemo(() => {
+    const stats: Record<string, { count: number; totalCost: number; name: string }> = {}
+    orders.forEach(o => {
+      const item = items.find(i => i.id === o.grill_item_id)
+      if (!item) return
+      if (!stats[item.id]) {
+        stats[item.id] = { count: 0, totalCost: 0, name: item.name }
+      }
+      stats[item.id].count += o.quantity
+      stats[item.id].totalCost += o.quantity * Number(item.preis)
+    })
+    return Object.values(stats).sort((a, b) => b.count - a.count)
+  }, [orders, items])
+
   // ── Actions ─────────────────────────────────────────────────────────────────
 
   const openModal = (item: GrillItem) => {
@@ -319,6 +334,38 @@ export function CamperGrillDashboard({
           </button>
         ))}
       </div>
+      </div>
+
+      {/* Meine Statistiken – Beige Karte, rounded-3xl, Uppercase Labels */}
+      <div className="max-w-2xl mx-auto">
+        <h2 className="text-xs font-sans font-semibold uppercase tracking-widest text-muted-foreground mb-3 px-1">Meine Statistiken</h2>
+        <Card className="bg-card border-0 rounded-3xl shadow-sm overflow-hidden">
+          <CardContent className="p-0">
+            {personalStats.length === 0 ? (
+              <div className="p-8 flex flex-col items-center justify-center text-center text-muted-foreground animate-in fade-in duration-500">
+                <Flame className="w-12 h-12 mb-3 opacity-50" />
+                <p className="font-semibold text-foreground/80 mb-1">Noch sieht es hier leer aus!</p>
+                <p className="text-sm">Grill dir dein erstes Fleisch.</p>
+              </div>
+            ) : (
+              <div className="divide-y">
+                {personalStats.map((stat, i) => (
+                  <div key={i} className="flex justify-between items-center p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-primary/10 text-primary font-bold w-8 h-8 rounded-full flex items-center justify-center">
+                        {stat.count}x
+                      </div>
+                      <span className="font-medium">{stat.name}</span>
+                    </div>
+                    <span className="font-semibold text-muted-foreground">
+                      {stat.totalCost.toFixed(2)} €
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       {/* ── Booking Modal ─────────────────────────────────────────────────────── */}
