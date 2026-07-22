@@ -174,7 +174,7 @@ export function CamperBroetchenDashboard({
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
       {/* ── MEIN GRILL-DECKEL (Sticky Banner) ─────────────────────────────── */}
-      <div className="mt-8 sticky top-24 z-40 mb-4 max-w-2xl mx-auto">
+      <div className="mt-8 sticky top-20 z-30 mb-4 max-w-2xl mx-auto">
         <Card
           className="bg-card text-card-foreground shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
           onClick={() => setShowDaily(!showDaily)}
@@ -325,7 +325,7 @@ export function CamperBroetchenDashboard({
                 className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl font-black text-sm transition-all duration-150 group-hover:scale-110"
                 style={{ backgroundColor: "#D9FF3D", color: "#1a1e12" }}
               >
-                +1
+                +
               </div>
             </div>
           </button>

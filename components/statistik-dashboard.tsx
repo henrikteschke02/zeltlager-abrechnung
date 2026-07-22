@@ -129,42 +129,42 @@ export function StatistikDashboard({ data, isAdmin }: StatistikDashboardProps) {
         </Button>
       </div>
 
-      <Card className="bg-white/40 backdrop-blur-md border border-black/10 dark:border-white/20 overflow-hidden shadow-sm">
+      <Card className="bg-white/40 dark:bg-zinc-900/80 backdrop-blur-md border border-black/10 dark:border-white/20 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs uppercase border-b bg-black/10 border-black/20 text-slate-900">
-              <tr>
+            <thead className="text-xs uppercase border-b bg-black/10 dark:bg-white/5 border-black/20 dark:border-white/10 text-slate-900">
+              <tr className="dark:text-slate-200">
                 <th className="px-6 py-4 font-bold">Camper Name</th>
                 <th className="px-6 py-4 font-bold text-right">Getränke</th>
                 <th className="px-6 py-4 font-bold text-right">Grillfleisch</th>
                 <th className="px-6 py-4 font-bold text-right">Brötchen</th>
-                <th className="px-6 py-4 font-bold text-right text-slate-900">Gesamtsumme</th>
+                <th className="px-6 py-4 font-bold text-right">Gesamtsumme</th>
               </tr>
             </thead>
             <tbody>
               {filteredData.length > 0 ? (
                 filteredData.map((row) => (
-                  <tr key={row.userId} className="border-b transition-colors border-black/10 hover:bg-white/40">
-                    <td className="px-6 py-4 font-semibold whitespace-nowrap text-slate-900">
+                  <tr key={row.userId} className="border-b transition-colors border-black/10 dark:border-white/10 hover:bg-white/40 dark:hover:bg-white/[0.04]">
+                    <td className="px-6 py-4 font-semibold whitespace-nowrap text-slate-900 dark:text-white">
                       {row.fullName}
                     </td>
-                    <td className="px-6 py-4 text-right font-semibold text-slate-900">
+                    <td className="px-6 py-4 text-right font-semibold text-slate-900 dark:text-slate-300">
                       {row.getraenkeSum.toFixed(2)} €
                     </td>
-                    <td className="px-6 py-4 text-right font-semibold text-slate-900">
+                    <td className="px-6 py-4 text-right font-semibold text-slate-900 dark:text-slate-300">
                       {row.grillSum.toFixed(2)} €
                     </td>
-                    <td className="px-6 py-4 text-right font-semibold text-slate-900">
+                    <td className="px-6 py-4 text-right font-semibold text-slate-900 dark:text-slate-300">
                       {row.broetchenSum.toFixed(2)} €
                     </td>
-                    <td className="px-6 py-4 text-right font-bold text-slate-900 bg-black/[0.03]">
+                    <td className="px-6 py-4 text-right font-bold text-slate-900 dark:text-white bg-black/[0.03] dark:bg-white/5">
                       {row.totalSum.toFixed(2)} €
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center font-medium text-slate-600">
+                  <td colSpan={5} className="px-6 py-8 text-center font-medium text-slate-600 dark:text-slate-400">
                     Keine Camper gefunden.
                   </td>
                 </tr>

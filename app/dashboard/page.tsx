@@ -138,6 +138,21 @@ export default async function DashboardPage() {
                   </CardContent>
                 </Card>
               </Link>
+              
+              {profile.role === 'admin' && (
+                <Link href="/dashboard/admin" className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+                  <Card className="border-primary border hover:border-primary/80 transition-colors h-full bg-primary/5">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-bold text-primary">Verwaltung & Admin</CardTitle>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-primary">Admin-Panel</div>
+                      <p className="text-xs text-muted-foreground">Lager, User & Einstellungen</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              )}
             </div>
           </section>
         </div>

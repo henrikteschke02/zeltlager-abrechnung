@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Tent, LogOut, Home, MessageSquare, Beer, Flame, Croissant, PieChart, Settings, LifeBuoy, Menu } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
@@ -45,8 +45,10 @@ export function Navigation() {
   }
 
   const items = [...navItems]
+  // In mobile menu, admin is added to the list.
+  const mobileItems = [...items]
   if (isAdmin) {
-    items.push({ name: "Admin", href: "/dashboard/admin", icon: Settings })
+    mobileItems.push({ name: "Admin", href: "/dashboard/admin", icon: Settings })
   }
 
   return (
@@ -69,7 +71,7 @@ export function Navigation() {
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-2 mt-8">
-                  {items.map((item) => {
+                  {mobileItems.map((item) => {
                     const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
                     return (
                       <Link 
@@ -127,6 +129,16 @@ export function Navigation() {
 
         {/* RECHTS (ModeToggle & Logout) */}
         <div className="flex items-center space-x-2 shrink-0">
+          {isAdmin && (
+            <Link 
+              href="/dashboard/admin"
+              className={buttonVariants({ variant: "default", className: "hidden md:flex bg-primary text-primary-foreground border-primary hover:bg-primary/90 font-bold" })}
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              ADMIN
+            </Link>
+          )}
+
           <ModeToggle />
           
           <Button 

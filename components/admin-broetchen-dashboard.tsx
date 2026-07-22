@@ -153,7 +153,7 @@ export function AdminBroetchenDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground dark:bg-[#4c503d] dark:text-white p-4 sm:p-8 font-sans">
+    <div className="min-h-screen bg-background text-foreground p-4 sm:p-8 font-sans">
       <div className="max-w-3xl mx-auto space-y-6">
         
         <AdminNav />
@@ -162,7 +162,7 @@ export function AdminBroetchenDashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-serif font-bold text-[#E5E4DE]">Brötchen Verwaltung</h1>
-            <p className="text-[#4c503d]/70 dark:text-[#E5E4DE]/70 text-sm mt-1">Verwalte die verfügbaren Brötchensorten für das Lager.</p>
+            <p className="text-[#4c503d]/70 dark:text-muted-foreground text-sm mt-1">Verwalte die verfügbaren Brötchensorten für das Lager.</p>
           </div>
           <Button 
             onClick={openAddModal}
@@ -182,7 +182,7 @@ export function AdminBroetchenDashboard() {
             </div>
           ) : items.length === 0 ? (
              <div className="text-center p-8 bg-white/5 backdrop-blur-sm border border-black/10 dark:border-white/10 rounded-2xl">
-               <p className="text-[#4c503d]/70 dark:text-[#E5E4DE]/70">Kein Brötchen angelegt. Füge ein neues Produkt hinzu!</p>
+               <p className="text-[#4c503d]/70 dark:text-muted-foreground">Kein Brötchen angelegt. Füge ein neues Produkt hinzu!</p>
              </div>
           ) : (
             items.map((item) => (
