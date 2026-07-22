@@ -94,9 +94,15 @@ export function LeaderboardView({ profiles, beverages, consumptions: initialCons
                 
                 <div className="relative">
                   {user.avatar_url ? (
-                    <Image src={user.avatar_url} alt="Avatar" width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
+                    user.avatar_url.startsWith('http') || user.avatar_url.startsWith('/') || user.avatar_url.startsWith('blob:') ? (
+                      <Image src={user.avatar_url} alt="Avatar" width={48} height={48} className="w-12 h-12 rounded-full object-cover shadow-sm" />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-2xl shadow-sm border border-black/5 dark:border-white/5">
+                        {user.avatar_url}
+                      </div>
+                    )
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center font-bold text-lg text-muted-foreground">
+                    <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center font-bold text-lg text-muted-foreground shadow-sm">
                       {user.full_name.charAt(0).toUpperCase()}
                     </div>
                   )}
