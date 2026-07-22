@@ -126,14 +126,26 @@ export function SilkAurora({
     } catch { setHasWebGLError(true); return () => { container.removeEventListener("pointermove", handlePointerMove); container.removeEventListener("pointerleave", handlePointerLeave); }; }
   }, [hasWebGLError, settings]);
 
-  const fallbackContent = (<div className={cn("relative flex min-h-screen w-full items-center overflow-hidden bg-[#050507] text-white", className)} style={{ containerType: "size", ...style }} {...props}><WebGLFallback className="absolute inset-0 h-full w-full" />{children && <div className="relative z-10 w-full">{children}</div>}</div>);
+  const fallbackContent = (<div className={cn("relative h-screen w-full overflow-hidden bg-[#050507] text-white", className)} style={{ containerType: "size", ...style }} {...props}><WebGLFallback className="absolute inset-0 h-full w-full" />{children && (
+  <div className="absolute inset-0 z-10 h-full w-full overflow-y-auto">
+    <div className="min-h-full w-full">
+      {children}
+    </div>
+  </div>
+)}</div>);
   if (hasWebGLError) return fallbackContent;
 
   return (
     <WebGLErrorBoundary fallback={fallbackContent}>
-      <div ref={containerRef} className={cn("relative flex min-h-screen w-full items-center overflow-hidden bg-[#050507] text-white", className)} style={{ containerType: "size", ...style }} {...props}>
+      <div ref={containerRef} className={cn("relative h-screen w-full overflow-hidden bg-[#050507] text-white", className)} style={{ containerType: "size", ...style }} {...props}>
         <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full" style={{ width: "100%", height: "100%", display: "block" }} />
-        {children && <div className="relative z-10 w-full">{children}</div>}
+        {children && (
+          <div className="absolute inset-0 z-10 h-full w-full overflow-y-auto">
+            <div className="min-h-full w-full">
+              {children}
+            </div>
+          </div>
+        )}
       </div>
     </WebGLErrorBoundary>
   );
