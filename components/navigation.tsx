@@ -12,37 +12,41 @@ import { ModeToggle } from "@/components/mode-toggle"
 import { GradientMenu } from "@/components/ui/gradient-menu"
 
 const simpleNavItems = [
-  { name: "Startseite", href: "/dashboard", exact: true },
-  { name: "Schwarzes Brett", href: "/dashboard/schwarzes-brett" },
-  { name: "Getränke", href: "/dashboard/getraenke" },
-  { name: "Grillfleisch", href: "/dashboard/grillfleisch" },
-  { name: "Brötchen", href: "/dashboard/broetchen" },
-  { name: "Hilfe", href: "/dashboard/hilfe" },
-  { name: "Statistik", href: "/dashboard/statistik" },
+  { name: "Startseite", href: "/dashboard", icon: Home, exact: true },
+  { name: "Schwarzes Brett", href: "/dashboard/schwarzes-brett", icon: MessageSquare },
+  { name: "Getränke", href: "/dashboard/getraenke", icon: Beer },
+  { name: "Grillfleisch", href: "/dashboard/grillfleisch", icon: Flame },
+  { name: "Brötchen", href: "/dashboard/broetchen", icon: Croissant },
+  { name: "Hilfe", href: "/dashboard/hilfe", icon: LifeBuoy },
+  { name: "Statistik", href: "/dashboard/statistik", icon: PieChart },
 ]
 
 function SimpleNav({ isAdmin, pathname }: { isAdmin: boolean, pathname: string | null }) {
   const items = [...simpleNavItems]
   if (isAdmin) {
-    items.push({ name: "Admin", href: "/dashboard/admin" })
+    items.push({ name: "Admin", href: "/dashboard/admin", icon: Settings })
   }
   return (
-    <nav className="w-full overflow-x-auto no-scrollbar py-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-      <ul className="flex items-center justify-center gap-4 md:gap-6 min-w-max px-4">
+    <nav className="w-full flex justify-center py-2">
+      <div className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1.5 bg-black/10 dark:bg-black/40 rounded-full mx-4 my-2">
         {items.map((item) => {
           const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
           return (
-            <li key={item.href} className="list-none flex-shrink-0">
-              <Link 
-                href={item.href}
-                className={`text-sm font-semibold tracking-wide uppercase transition-colors hover:opacity-75 ${isActive ? 'text-primary' : 'text-foreground'}`}
-              >
-                {item.name}
-              </Link>
-            </li>
+            <Link 
+              key={item.href}
+              href={item.href}
+              className={
+                isActive
+                  ? "bg-[#e6e2d6] text-slate-900 rounded-full px-4 py-2 flex items-center gap-2 whitespace-nowrap font-bold text-xs uppercase shadow-sm"
+                  : "text-foreground/80 hover:text-foreground hover:bg-foreground/10 rounded-full px-4 py-2 flex items-center gap-2 whitespace-nowrap font-medium text-xs uppercase transition-colors"
+              }
+            >
+              <item.icon size={16} />
+              {item.name}
+            </Link>
           )
         })}
-      </ul>
+      </div>
       <style jsx global>{`
         .no-scrollbar::-webkit-scrollbar {
           display: none;
