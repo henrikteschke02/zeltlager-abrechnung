@@ -182,7 +182,7 @@ export function CamperBroetchenDashboard({
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
       {/* ── MEIN GRILL-DECKEL (Sticky Banner) ─────────────────────────────── */}
-      <div className="sticky top-16 z-40 mb-4 max-w-2xl mx-auto">
+      <div className="mt-8 sticky top-24 z-40 mb-4 max-w-2xl mx-auto">
         <Card
           className={
             isVibe
