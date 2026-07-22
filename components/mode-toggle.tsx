@@ -32,6 +32,9 @@ export function ModeToggle() {
         <DropdownMenuItem onClick={() => setTheme("dark")}>
           Dark (Schwarz)
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("vibe")}>
+          Vibe Mode (Experimentell)
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
