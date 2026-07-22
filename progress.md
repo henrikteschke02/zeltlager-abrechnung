@@ -49,3 +49,8 @@ Die Info-Seite wurde in eine eigene Route ausgelagert. Die Autor-Zuordnung nutzt
 
 ## Phase 11: UI-Politur & Aufräumen
 Der schwache Light-Mode-Kontrast ist behoben, ohne den Dark Mode anzufassen. Die Navigation hat eine neue sinnvolle Reihenfolge bekommen (Startseite -> Schwarzes Brett -> Getränke -> Grillfleisch -> Brötchen -> Statistik -> Admin) und Dashboard-Karten sind thematisch in "Verpflegung" und "Infos & Verwaltung" gegliedert. Zu guter Letzt haben wir das Repo ausgemistet und alte Skripte sowie generische Doku-Dateien gelöscht.
+
+## Phase 12: Personalisierung & 3-Wege-Theming
+- **Avatar-System:** Wir haben eine Auswahl an passenden Zeltlager-Avataren (Emojis auf runden, farbigen Hintergründen) in die Profilverwaltung eingebaut. Diese werden nun auch direkt im Leaderboard ausgespielt, was der Rangliste direkt deutlich mehr Charakter verleiht.
+- **3-Wege-Theme:** Neben dem hellen Modus und unserem olivgrünen Standard-Design läuft nun ein dritter, klassischer Dark Mode (tiefschwarz/dunkelgrau). Der Theme-Toggle oben rechts schaltet die Modi über ein Dropdown durch. Dabei wurde auch gleich ein ärgerliches Kontrast-Problem im Suchfeld der Statistik-Seite behoben.
+- **Icon-Refactoring:** Die bisherigen Text-Emojis in den Dashboards (z. B. auf der Startseite oder bei den Deckeln) wurden durch saubere SVG-Icons von lucide-react ersetzt. Sie ordnen sich nun perfekt ins neue Theme-System ein und werten das UI spürbar auf.
