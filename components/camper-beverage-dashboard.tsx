@@ -5,7 +5,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { createClient } from "@/utils/supabase/client"
 import { Info, Plus, Minus, Check, ChevronDown, Beer, Loader2, Undo2, BarChart3, Medal } from "lucide-react"
-import { useTheme } from "next-themes"
 import { DRINK_ICONS, Cola } from "@/components/icons/DrinkIcons"
 
 import { Button } from "@/components/ui/button"
@@ -72,13 +71,6 @@ export function CamperBeverageDashboard({
   
   // Toggle State für Deckel (Gesamt vs Tagesdeckel)
   const [showDaily, setShowDaily] = useState(false)
-
-  const { theme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-  const isVibe = mounted && theme === 'vibe'
   
   const supabase = createClient()
 
@@ -264,12 +256,8 @@ export function CamperBeverageDashboard({
       {/* Sticky Header / Mein Deckel – Beige Karte mit olivem Text, rounded-3xl, Serif Preis */}
       <div className="mt-8 sticky top-24 z-40 mb-4 max-w-2xl mx-auto">
         <Card 
-          className={
-            isVibe
-              ? "bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden relative rounded-2xl cursor-pointer group select-none transition-all duration-300 hover:bg-black/50 hover:border-white/20 active:scale-[0.98] text-white"
-              : "shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
-          }
-          style={isVibe ? {} : { backgroundColor: "#E5E4DE", color: "#4c503d" }}
+          className="shadow-2xl shadow-black/30 overflow-hidden relative border-0 rounded-3xl cursor-pointer group select-none transition-all active:scale-[0.98]"
+          style={{ backgroundColor: "#E5E4DE", color: "#4c503d" }}
           onClick={() => setShowDaily(!showDaily)}
         >
           <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
@@ -298,7 +286,7 @@ export function CamperBeverageDashboard({
             </div>
           </CardHeader>
           <CardContent className="relative z-10 pb-4 pt-0">
-            <div className={`flex items-center justify-between rounded-2xl p-2.5 mt-2 border ${isVibe ? 'bg-white/10 border-white/10' : 'bg-black/5 border-black/5'}`}>
+            <div className="flex items-center justify-between rounded-2xl p-2.5 mt-2 border bg-black/5 border-black/5">
               <div className="flex items-center gap-3">
                 <span className="text-3xl filter drop-shadow-sm transition-transform group-hover:scale-110 duration-300">
                   {currentElchLevel.emoji}
@@ -348,9 +336,9 @@ export function CamperBeverageDashboard({
       {/* Navigation zu Leaderboard */}
       <div className="max-w-md mx-auto">
         <Link href="/dashboard/leaderboard" className="block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
-          <Card className={isVibe ? "bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl text-white hover:bg-black/50 hover:border-white/20 transition-all duration-300" : "bg-white/10 backdrop-blur-sm border border-black/10 dark:border-white/20 text-foreground hover:bg-white/20 transition-all duration-200 hover:scale-105 active:scale-95"}>
+          <Card className="bg-white/10 backdrop-blur-sm border border-black/10 dark:border-white/20 text-foreground hover:bg-white/20 transition-all duration-200 hover:scale-105 active:scale-95">
             <CardContent className="p-3 flex items-center justify-center gap-2">
-              <Medal className={`w-5 h-5 flex-shrink-0 ${isVibe ? 'text-white' : 'text-primary'}`} />
+              <Medal className="w-5 h-5 flex-shrink-0 text-primary" />
               <div className="text-sm font-sans font-bold leading-tight">Zum Leaderboard</div>
             </CardContent>
           </Card>
@@ -366,17 +354,13 @@ export function CamperBeverageDashboard({
               key={bev.id}
               onClick={() => handleOpenModal(bev)}
               disabled={loadingId === bev.id}
-              className={
-                isVibe
-                  ? "group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl shadow-2xl text-left transition-all duration-300 hover:bg-black/50 hover:border-white/20 hover:scale-[1.03] active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-white select-none"
-                  : "group relative flex flex-col overflow-hidden rounded-2xl border border-black/10 dark:border-white/10 bg-white/5 backdrop-blur-md text-left transition-all duration-200 hover:scale-[1.03] hover:border-[#D9FF3D]/40 hover:shadow-lg hover:shadow-[#D9FF3D]/10 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-[#D9FF3D] select-none"
-              }
-              style={isVibe ? {} : { backgroundColor: "rgba(76,80,61,0.55)" }}
+              className="group relative flex flex-col overflow-hidden rounded-2xl border border-black/10 dark:border-white/10 bg-white/5 backdrop-blur-md text-left transition-all duration-200 hover:scale-[1.03] hover:border-[#D9FF3D]/40 hover:shadow-lg hover:shadow-[#D9FF3D]/10 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-[#D9FF3D] select-none"
+              style={{ backgroundColor: "rgba(76,80,61,0.55)" }}
             >
               {/* Square image / icon area */}
-              <div className={`relative w-full aspect-square overflow-hidden flex items-center justify-center ${isVibe ? 'bg-transparent' : 'bg-white/5'}`}>
+              <div className="relative w-full aspect-square overflow-hidden flex items-center justify-center bg-white/5">
                 {loadingId === bev.id ? (
-                  <Loader2 className={`w-10 h-10 animate-spin ${isVibe ? 'text-white' : 'text-[#D9FF3D]'}`} />
+                  <Loader2 className="w-10 h-10 animate-spin text-[#D9FF3D]" />
                 ) : getBeverageImage(bev.name) ? (
                   <Image
                     src={getBeverageImage(bev.name)!}
@@ -395,16 +379,12 @@ export function CamperBeverageDashboard({
               {/* Name + price row with neon +1 badge */}
               <div className="flex items-center justify-between p-3 gap-2">
                 <div className="min-w-0">
-                  <h3 className={`font-sans font-bold text-sm leading-tight truncate ${isVibe ? 'text-white' : 'text-[#4c503d] dark:text-white'}`}>{bev.name}</h3>
-                  <p className={`text-xs font-sans font-semibold uppercase tracking-wider mt-0.5 ${isVibe ? 'text-slate-400' : 'text-[#4c503d]/50 dark:text-white/50'}`}>{Number(bev.price).toFixed(2)} €</p>
+                  <h3 className="font-sans font-bold text-sm leading-tight truncate text-[#4c503d] dark:text-white">{bev.name}</h3>
+                  <p className="text-xs font-sans font-semibold uppercase tracking-wider mt-0.5 text-[#4c503d]/50 dark:text-white/50">{Number(bev.price).toFixed(2)} €</p>
                 </div>
                 <div
-                  className={
-                    isVibe
-                      ? "flex-shrink-0 flex items-center justify-center w-9 h-9 font-medium text-sm transition-all duration-150 group-hover:scale-110 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-full backdrop-blur-md"
-                      : "flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl font-black text-sm transition-all duration-150 group-hover:scale-110"
-                  }
-                  style={isVibe ? {} : { backgroundColor: "#D9FF3D", color: "#1a1e12" }}
+                  className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl font-black text-sm transition-all duration-150 group-hover:scale-110"
+                  style={{ backgroundColor: "#D9FF3D", color: "#1a1e12" }}
                 >
                   +1
                 </div>
@@ -421,26 +401,26 @@ export function CamperBeverageDashboard({
 
       {/* Meine Statistiken – Beige Karte, rounded-3xl, Uppercase Labels */}
       <div className="mt-8 max-w-2xl mx-auto">
-        <h2 className={`text-xs font-sans font-semibold uppercase tracking-widest mb-3 px-1 ${isVibe ? 'text-slate-400' : 'text-muted-foreground'}`}>Meine Statistiken</h2>
-        <Card className={isVibe ? 'bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl overflow-hidden text-white hover:bg-black/50 hover:border-white/20 transition-all duration-300' : 'bg-card border-0 rounded-3xl shadow-sm overflow-hidden'}>
+        <h2 className="text-xs font-sans font-semibold uppercase tracking-widest mb-3 px-1 text-muted-foreground">Meine Statistiken</h2>
+        <Card className="bg-card border-0 rounded-3xl shadow-sm overflow-hidden">
           <CardContent className="p-0">
             {personalStats.length === 0 ? (
               <div className="p-8 flex flex-col items-center justify-center text-center text-muted-foreground animate-in fade-in duration-500">
-                <Beer className={`w-12 h-12 mb-3 ${isVibe ? 'text-white opacity-80' : 'opacity-50'}`} />
-                <p className={`font-semibold mb-1 ${isVibe ? 'text-white' : 'text-foreground/80'}`}>Noch sieht es hier leer aus!</p>
-                <p className={`text-sm ${isVibe ? 'text-slate-400' : ''}`}>Schnapp dir dein erstes Getränk.</p>
+                <Beer className="w-12 h-12 mb-3 opacity-50" />
+                <p className="font-semibold mb-1 text-foreground/80">Noch sieht es hier leer aus!</p>
+                <p className="text-sm">Schnapp dir dein erstes Getränk.</p>
               </div>
             ) : (
               <div className="divide-y divide-white/10">
                 {personalStats.map((stat, i) => (
                   <div key={i} className="flex justify-between items-center p-4">
                     <div className="flex items-center gap-3">
-                      <div className={`font-bold w-8 h-8 rounded-full flex items-center justify-center ${isVibe ? 'bg-white/10 text-white' : 'bg-primary/10 text-primary'}`}>
+                      <div className="font-bold w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 text-primary">
                         {stat.count}x
                       </div>
                       <span className="font-medium">{stat.name}</span>
                     </div>
-                    <span className={`font-semibold ${isVibe ? 'text-slate-400' : 'text-muted-foreground'}`}>
+                    <span className="font-semibold text-muted-foreground">
                       {stat.totalCost.toFixed(2)} €
                     </span>
                   </div>

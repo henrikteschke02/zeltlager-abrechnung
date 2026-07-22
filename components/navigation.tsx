@@ -3,15 +3,14 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Tent, LogOut, Home, MessageSquare, Beer, Flame, Croissant, PieChart, Settings, LifeBuoy } from "lucide-react"
+import { Tent, LogOut, Home, MessageSquare, Beer, Flame, Croissant, PieChart, Settings, LifeBuoy, Menu } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
-import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
-import { GradientMenu } from "@/components/ui/gradient-menu"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
-const simpleNavItems = [
+const navItems = [
   { name: "Startseite", href: "/dashboard", icon: Home, exact: true },
   { name: "Schwarzes Brett", href: "/dashboard/schwarzes-brett", icon: MessageSquare },
   { name: "Getränke", href: "/dashboard/getraenke", icon: Beer },
@@ -21,53 +20,12 @@ const simpleNavItems = [
   { name: "Statistik", href: "/dashboard/statistik", icon: PieChart },
 ]
 
-function SimpleNav({ isAdmin, pathname }: { isAdmin: boolean, pathname: string | null }) {
-  const items = [...simpleNavItems]
-  if (isAdmin) {
-    items.push({ name: "Admin", href: "/dashboard/admin", icon: Settings })
-  }
-  return (
-    <nav className="w-full flex justify-center py-2">
-      <div className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1 bg-black/10 dark:bg-black/40 rounded-full mx-1 lg:mx-4 my-2">
-        {items.map((item) => {
-          const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
-          return (
-            <Link 
-              key={item.href}
-              href={item.href}
-              className={
-                isActive
-                  ? "bg-[#e6e2d6] text-slate-900 rounded-full px-3 py-1.5 flex items-center gap-1.5 whitespace-nowrap font-bold text-xs uppercase shadow-sm shrink-0"
-                  : "text-foreground/80 hover:text-foreground hover:bg-foreground/10 rounded-full px-3 py-1.5 flex items-center gap-1.5 whitespace-nowrap font-medium text-xs uppercase transition-colors shrink-0"
-              }
-            >
-              <item.icon size={16} />
-              {item.name}
-            </Link>
-          )
-        })}
-      </div>
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-    </nav>
-  )
-}
-
 export function Navigation() {
   const router = useRouter()
   const pathname = usePathname()
   const supabase = createClient()
   const [isAdmin, setIsAdmin] = React.useState(false)
-  
-  const { theme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
 
   React.useEffect(() => {
     const checkAdmin = async () => {
@@ -86,57 +44,120 @@ export function Navigation() {
     router.refresh()
   }
 
-  // Fallback: URSPRÜNGLICHES Menü wenn nicht gemounted oder theme nicht "vibe" ist
-  const renderNav = () => {
-    if (!mounted) return <SimpleNav isAdmin={isAdmin} pathname={pathname} />
-    if (theme === 'vibe') return <GradientMenu />
-    return <SimpleNav isAdmin={isAdmin} pathname={pathname} />
+  const items = [...navItems]
+  if (isAdmin) {
+    items.push({ name: "Admin", href: "/dashboard/admin", icon: Settings })
   }
 
-  const isVibe = mounted && theme === 'vibe'
-
   return (
-    <header className={isVibe ? "sticky top-0 z-50 w-full bg-black/20 backdrop-blur-md border-b border-white/5" : "sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"}>
-      <div className="container flex h-[72px] items-center px-2 md:px-4 lg:px-8 justify-between gap-2 md:gap-4">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-[72px] items-center px-4 lg:px-8 justify-between">
         
-        {/* LOGO */}
-        <div className="hidden md:flex items-center min-w-max">
+        {/* LOGO & MOBILE MENU TRIGGER */}
+        <div className="flex items-center space-x-2">
+          {/* Mobile Hamburger */}
+          <div className="md:hidden">
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger render={<Button variant="ghost" size="icon" className="mr-2" />}>
+                <Menu className="h-6 w-6" />
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center gap-2">
+                    <Tent className="h-5 w-5 text-primary" />
+                    <span>Zeltlager Manager</span>
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-2 mt-8">
+                  {items.map((item) => {
+                    const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
+                    return (
+                      <Link 
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-medium ${isActive ? 'bg-primary/10 text-primary font-bold' : 'hover:bg-muted text-muted-foreground hover:text-foreground'}`}
+                      >
+                        <item.icon size={20} />
+                        {item.name}
+                      </Link>
+                    )
+                  })}
+                  <div className="mt-4 pt-4 border-t">
+                    <Button variant="outline" className="w-full justify-start text-muted-foreground" onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Logout
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+
           <Link href="/dashboard" className="flex items-center space-x-2">
             <Tent className="h-5 w-5 text-primary" />
-            <span className="font-serif font-bold text-lg tracking-tight">
+            <span className="font-serif font-bold text-lg tracking-tight hidden sm:inline-block">
               Zeltlager Manager
             </span>
           </Link>
         </div>
 
-        {/* NAVIGATION (Zentriert) */}
-        <div className="flex-1 overflow-hidden flex justify-center min-w-0">
-          {renderNav()}
+        {/* DESKTOP NAVIGATION (Pill-Tab-Bar) */}
+        <div className="hidden md:flex flex-1 justify-center min-w-0 px-4">
+          <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1.5 bg-black/10 dark:bg-black/40 rounded-full w-max max-w-full">
+            {items.map((item) => {
+              const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
+              return (
+                <Link 
+                  key={item.href}
+                  href={item.href}
+                  className={
+                    isActive
+                      ? "bg-[#e6e2d6] text-slate-900 rounded-full px-4 py-2 flex items-center gap-2 whitespace-nowrap font-bold text-xs uppercase shadow-sm shrink-0 transition-colors"
+                      : "text-foreground/80 hover:text-foreground hover:bg-foreground/10 rounded-full px-4 py-2 flex items-center gap-2 whitespace-nowrap font-medium text-xs uppercase transition-colors shrink-0"
+                  }
+                >
+                  <item.icon size={16} />
+                  {item.name}
+                </Link>
+              )
+            })}
+          </nav>
         </div>
 
         {/* RECHTS (ModeToggle & Logout) */}
-        <div className="flex items-center space-x-2 min-w-max">
+        <div className="flex items-center space-x-2 shrink-0">
           <ModeToggle />
-          <button 
+          
+          <Button 
+            variant="outline"
+            size="icon"
             onClick={handleLogout} 
-            className={isVibe 
-              ? "inline-flex items-center justify-center rounded-md h-10 w-10 bg-black/40 backdrop-blur-md border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-all md:hidden" 
-              : "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10 md:hidden"}
+            className="md:hidden"
           >
             <LogOut className="h-4 w-4" />
-          </button>
-          <button 
+          </Button>
+
+          <Button 
+            variant="outline"
             onClick={handleLogout} 
-            className={isVibe 
-              ? "hidden md:inline-flex items-center justify-center rounded-md text-sm font-medium px-4 py-2 bg-black/40 backdrop-blur-md border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-all" 
-              : "hidden md:inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"}
+            className="hidden md:flex"
           >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Logout</span>
-          </button>
+          </Button>
         </div>
 
       </div>
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </header>
   )
 }
