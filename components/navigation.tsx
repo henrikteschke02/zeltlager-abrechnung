@@ -12,33 +12,32 @@ import { ModeToggle } from "@/components/mode-toggle"
 import { GradientMenu } from "@/components/ui/gradient-menu"
 
 const simpleNavItems = [
-  { name: "Start", href: "/dashboard", icon: Home, exact: true },
-  { name: "S. Brett", href: "/dashboard/schwarzes-brett", icon: MessageSquare },
-  { name: "Getränke", href: "/dashboard/getraenke", icon: Beer },
-  { name: "Grill", href: "/dashboard/grillfleisch", icon: Flame },
-  { name: "Brötchen", href: "/dashboard/broetchen", icon: Croissant },
-  { name: "Hilfe", href: "/dashboard/hilfe", icon: LifeBuoy },
-  { name: "Statistik", href: "/dashboard/statistik", icon: PieChart },
+  { name: "Startseite", href: "/dashboard", exact: true },
+  { name: "Schwarzes Brett", href: "/dashboard/schwarzes-brett" },
+  { name: "Getränke", href: "/dashboard/getraenke" },
+  { name: "Grillfleisch", href: "/dashboard/grillfleisch" },
+  { name: "Brötchen", href: "/dashboard/broetchen" },
+  { name: "Hilfe", href: "/dashboard/hilfe" },
+  { name: "Statistik", href: "/dashboard/statistik" },
 ]
 
 function SimpleNav({ isAdmin, pathname }: { isAdmin: boolean, pathname: string | null }) {
   const items = [...simpleNavItems]
   if (isAdmin) {
-    items.push({ name: "Admin", href: "/dashboard/admin", icon: Settings })
+    items.push({ name: "Admin", href: "/dashboard/admin" })
   }
   return (
     <nav className="w-full overflow-x-auto no-scrollbar py-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-      <ul className="flex items-center justify-center gap-4 min-w-max px-4">
+      <ul className="flex items-center justify-center gap-4 md:gap-6 min-w-max px-4">
         {items.map((item) => {
           const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
           return (
             <li key={item.href} className="list-none flex-shrink-0">
               <Link 
                 href={item.href}
-                className={`flex items-center justify-center w-[50px] h-[50px] bg-slate-900 shadow-md rounded-full transition-all duration-300 ${isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : 'hover:bg-slate-800'}`}
-                title={item.name}
+                className={`text-sm font-semibold tracking-wide uppercase transition-colors hover:opacity-75 ${isActive ? 'text-primary' : 'text-foreground'}`}
               >
-                <item.icon className={`w-5 h-5 ${isActive ? 'text-primary' : 'text-slate-400'}`} />
+                {item.name}
               </Link>
             </li>
           )
