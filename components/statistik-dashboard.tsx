@@ -109,14 +109,14 @@ export function StatistikDashboard({ data, isAdmin }: StatistikDashboardProps) {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="relative w-full sm:max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4c503d]/70 dark:text-white/70" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-900" />
           <Input 
             type="search" 
             autoComplete="off"
             placeholder="Camper suchen..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 bg-white/10 border-black/10 dark:border-white/20 text-[#4c503d] dark:text-white placeholder:text-[#4c503d]/70 dark:text-white/70 focus-visible:ring-white/50"
+            className="pl-9 bg-white/50 dark:bg-white/90 border-black/20 text-slate-900 placeholder:text-slate-700 focus-visible:ring-slate-900/50 font-medium"
           />
         </div>
         <Button 
