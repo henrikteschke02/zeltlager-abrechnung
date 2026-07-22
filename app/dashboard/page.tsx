@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Beer, Drumstick, Croissant, MessageSquare, Calculator, LifeBuoy } from "lucide-react"
+import { Beer, Drumstick, Croissant, MessageSquare, Calculator, LifeBuoy, Tent } from "lucide-react"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -31,7 +31,7 @@ export default async function DashboardPage() {
     <div className="container mx-auto p-4 md:p-8">
       <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Hallo, {profile.full_name?.split(' ')[0] || 'Camper'}! ⛺</h1>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">Hallo, {profile.full_name?.split(' ')[0] || 'Camper'}! <Tent className="w-8 h-8 text-primary" /></h1>
           <p className="text-muted-foreground mt-2">
             Willkommen im Zeltlager. Was möchtest du tun?
           </p>

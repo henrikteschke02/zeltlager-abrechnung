@@ -216,7 +216,7 @@ export function CamperBroetchenDashboard({
 
           <CardContent className="relative z-10 pb-4 pt-0">
             <div className="flex items-center gap-3 bg-black/5 rounded-2xl p-2.5 mt-2 border border-black/5">
-              <span className="text-2xl">🥯</span>
+              <Croissant className="w-8 h-8 text-amber-500" />
               <p className="text-xs font-sans font-semibold uppercase tracking-widest opacity-70">
                 Mein Brötchen-Deckel — unabhängig vom Getränke-Deckel
               </p>
