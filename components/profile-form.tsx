@@ -115,7 +115,7 @@ export function ProfileForm({ userId, initialProfile }: ProfileFormProps) {
                     <Camera className="w-8 h-8 text-muted-foreground" />
                   )}
                 </div>
-                <label className="absolute inset-0 w-full h-full rounded-full cursor-pointer bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                <label className="absolute inset-0 w-full h-full rounded-full cursor-pointer bg-black/50 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
                   {isUploading ? <Loader2 className="w-6 h-6 text-white animate-spin" /> : <span className="text-xs text-white font-medium text-center">Eigenes<br/>Uploaden</span>}
                   <input 
                     type="file" 

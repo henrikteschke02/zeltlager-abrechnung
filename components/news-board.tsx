@@ -219,7 +219,7 @@ export function NewsBoard({ initialNews, initialRequests, isAdmin, userId }: New
               
               return (
                 <div key={item.id} className="bg-background p-4 rounded-xl border relative group">
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                     {canDeleteDirectly ? (
                       <Button 
                         variant="ghost" 
