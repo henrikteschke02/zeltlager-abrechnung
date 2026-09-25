@@ -3,12 +3,13 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Tent, LogOut, Home, MessageSquare, Beer, Flame, Croissant, PieChart, Settings, LifeBuoy, Menu } from "lucide-react"
+import { Tent, LogOut, Home, MessageSquare, Beer, Flame, Croissant, PieChart, Settings, LifeBuoy, Menu, ChevronDown } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 const navItems = [
   { name: "Startseite", href: "/dashboard", icon: Home, exact: true },
@@ -50,6 +51,9 @@ export function Navigation() {
   if (isAdmin) {
     mobileItems.push({ name: "Admin", href: "/dashboard/admin", icon: Settings })
   }
+
+  const primaryItems = items.filter(item => ["Startseite", "Getränke", "Grillfleisch", "Brötchen"].includes(item.name))
+  const secondaryItems = items.filter(item => ["Schwarzes Brett", "Statistik", "Hilfe"].includes(item.name))
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -107,7 +111,7 @@ export function Navigation() {
         {/* DESKTOP NAVIGATION (Pill-Tab-Bar) */}
         <div className="hidden md:flex flex-1 justify-center min-w-0 px-4">
           <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar p-1.5 bg-black/10 dark:bg-black/40 rounded-full w-max max-w-full">
-            {items.map((item) => {
+            {primaryItems.map((item) => {
               const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
               return (
                 <Link 
@@ -124,6 +128,26 @@ export function Navigation() {
                 </Link>
               )
             })}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger className="text-foreground/80 hover:text-foreground hover:bg-foreground/10 rounded-full px-4 py-2 flex items-center gap-2 whitespace-nowrap font-medium text-xs uppercase transition-colors shrink-0 outline-none data-[state=open]:bg-foreground/10 data-[state=open]:text-foreground">
+                Mehr...
+                <ChevronDown size={16} />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48 bg-background/95 backdrop-blur-md rounded-xl p-2 border-border shadow-lg">
+                {secondaryItems.map((item) => {
+                  const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href)
+                  return (
+                    <DropdownMenuItem key={item.href} className="cursor-pointer mb-1 last:mb-0 rounded-lg p-0">
+                      <Link href={item.href} className={`flex items-center gap-3 w-full px-2 py-2 ${isActive ? 'font-bold text-primary bg-primary/10 rounded-lg' : 'text-foreground/80 hover:text-foreground'}`}>
+                        <item.icon size={16} />
+                        {item.name}
+                      </Link>
+                    </DropdownMenuItem>
+                  )
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
 
