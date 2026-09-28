@@ -81,12 +81,19 @@ export function AdminBroetchenDashboard() {
         // Erstelle Session, falls nicht vorhanden
         const { data: newSession, error: insertError } = await supabase.from('broetchen_sessions').insert([{ status: 'active' }]).select().maybeSingle()
         if (insertError) {
-          console.error("Failed to create active session:", insertError)
-          setSessionErrorMsg(insertError.message || "Fehler beim Erstellen der Session")
-          setIsLoadingSession(false)
-          return
+          // Fallback: Check if someone else just created it (Unique Constraint)
+          const { data: retrySession } = await supabase.from('broetchen_sessions').select('*').eq('status', 'active').limit(1).maybeSingle()
+          if (retrySession) {
+            sessionData = retrySession
+          } else {
+            console.error("Failed to create active session:", insertError)
+            setSessionErrorMsg(insertError.message || "Fehler beim Erstellen der Session")
+            setIsLoadingSession(false)
+            return
+          }
+        } else {
+          sessionData = newSession
         }
-        sessionData = newSession
       }
 
       if (sessionData) {

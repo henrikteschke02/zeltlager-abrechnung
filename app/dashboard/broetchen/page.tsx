@@ -41,13 +41,19 @@ export default async function BroetchenPage() {
     .maybeSingle()
 
   if (!session) {
-    const { data: newSession } = await supabase
+    const { data: newSession, error } = await supabase
       .from("broetchen_sessions")
       .insert([{ status: "active" }])
       .select("id")
       .limit(1)
       .maybeSingle()
-    session = newSession
+    
+    if (error) {
+      const { data: retry } = await supabase.from("broetchen_sessions").select("id").eq("status", "active").limit(1).maybeSingle()
+      session = retry
+    } else {
+      session = newSession
+    }
   }
 
   const { data: broetchenOrders } = await supabase
