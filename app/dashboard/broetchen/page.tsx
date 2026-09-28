@@ -37,14 +37,16 @@ export default async function BroetchenPage() {
     .from("broetchen_sessions")
     .select("id")
     .eq("status", "active")
-    .single()
+    .limit(1)
+    .maybeSingle()
 
   if (!session) {
     const { data: newSession } = await supabase
       .from("broetchen_sessions")
       .insert([{ status: "active" }])
       .select("id")
-      .single()
+      .limit(1)
+      .maybeSingle()
     session = newSession
   }
 

@@ -54,32 +54,55 @@ export function AdminBroetchenDashboard() {
   const [orders, setOrders] = useState<any[]>([])
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
   const [actuals, setActuals] = useState<Record<string, number>>({})
+  const [sessionErrorMsg, setSessionErrorMsg] = useState<string | null>(null)
+  const [isLoadingSession, setIsLoadingSession] = useState(true)
 
   useEffect(() => {
     const fetchAll = async () => {
+      // 1. Fetch Items
       const { data: itemsData } = await supabase.from('broetchen_items').select('*').order('name')
       if (itemsData) setItems(itemsData as BroetchenItem[])
+      setLoadingItems(false)
 
-      let { data: sessionData, error: sessionError } = await supabase.from('broetchen_sessions').select('*').eq('status', 'active').single()
+      // 2. Fetch Session
+      setIsLoadingSession(true)
+      setSessionErrorMsg(null)
       
+      let { data: sessionData, error: sessionError } = await supabase.from('broetchen_sessions').select('*').eq('status', 'active').limit(1).maybeSingle()
+      
+      if (sessionError) {
+        console.error("Error fetching active session:", sessionError)
+        setSessionErrorMsg(sessionError.message || "Fehler beim Laden der Session (Möglicherweise gibt es mehrere aktive Sessions).")
+        setIsLoadingSession(false)
+        return
+      }
+
       if (!sessionData) {
-        const { data: newSession, error: insertError } = await supabase.from('broetchen_sessions').insert([{ status: 'active' }]).select().single()
+        // Erstelle Session, falls nicht vorhanden
+        const { data: newSession, error: insertError } = await supabase.from('broetchen_sessions').insert([{ status: 'active' }]).select().maybeSingle()
         if (insertError) {
           console.error("Failed to create active session:", insertError)
-          toast.error("Fehler beim Erstellen der Session")
+          setSessionErrorMsg(insertError.message || "Fehler beim Erstellen der Session")
+          setIsLoadingSession(false)
+          return
         }
         sessionData = newSession
       }
 
       if (sessionData) {
         setActiveSession(sessionData)
-        const { data: ordersData } = await supabase.from('broetchen_orders').select('*').eq('session_id', sessionData.id)
-        if (ordersData) setOrders(ordersData)
+        const { data: ordersData, error: ordersError } = await supabase.from('broetchen_orders').select('*').eq('session_id', sessionData.id)
+        if (ordersError) {
+          console.error("Error fetching orders:", ordersError)
+          setSessionErrorMsg(ordersError.message || "Fehler beim Laden der Bestellungen")
+        } else if (ordersData) {
+          setOrders(ordersData)
+        }
       }
-      setLoadingItems(false)
+      setIsLoadingSession(false)
     }
     fetchAll()
-  }, [supabase])
+  }, [])
 
   const openAddModal = () => {
     setName("")
@@ -257,9 +280,14 @@ export function AdminBroetchenDashboard() {
             </Button>
           </CardHeader>
           <CardContent>
-            {!activeSession ? (
+            {isLoadingSession ? (
               <div className="flex justify-center p-4">
                 <Loader2 className="w-6 h-6 animate-spin" />
+              </div>
+            ) : sessionErrorMsg ? (
+              <div className="bg-red-500/10 text-red-700 dark:text-red-400 p-4 rounded-lg flex items-center gap-2 border border-red-500/20">
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <span className="font-semibold text-sm">{sessionErrorMsg}</span>
               </div>
             ) : aggregates.length === 0 ? (
               <p className="font-medium text-sm">Noch keine Bestellungen für morgen.</p>
