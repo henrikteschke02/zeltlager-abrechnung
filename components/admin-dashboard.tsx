@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Trash2, Edit2, Plus, Loader2 } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
@@ -28,6 +29,15 @@ type Profile = {
   full_name: string | null
   phone?: string | null
   is_approved?: boolean
+  anzahl_personen?: number
+  anwesenheit_tage?: number
+  anzahl_zelte?: number
+  zelt_naechte?: number
+  anzahl_autos?: number
+  auto_naechte?: number
+  anzahl_pavillons?: number
+  pavillon_naechte?: number
+  strom_genutzt?: boolean
 }
 
 export function AdminDashboard({

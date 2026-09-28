@@ -13,6 +13,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 const navItems = [
   { name: "Startseite", href: "/dashboard", icon: Home, exact: true },
+  { name: "Mein Stellplatz", href: "/dashboard/mein-stellplatz", icon: Tent },
   { name: "Schwarzes Brett", href: "/dashboard/schwarzes-brett", icon: MessageSquare },
   { name: "Getränke", href: "/dashboard/getraenke", icon: Beer },
   { name: "Grillfleisch", href: "/dashboard/grillfleisch", icon: Flame },
@@ -52,7 +53,7 @@ export function Navigation() {
     mobileItems.push({ name: "Admin", href: "/dashboard/admin", icon: Settings })
   }
 
-  const primaryItems = items.filter(item => ["Startseite", "Getränke", "Grillfleisch", "Brötchen"].includes(item.name))
+  const primaryItems = items.filter(item => ["Startseite", "Mein Stellplatz", "Getränke", "Grillfleisch", "Brötchen"].includes(item.name))
   const secondaryItems = items.filter(item => ["Schwarzes Brett", "Statistik", "Hilfe"].includes(item.name))
 
   return (

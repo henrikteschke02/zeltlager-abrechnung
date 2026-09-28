@@ -27,6 +27,15 @@ type Profile = {
   phone?: string | null
   members?: string | null
   is_approved?: boolean
+  anzahl_personen?: number
+  anwesenheit_tage?: number
+  anzahl_zelte?: number
+  zelt_naechte?: number
+  anzahl_autos?: number
+  auto_naechte?: number
+  anzahl_pavillons?: number
+  pavillon_naechte?: number
+  strom_genutzt?: boolean
 }
 
 export function AdminCamperDashboard({
