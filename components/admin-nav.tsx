@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Beer, Drumstick, Users, Croissant, LifeBuoy } from "lucide-react"
+import { Beer, Drumstick, Users, Croissant, LifeBuoy, Banknote } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function AdminNav() {
@@ -37,6 +37,12 @@ export function AdminNav() {
       name: "Feedback",
       href: "/dashboard/admin/feedback",
       icon: LifeBuoy,
+      matchExact: false
+    },
+    {
+      name: "Tarife",
+      href: "/dashboard/admin/tarife",
+      icon: Banknote,
       matchExact: false
     }
   ]

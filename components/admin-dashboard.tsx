@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Trash2, Edit2, Plus, Loader2 } from "lucide-react"
 import { createClient } from "@/utils/supabase/client"
@@ -132,6 +133,23 @@ export function AdminDashboard({
 
 
       <div className="grid gap-6 md:grid-cols-1 max-w-4xl">
+        {/* Tarife Karte */}
+        <Card className="bg-primary text-primary-foreground">
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <CardTitle>Platzkosten & Tarife verwalten</CardTitle>
+              <CardDescription className="text-primary-foreground/80">
+                Verwalte Basispreise für Personen, Zelte, Autos und Strom sowie die Abrechnungsfreigabe.
+              </CardDescription>
+            </div>
+            <Link 
+              href="/dashboard/admin/tarife" 
+              className={buttonVariants({ variant: "outline", className: "text-primary bg-background hover:bg-background/90 border-0 w-full sm:w-auto font-bold" })}
+            >
+               Tarife öffnen
+            </Link>
+          </CardHeader>
+        </Card>
         {/* Getränke Karte */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
