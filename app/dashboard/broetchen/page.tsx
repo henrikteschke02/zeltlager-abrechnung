@@ -31,12 +31,35 @@ export default async function BroetchenPage() {
 
   // Daten laden
   const { data: broetchenItems }  = await supabase.from("broetchen_items").select("*").order("name")
-  const { data: broetchenOrders } = await supabase.from("broetchen_buchungen").select("*").eq("user_id", user.id).order("created_at", { ascending: false })
+
+  // Aktive Session holen oder erstellen
+  let { data: session } = await supabase
+    .from("broetchen_sessions")
+    .select("id")
+    .eq("status", "active")
+    .single()
+
+  if (!session) {
+    const { data: newSession } = await supabase
+      .from("broetchen_sessions")
+      .insert([{ status: "active" }])
+      .select("id")
+      .single()
+    session = newSession
+  }
+
+  const { data: broetchenOrders } = await supabase
+    .from("broetchen_orders")
+    .select("*")
+    .eq("session_id", session?.id)
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
 
   return (
     <div className="container mx-auto px-4 max-w-7xl">
       <CamperBroetchenDashboard
         userId={user.id}
+        sessionId={session?.id as string}
         items={broetchenItems || []}
         initialOrders={broetchenOrders || []}
       />
