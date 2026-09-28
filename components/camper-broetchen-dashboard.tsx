@@ -25,10 +25,18 @@ export type BroetchenItem = {
   image_name?: string | null
 }
 
+type BroetchenSession = {
+  id: string
+  created_at: string
+  status: 'active' | 'completed'
+  completed_at: string | null
+}
+
 type BroetchenOrder = {
   id: string
+  session_id: string
   user_id: string
-  item_id: string
+  product_id: string
   menge: number
   created_at: string
 }
@@ -81,12 +89,12 @@ export function CamperBroetchenDashboard({
   )
 
   const totalCost = orders.reduce((sum, order) => {
-    const item = items.find((i) => i.id === order.item_id)
+    const item = items.find((i) => i.id === order.product_id)
     return sum + (item?.preis || 0) * order.menge
   }, 0)
 
   const todaysDebt = todaysOrders.reduce((sum, o) => {
-    const item = items.find((i) => i.id === o.item_id)
+    const item = items.find((i) => i.id === o.product_id)
     return sum + (item ? item.preis * o.menge : 0)
   }, 0)
 
@@ -102,7 +110,7 @@ export function CamperBroetchenDashboard({
   const personalStats = useMemo(() => {
     const stats: Record<string, { count: number; totalCost: number; name: string }> = {}
     orders.forEach(o => {
-      const item = items.find(i => i.id === o.item_id)
+      const item = items.find(i => i.id === o.product_id)
       if (!item) return
       if (!stats[item.id]) {
         stats[item.id] = { count: 0, totalCost: 0, name: item.name }
@@ -129,15 +137,15 @@ export function CamperBroetchenDashboard({
     const temp: BroetchenOrder = {
       id: crypto.randomUUID(),
       user_id: userId,
-      item_id: item.id,
+      product_id: item.id,
       menge: qty,
-      created_at: new Date().toISOString(),
+      session_id: '', created_at: new Date().toISOString(),
     }
     setOrders((prev) => [temp, ...prev])
 
     const { data, error } = await supabase
        .from("broetchen_buchungen")
-       .insert([{ user_id: userId, item_id: item.id, menge: qty }])
+       .insert([{ user_id: userId, product_id: item.id, menge: qty }])
        .select()
        .single()
 
@@ -233,7 +241,7 @@ export function CamperBroetchenDashboard({
           </h2>
           <div className="flex gap-2 overflow-x-auto pb-2 snap-x">
             {stornoEntries.map((o) => {
-              const item = items.find((i) => i.id === o.item_id)
+              const item = items.find((i) => i.id === o.product_id)
               const timeLeft = Math.max(
                 0,
                 Math.floor(
