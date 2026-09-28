@@ -60,7 +60,17 @@ export function AdminBroetchenDashboard() {
       const { data: itemsData } = await supabase.from('broetchen_items').select('*').order('name')
       if (itemsData) setItems(itemsData as BroetchenItem[])
 
-      const { data: sessionData } = await supabase.from('broetchen_sessions').select('*').eq('status', 'active').single()
+      let { data: sessionData, error: sessionError } = await supabase.from('broetchen_sessions').select('*').eq('status', 'active').single()
+      
+      if (!sessionData) {
+        const { data: newSession, error: insertError } = await supabase.from('broetchen_sessions').insert([{ status: 'active' }]).select().single()
+        if (insertError) {
+          console.error("Failed to create active session:", insertError)
+          toast.error("Fehler beim Erstellen der Session")
+        }
+        sessionData = newSession
+      }
+
       if (sessionData) {
         setActiveSession(sessionData)
         const { data: ordersData } = await supabase.from('broetchen_orders').select('*').eq('session_id', sessionData.id)
@@ -232,37 +242,39 @@ export function AdminBroetchenDashboard() {
         <AdminNav />
 
         {/* Bäcker-Ansicht */}
-        {activeSession && (
-          <Card className="bg-[#D9FF3D] border-0 text-[#1a1e12]">
-            <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                  <ShoppingBag className="w-6 h-6" /> Bäcker-Ansicht
-                </CardTitle>
-                <CardDescription className="text-[#1a1e12]/70 mt-1">
-                  Zusammenfassung der aktuellen Bestellung.
-                </CardDescription>
+        <Card className="bg-[#D9FF3D] border-0 text-[#1a1e12]">
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                <ShoppingBag className="w-6 h-6" /> Bäcker-Ansicht
+              </CardTitle>
+              <CardDescription className="text-[#1a1e12]/70 mt-1">
+                Zusammenfassung der aktuellen Bestellung.
+              </CardDescription>
+            </div>
+            <Button onClick={openCheckout} disabled={!activeSession} className="bg-[#1a1e12] text-white hover:bg-[#1a1e12]/80 font-bold">
+              Einkauf abschließen & verbuchen
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {!activeSession ? (
+              <div className="flex justify-center p-4">
+                <Loader2 className="w-6 h-6 animate-spin" />
               </div>
-              <Button onClick={openCheckout} className="bg-[#1a1e12] text-white hover:bg-[#1a1e12]/80 font-bold">
-                Einkauf abschließen & verbuchen
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {aggregates.length === 0 ? (
-                <p className="font-medium text-sm">Aktuell noch keine Bestellungen.</p>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {aggregates.map(a => (
-                    <div key={a.id} className="bg-white/40 p-3 rounded-lg flex items-center justify-between">
-                      <span className="font-semibold truncate pr-2">{a.name}</span>
-                      <span className="font-bold text-xl">{a.total}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
+            ) : aggregates.length === 0 ? (
+              <p className="font-medium text-sm">Noch keine Bestellungen für morgen.</p>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {aggregates.map(a => (
+                  <div key={a.id} className="bg-white/40 p-3 rounded-lg flex items-center justify-between">
+                    <span className="font-semibold truncate pr-2">{a.name}</span>
+                    <span className="font-bold text-xl">{a.total}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-8">
